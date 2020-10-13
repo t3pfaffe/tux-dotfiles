@@ -26,23 +26,25 @@ updateMediaInfo() {
 	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//\\/\\\\} # \ 
 	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//\//\\\/} # / 
 	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//\"/\\\"} # " 
-	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//   /\\t} # \t (tab)
-	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW///\\\n}   # \n (newline)
-	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//^M/\\\r} # \r (carriage return)
-	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//^L/\\\f} # \f (form feed)
-	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//^H/\\\b} # \b (backspace)	
+	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//   /\\t} # \t  (tab)
+	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW///\\\n}   # \n  (newline)
+	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//^M/\\\r} # \r  (carriage return)
+	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//^L/\\\f} # \f  (form feed)
+	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//^H/\\\b} # \b  (backspace)	
+	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//&/\and}  # and (ampersand)
 	local MEDIA_TITLE=${JSON_TOPIC_RAW}
 
-        local JSON_TOPIC_RAW=${MEDIA_ARTIST}
-        local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//\\/\\\\} # \
-        local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//\//\\\/} # /
-        local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//\"/\\\"} # "
-        local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//   /\\t} # \t (tab)
-        local JSON_TOPIC_RAW=${JSON_TOPIC_RAW///\\\n}   # \n (newline)
-        local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//^M/\\\r} # \r (carriage return)
-        local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//^L/\\\f} # \f (form feed)
-        local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//^H/\\\b} # \b (backspace)
-        local MEDIA_ARTIST=${JSON_TOPIC_RAW}
+	local JSON_TOPIC_RAW=${MEDIA_ARTIST}
+	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//\\/\\\\} # \
+    	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//\//\\\/} # /
+    	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//\"/\\\"} # "
+    	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//   /\\t} # \t  (tab)
+    	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW///\\\n}   # \n  (newline)
+    	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//^M/\\\r} # \r  (carriage return)
+    	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//^L/\\\f} # \f  (form feed)
+    	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//^H/\\\b} # \b  (backspace)
+    	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//&/\and}  # and (ampersand)
+    	local MEDIA_ARTIST=${JSON_TOPIC_RAW}
 
 
 	local MEDIA_PREPEND="$MEDIA_NOTE($MEDIA_STATE)"
