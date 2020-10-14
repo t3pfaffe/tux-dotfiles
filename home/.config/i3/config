@@ -1,5 +1,12 @@
-# i3 config file (v4)
-# Please see https://i3wm.org/docs/userguide.html for a complete reference!
+# i3 Config File:
+#   location: ~/.config/i3/config
+#   author: t3@pfaffe.me  2020-2020
+#   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#   Please see https://i3wm.org/docs/userguide.html for a complete reference.
+#   Heavy modification from Manjaro's default i3-config:
+#    https://gitlab.manjaro.org/profiles-and-settings/desktop-settings/-/blob/master/community/i3/skel/.i3/config
+
+
 
 set $mod Mod4
 
@@ -28,25 +35,25 @@ floating_modifier $mod
 #Set Desktop Background
 exec --no-startup-id nitrogen --restore
 
-#Startup Compositor
+##Startup Cricial System Daemons
+#Lock
+exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
+#Compositor
 exec --no-startup-id nitrogen --restore; sleep 1; picom -b --config ~/.config/picom/picom.conf
-
 #Startup Notification Daemon
-exec killall -q dunst
-exec "systemctl start --user dunst.service"
+exec killall -q dunst; systemctl start --user dunst.service
 
 #Startup Critical System Applets:
-exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
 exec --no-startup-id nm-applet
 exec --no-startup-id volumeicon
 
+#Startup Non-Critical System Applets:
+exec --no-startup-id kdeconnect-indicator
 
 
-##Startup Non-Cricial System Applications
-
-##
+###############
 ## KEYBINDS ############################################################
-##
+###############
 
 ##Application-Launchers
 bindsym $mod+Return exec io.elementary.terminal -n
@@ -56,8 +63,8 @@ bindsym $mod+F3 exec nemo
 
 # Application kebinds
 bindsym $mod+Shift+d --release exec "killall dunst;exec dunst; exec notify-send 'restart dunst'"
-bindsym $mod+t exec --no-startup-id pkill picom
-bindsym $mod+Ctrl+t exec --no-startup-id picom -b --config ~/.config/picom/picom.conf
+bindsym $mod+t                 exec --no-startup-id pkill picom
+bindsym $mod+Ctrl+t            exec --no-startup-id picom -b --config ~/.config/picom/picom.conf
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -83,6 +90,10 @@ bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOU
 bindsym Prior exec "playerctl --player=spotify,%any previous"
 bindsym Next  exec "playerctl --player=spotify,%any next"
 bindsym End   exec "playerctl --player=spotify,%any play-pause"
+bindsym XF86AudioPrev  exec "playerctl --player=spotify,%any previous"
+bindsym XF86AudioNext  exec "playerctl --player=spotify,%any next"
+bindsym XF86AudioPlay  exec "playerctl --player=spotify,%any play-pause"
+
 
 # change focus
 bindsym $mod+semicolon focus right
@@ -155,6 +166,11 @@ bindsym $mod+Shift+6 move container to workspace number $ws6
 bindsym $mod+Shift+7 move container to workspace number $ws7
 bindsym $mod+Shift+8 move container to workspace number $ws8
 
+#navigate workspaces next / previous
+bindsym $mod+Ctrl+Right workspace next
+bindsym $mod+Ctrl+Left workspace prev
+
+
 # reload the configuration file
 bindsym $mod+Shift+c reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
@@ -210,11 +226,144 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
-########################################################################
+#hide/unhide i3status bar
+bindsym $mod+m bar mode toggle
 
 
-# Start i3bar to display a workspace bar (plus the system information i3status
-# finds out, if available)
+set $quiet (q)uiet_toggle, (s)mall, (m)edium, (l)arge, (esc)ape
+mode "$quiet" {
+        # These bindings trigger as soon as you enter the resize mode
+
+        # Move a window in and out the quiet mode
+        bindsym q exec ~/.config/i3/quiet-cmd.py toggle ; mode "default"
+
+        # Resize the window in quiet mode
+        bindsym s exec ~/.config/i3/quiet-cmd.py resize small
+        bindsym m exec ~/.config/i3/quiet-cmd.py resize medium
+        bindsym l exec ~/.config/i3/quiet-cmd.py resize large
+
+        # back to normal
+        bindsym Escape mode "default"
+        bindsym Return mode "default"
+        bindsym Caps_Lock mode "default"
+        bindsym $mod+d mode "default"
+}
+
+#bindsym $mod+p exec $HOME/.config/i3/quiet-cmd.py switch
+bindsym $mod+Shift+p mode "$quiet"
+#exec_always $HOME/.config/i3/quiet-toggle-bar.py --kill
+
+
+#################
+### Theming: ###########################################################
+#################
+
+#Define Theme Colors
+
+set $priClr #BF4040
+set $secClr #555753
+set $bacClr #222222
+
+# Theme colors
+# class                   border  backgr. text    indic.   child_border
+  client.focused          #556064 $priClr #80FFF9 #FDF6E3
+  client.focused_inactive #2F3D44 #2F3D44 #1ABC9C #454948
+  client.unfocused        #2F3D44 #2F3D44 #1ABC9C #454948
+  client.urgent           #CB4B16 #FDF6E3 #1ABC9C #268BD2
+  client.placeholder      #000000 #0c0c0c #ffffff #000000 
+
+  client.background       $bacClr
+
+
+#################
+### Task Bar: ##########################################################
+#################
+
+# Start i3bar
 bar {
+
+
+		font pango:Noto Sans Regular Mono 8
+		colors {
+			background $bacClr
+			statusline #F9FAF9
+			separator  #454947
+
+			#                  border  backgr. text
+			focused_workspace  #F9FAF9 $priClr #292F34
+			active_workspace   #595B5B $priClr #FDF6E3
+			inactive_workspace #595B5B $secClr #EEE8D5
+			binding_mode       $priClr #2C2C2C #F9FAF9
+			urgent_workspace   #16a085 #FDF6E3 #E5201D
+		}
+		
+
+		tray_output primary
+		tray_padding 0
+
+		position top		
+		
         status_command ~/.config/i3/getMediaInfo.sh
+}
+
+
+#############################
+### settings for i3-gaps: ##############################################
+#############################
+
+# Set inner/outer gaps
+gaps inner  8
+gaps outer -2
+
+# Additionally, you can issue commands with the following syntax. This is useful to bind keys to changing the gap size.
+# gaps inner|outer current|all set|plus|minus <px>
+# gaps inner all set 10
+# gaps outer all plus 5
+
+# Smart gaps (gaps used if only more than one container on the workspace)
+smart_gaps on
+
+# Smart borders (draw borders around container only if it is not the only container on this workspace) 
+# on|no_gaps (on=always activate and no_gaps=only activate if the gap size to the edge of the screen is 0)
+smart_borders on
+
+# Quick gap change
+bindsym $mod+Shift+plus  gaps inner current plus 5
+bindsym $mod+Shift+minus gaps inner current minus 5
+
+# Press $mod+Shift+g to enter the gap mode. Choose o or i for modifying outer/inner gaps. Press one of + / - (in-/decrement for current workspace) or 0 (remove gaps for current workspace). If you also press Shift with these keys, the change will be global for all workspaces.
+set $mode_gaps Gaps: (o) outer, (i) inner
+set $mode_gaps_outer Outer Gaps: +|-|0 (local), Shift + +|-|0 (global)
+set $mode_gaps_inner Inner Gaps: +|-|0 (local), Shift + +|-|0 (global)
+bindsym $mod+Shift+g mode "$mode_gaps"
+
+mode "$mode_gaps" {
+        bindsym o      mode "$mode_gaps_outer"
+        bindsym i      mode "$mode_gaps_inner"
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+mode "$mode_gaps_inner" {
+        bindsym plus  gaps inner current plus 5
+        bindsym minus gaps inner current minus 5
+        bindsym 0     gaps inner current set 0
+
+        bindsym Shift+plus  gaps inner all plus 5
+        bindsym Shift+minus gaps inner all minus 5
+        bindsym Shift+0     gaps inner all set 0
+
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+mode "$mode_gaps_outer" {
+        bindsym plus  gaps outer current plus 5
+        bindsym minus gaps outer current minus 5
+        bindsym 0     gaps outer current set 0
+
+        bindsym Shift+plus  gaps outer all plus 5
+        bindsym Shift+minus gaps outer all minus 5
+        bindsym Shift+0     gaps outer all set 0
+
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
 }
