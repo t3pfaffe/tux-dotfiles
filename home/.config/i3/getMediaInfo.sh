@@ -8,6 +8,20 @@ MEDIA_PAUSE="⏸"
 MEDIA_INFO=""
 MEDIA_INFO_LONG=""
 
+xml_escape() {
+	local JSON_TOPIC_RAW="$1" 
+	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//\\/\\\\}		# \ 
+	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//\//\\\/}		# / 
+	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//\"/\\\"}		# " 
+	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//   /\\t}		# \t     (tab)
+	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW///\\\n}		# \n     (newline)
+	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//^M/\\\r}		# \r     (carriage return)
+	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//^L/\\\f}		# \f     (form feed)
+	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//^H/\\\b} 	# \b     (backspace)	
+	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//&/\&#038;}	# &#038; (ampersand)
+	echo "$JSON_TOPIC_RAW"
+}
+
 updateMediaInfo() {
 
 	#Pull Media Info
@@ -27,32 +41,10 @@ updateMediaInfo() {
                 MEDIA_STATE="$MEDIA_PAUSE"
 	else 
 		MEDIA_STATE="⏹"
-        fi
+	fi
 	
-	local JSON_TOPIC_RAW=${MEDIA_TITLE} 
-	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//\\/\\\\}		# \ 
-	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//\//\\\/}		# / 
-	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//\"/\\\"}		# " 
-	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//   /\\t}		# \t     (tab)
-	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW///\\\n}		# \n     (newline)
-	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//^M/\\\r}		# \r     (carriage return)
-	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//^L/\\\f}		# \f     (form feed)
-	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//^H/\\\b} 	# \b     (backspace)	
-	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//&/\&#038;}	# &#038; (ampersand)
-	local MEDIA_TITLE=${JSON_TOPIC_RAW}
-
-	local JSON_TOPIC_RAW=${MEDIA_ARTIST}
-	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//\\/\\\\}		# \
-    local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//\//\\\/}		# /
-    local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//\"/\\\"}		# "
-    local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//   /\\t}		# \t     (tab)
-    local JSON_TOPIC_RAW=${JSON_TOPIC_RAW///\\\n}		# \n     (newline)
-    local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//^M/\\\r}		# \r     (carriage return)
-    local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//^L/\\\f}		# \f     (form feed)
-    local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//^H/\\\b}		# \b     (backspace)
-    local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//&/\&#038;}	# &#038; (ampersand)
-    local MEDIA_ARTIST=${JSON_TOPIC_RAW}
-
+	local MEDIA_TITLE=$(xml_escape "$MEDIA_TITLE")
+	local MEDIA_ARTIST=$(xml_escape "$MEDIA_ARTIST")
 
 	local MEDIA_PREPEND="$MEDIA_NOTE($MEDIA_STATE)"
 	MEDIA_INFO="$MEDIA_PREPEND - $MEDIA_TITLE "
@@ -61,8 +53,11 @@ updateMediaInfo() {
 
 i3status | (read line && echo "$line" && read line && echo "$line" && read line && echo "$line" && updateMediaInfo && while :
 do
-    read line && updateMediaInfo
+	read line && updateMediaInfo
 
+	#Format MEDIA_INFO for i3Status XML
 	MEDIA_LINE="{\"name\":\"media_info\",\"markup\":\"pango\",\"border_bottom\":3,\"separator_block_width\":3,\"align\":\"right\",\"short_text\":\"${MEDIA_INFO}\",\"full_text\":\"${MEDIA_INFO_LONG}\"}"
+
 	echo ",[${MEDIA_LINE},${line#,\[}" || echo "$line" || exit 1
+
 done)
