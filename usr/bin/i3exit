@@ -6,7 +6,7 @@
 
 case "$1" in
     lock)
-        cinnamon-screensaver-command -l
+        betterlockscreen -l blur
         ;;
     logout)
         i3-msg exit
