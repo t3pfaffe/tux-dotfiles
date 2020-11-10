@@ -6,6 +6,9 @@
 #   Heavy modification from Manjaro's default i3-config:
 #    https://gitlab.manjaro.org/profiles-and-settings/desktop-settings/-/blob/master/community/i3/skel/.i3/config
 
+##Set remote file locations
+set $picomConf ~/.config/picom/picom.conf
+
 
 #Set mod-key
 set $mod Mod4
@@ -13,43 +16,30 @@ set $mod Mod4
 #Set default desktop layout (default is tiling)
 # workspace_layout tabbed <stacking|tabbed>
 
-#Configure border style <normal|1pixel|pixel xx|none|pixel>
-default_border pixel 1
-default_floating_border normal
-
-# Hide borders
-hide_edge_borders smart
-
-#Change borders
-bindsym $mod+u border none
-bindsym $mod+y border pixel 1
-bindsym $mod+n border normal
-
-#Font for window titles. Will also be used by the bar unless a different font
-# is used in the bar {} block below.
-font pango:monospace 8
-
 #Use Mouse+$mod to drag floating windows
 floating_modifier $mod
 
 #Set Display Configuration
 exec autorandr -c; sleep 1; nitrogen --restore
 
-##Startup Cricial System Daemons
+##Startup Critical System Daemons
+#################################
 #Compositor
-exec --no-startup-id nitrogen --restore; sleep 1; picom -b --config ~/.config/picom/picom.conf
+exec --no-startup-id nitrogen --restore; sleep 1; picom -b --config $picomConf
+
 #Screensaver/Lock
 exec --no-startup-id betterlockscreen -w blur
+exec --no-startup-id xautolock -time 10 -locker "betterlockscreen -l blur"
+
 #Startup Notification Daemon
 exec killall -q dunst; systemctl start --user dunst.service
-##
+#################################
 
-
-#Startup Critical System Applets:
+##Startup Critical System Applets
 exec --no-startup-id nm-applet
 exec --no-startup-id volumeicon
 
-#Startup Non-Critical System Applets:
+##Startup Non-Critical System Applets
 exec --no-startup-id kdeconnect-indicator
 exec --no-startup-id nextcloud --background
 
@@ -57,18 +47,19 @@ exec --no-startup-id nextcloud --background
 ## KEYBINDS ############################################################
 ###############
 
-####Application-Launchers
+##Application-Launchers
 bindsym $mod+Return exec io.elementary.terminal -n
 bindsym $mod+F2 exec firefox
 bindsym $mod+Shift+F2 exec brave
 bindsym $mod+F3 exec nemo
 bindsym $mod+Shift+M exec protonmail-bridge --no-window & sleep 5 && exec evolution
-####
+##
 
-#Daemon Contorl Keybinds
+##Daemon Control Keybinds
 bindsym $mod+Shift+d --release exec "killall dunst;exec dunst; exec notify-send 'restart dunst'"
 bindsym $mod+t                 exec --no-startup-id pkill picom
 bindsym $mod+Ctrl+t            exec --no-startup-id picom -b --config ~/.config/picom/picom.conf
+#
 
 #Kill focused window
 bindsym $mod+Shift+q kill
@@ -89,6 +80,7 @@ bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT
 bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10%
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
 bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
+##
 
 ##Media Controls
 bindsym Prior exec "playerctl --player=spotify,%any previous"
@@ -97,6 +89,7 @@ bindsym End   exec "playerctl --player=spotify,%any play-pause"
 bindsym XF86AudioPrev  exec "playerctl --player=spotify,%any previous"
 bindsym XF86AudioNext  exec "playerctl --player=spotify,%any next"
 bindsym XF86AudioPlay  exec "playerctl --player=spotify,%any play-pause"
+##
 
 ##Logout/Exit i3 & Xsession
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
@@ -112,12 +105,14 @@ bindsym $mod+Left focus left
 bindsym $mod+Down focus down
 bindsym $mod+Up focus up
 bindsym $mod+Right focus right
+##
 
 ##Alternatively, you can use the cursor keys:
 bindsym $mod+Shift+Left move left
 bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
+##
 
 #Split in horizontal orientation
 bindsym $mod+h split h
@@ -144,10 +139,8 @@ bindsym $mod+a focus parent
 
 #Focus the child container
 #bindsym $mod+d focus child
-##
 
 ##Workspace Definitions
-#######################
 set $ws1 "1"
 set $ws2 "2"
 set $ws3 "3"
@@ -157,6 +150,7 @@ set $ws6 "6"
 set $ws7 "7"
 set $ws8 "8"
 set $wsM "0 🎝 "
+##
 
 ##Switch to workspace
 bindsym $mod+1 workspace number $ws1
@@ -168,6 +162,7 @@ bindsym $mod+6 workspace number $ws6
 bindsym $mod+7 workspace number $ws7
 bindsym $mod+8 workspace number $ws8
 bindsym $mod+grave workspace number $wsM
+##
 
 ##Move focused container to workspace
 bindsym $mod+Shift+1 move container to workspace number $ws1
@@ -179,10 +174,10 @@ bindsym $mod+Shift+6 move container to workspace number $ws6
 bindsym $mod+Shift+7 move container to workspace number $ws7
 bindsym $mod+Shift+8 move container to workspace number $ws8
 bindsym $mod+Shift+grave move container to workspace number $wsM
-#######################
+##
 
 ##Workspace Navigation Controls:
-###############################
+#######################
 bindsym $mod+Shift+Ctrl+Right move container to workspace next
 bindsym $mod+Shift+Ctrl+Left  move container to workspace prev
 
@@ -193,9 +188,10 @@ bindsym $mod+Ctrl+Left workspace prev
 
 #Reload the configuration file
 bindsym $mod+Shift+c reload
+
 #Restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+r restart
-################################
+#######################
 
 #Hide/unhide i3status bar
 bindsym $mod+m bar mode toggle
@@ -279,32 +275,48 @@ bindsym $mod+Shift+p mode "$quiet"
 ### Theming: ###########################################################
 #################
 
-#Define Theme Colors
-
+##Define Theme Colors
 set $priClr #BF4040
 set $secClr #555753
 set $bacClr #222222
 
-# Theme colors
+## Set Theme colors
 # class                   border  backgr. text    indic.   child_border
   client.focused          #556064 $priClr #80FFF9 #FDF6E3
   client.focused_inactive #2F3D44 #2F3D44 #1ABC9C #454948
   client.unfocused        #2F3D44 #2F3D44 #1ABC9C #454948
   client.urgent           #CB4B16 #FDF6E3 #1ABC9C #268BD2
-  client.placeholder      #000000 #0c0c0c #ffffff #000000 
+  client.placeholder      #000000 #0c0c0c #ffffff #000000
 
   client.background       $bacClr
+##
+
+##Configure border style <normal|1pixel|pixel xx|none|pixel>
+default_border pixel 1
+default_floating_border normal
+
+#Hide borders
+hide_edge_borders smart
+
+#Change borders
+bindsym $mod+u border none
+bindsym $mod+y border pixel 1
+bindsym $mod+n border normal
+
+##Font for window titles. Will also be used by the bar unless a different font
+# is used in the bar {} block below.
+font pango:DejaVu Sans Mono 8
 
 
 #################
 ### Task Bar: ##########################################################
 #################
 
-# Start i3bar
+##Start i3bar
 bar {
 
 
-		font pango:Noto Sans Regular Mono 8
+		font pango:DejaVu Sans Mono, Nerd Font 8
 		colors {
 			background $bacClr
 			statusline #F9FAF9
@@ -317,14 +329,13 @@ bar {
 			binding_mode       $priClr #2C2C2C #F9FAF9
 			urgent_workspace   #16a085 #FDF6E3 #E5201D
 		}
-		
 
 		tray_output primary
 		tray_padding 0
 
-		position top		
-		
-        status_command ~/.config/i3/getMediaInfo.sh
+		position top
+
+    status_command ~/.config/i3/getMediaInfo.sh
 }
 
 
@@ -332,27 +343,27 @@ bar {
 ### settings for i3-gaps: ##############################################
 #############################
 
-# Set inner/outer gaps
+#Set inner/outer gaps
 gaps inner  8
 gaps outer -2
 
-# Additionally, you can issue commands with the following syntax. This is useful to bind keys to changing the gap size.
+#Additionally, you can issue commands with the following syntax. This is useful to bind keys to changing the gap size.
 # gaps inner|outer current|all set|plus|minus <px>
 # gaps inner all set 10
 # gaps outer all plus 5
 
-# Smart gaps (gaps used if only more than one container on the workspace)
+#Smart gaps (gaps used if only more than one container on the workspace)
 smart_gaps on
 
-# Smart borders (draw borders around container only if it is not the only container on this workspace) 
+#Smart borders (draw borders around container only if it is not the only container on this workspace)
 # on|no_gaps (on=always activate and no_gaps=only activate if the gap size to the edge of the screen is 0)
 smart_borders on
 
-# Quick gap change
+#Quick gap change
 bindsym $mod+Shift+plus  gaps inner current plus 5
 bindsym $mod+Shift+minus gaps inner current minus 5
 
-# Press $mod+Shift+g to enter the gap mode. Choose o or i for modifying outer/inner gaps. Press one of + / - (in-/decrement for current workspace) or 0 (remove gaps for current workspace). If you also press Shift with these keys, the change will be global for all workspaces.
+#Press $mod+Shift+g to enter the gap mode. Choose o or i for modifying outer/inner gaps. Press one of + / - (in-/decrement for current workspace) or 0 (remove gaps for current workspace). If you also press Shift with these keys, the change will be global for all workspaces.
 set $mode_gaps Gaps: (o) outer, (i) inner
 set $mode_gaps_outer Outer Gaps: +|-|0 (local), Shift + +|-|0 (global)
 set $mode_gaps_inner Inner Gaps: +|-|0 (local), Shift + +|-|0 (global)
@@ -390,29 +401,38 @@ mode "$mode_gaps_outer" {
 }
 
 
-#######################################
-### Pre-baked Application Settings: ####################################
-#######################################
+#########################################
+### Predefined Application Settings: ###################################
+#########################################
 
-# Open applications on specific workspaces
-assign [class="^Spotify*"] $wsM
-assign [class="^Plexamp"] $wsM
+##Open applications on specific workspaces:
+##########################################
 for_window [class="Spotify"] move to workspace $wsM
 for_window [class="Plexamp"] move to workspace $wsM
+##########################################
 
+##Open applications in floating mode:
+####################################
+##Generic roles
+for_window [window_role="About"] floating enable
+for_window [window_role="Preferences"] floating enable
+for_window [window_role="pop-up"] floating enable
+for_window [window_role="task_dialog"] floating enable
+for_window [window_role="bubble"] floating enable
+##
 
-# Open specific applications in floating mode
+##Generic types
+for_window [window_type="dialog"] floating enable
+for_window [window_type="menu"] floating enable
+
+##Specific applications
 for_window [title="alsamixer"] floating enable border pixel 1
-for_window [class="calamares"] floating enable border normal
-for_window [class="Clipgrab"] floating enable
-for_window [title="File Transfer*"] floating enable
-for_window [class="Galculator"] floating enable border pixel 1
+for_window [class="gnome-calculator"] floating enable border pixel 1
+for_window [class="spectacle"] floating enable border pixel 1
+for_window [class="Gnome-calculator"] floating enable border pixel 1
 for_window [class="GParted"] floating enable border normal
 for_window [class="Lxappearance"] floating enable sticky enable border normal
-for_window [title="MuseScore: Play Panel"] floating enable
 for_window [class="Nitrogen"] floating enable sticky enable border normal
-for_window [class="Oblogout"] fullscreen enable
-for_window [class="octopi"] floating enable
 for_window [class="Pamac-manager"] floating enable
 for_window [class="Pavucontrol"] floating enable
 for_window [class="qt5ct"] floating enable sticky enable border normal
@@ -420,5 +440,7 @@ for_window [class="Qtconfig-qt4"] floating enable sticky enable border normal
 for_window [class="Simple-scan"] floating enable border normal
 for_window [class="(?i)System-config-printer.py"] floating enable border normal
 for_window [class="Timeset-gui"] floating enable border normal
+for_window [class="Font-manager"] floating enable
 for_window [class="(?i)virtualbox"] floating enable border normal
-for_window [class="Xfburn"] floating enable
+##
+####################################
