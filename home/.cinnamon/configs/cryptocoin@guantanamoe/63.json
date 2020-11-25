@@ -1,0 +1,320 @@
+{
+    "layout": {
+        "type": "layout",
+        "pages": [
+            "general-page",
+            "graph-page",
+            "alerts-page",
+            "advanced-page"
+        ],
+        "general-page": {
+            "type": "page",
+            "title": "General",
+            "sections": [
+                "currency-section"
+            ]
+        },
+        "graph-page": {
+            "type": "page",
+            "title": "Graph",
+            "sections": [
+                "graph-section"
+            ]
+        },
+        "alerts-page": {
+            "type": "page",
+            "title": "Alerts",
+            "sections": [
+                "alerts-config",
+                "alerts-section",
+                "alerts-delta-section"
+            ]
+        },
+        "advanced-page": {
+            "type": "page",
+            "title": "Advanced",
+            "sections": [
+                "advanced-currency-section"
+            ]
+        },
+        "currency-section": {
+            "type": "section",
+            "title": "Currency",
+            "keys": [
+                "amount",
+                "currency",
+                "ticker",
+                "show-ticker-icon",
+                "show-ticker-name",
+                "show-currency",
+                "rates-update-interval"
+            ]
+        },
+        "graph-section": {
+            "type": "section",
+            "title": "Graph",
+            "keys": [
+                "graph-type",
+                "graph-unit",
+                "graph-length",
+                "graph-width",
+                "graph-height",
+                "graph-color"
+            ]
+        },
+        "alerts-config": {
+            "type": "section",
+            "title": "Config",
+            "keys": [
+                "alert-enable",
+                "alert-label-color"
+            ]
+        },
+        "alerts-section": {
+            "type": "section",
+            "title": "Alerts",
+            "keys": [
+                "alert-any-change",
+                "alert-on-above",
+                "alert-on-below"
+            ],
+            "dependency": "alert-enable"
+        },
+        "alerts-delta-section": {
+            "type": "section",
+            "title": "Delta Alerts",
+            "keys": [
+                "alert-on-delta-above",
+                "alert-on-delta-below",
+                "alert-delta-length",
+                "alert-delta-unit",
+                "alert-delta-update-interval"
+            ],
+            "dependency": "alert-enable"
+        },
+        "advanced-currency-section": {
+            "type": "section",
+            "title": "Currency",
+            "keys": [
+                "currency-format-enable",
+                "currency-format-symbol",
+                "currency-format-name",
+                "currency-format-precision"
+            ]
+        }
+    },
+    "amount": {
+        "type": "entry",
+        "default": "1",
+        "description": "Amount",
+        "tooltip": "Set the balance to multiply the price",
+        "value": "1"
+    },
+    "currency": {
+        "type": "entry",
+        "default": "USD",
+        "description": "Currency",
+        "tooltip": "Set the currency you want coin value to be set in",
+        "value": "USD"
+    },
+    "ticker": {
+        "type": "entry",
+        "default": "BTC",
+        "description": "Ticker",
+        "tooltip": "Set the crypto currency ticker",
+        "value": "BTC"
+    },
+    "show-ticker-icon": {
+        "type": "checkbox",
+        "default": true,
+        "description": "Ticker Icon",
+        "value": false
+    },
+    "show-ticker-name": {
+        "type": "checkbox",
+        "default": true,
+        "description": "Ticker Name",
+        "value": true
+    },
+    "show-currency": {
+        "type": "radiogroup",
+        "default": "symbol",
+        "description": "Show Currency",
+        "options": {
+            "Name": "name",
+            "Symbol": "symbol",
+            "None": "none"
+        },
+        "value": "symbol"
+    },
+    "rates-update-interval": {
+        "type": "entry",
+        "default": "5",
+        "description": "Rates update interval (in seconds)",
+        "tooltip": "Set the delay between each rates update.",
+        "value": "1800"
+    },
+    "graph-type": {
+        "type": "combobox",
+        "description": "Graph Type",
+        "default": "candlestick",
+        "options": {
+            "Candlestick": "candlestick",
+            "Line": "line"
+        },
+        "value": "candlestick"
+    },
+    "graph-unit": {
+        "type": "combobox",
+        "default": "histohour",
+        "description": "Unit for Graph History",
+        "options": {
+            "Minutes": "histominute",
+            "Hours": "histohour",
+            "Days": "histoday"
+        },
+        "value": "histoday"
+    },
+    "graph-length": {
+        "type": "spinbutton",
+        "default": 48,
+        "min": 1,
+        "max": 2000,
+        "step": 1,
+        "description": "Graph History Length",
+        "value": 48
+    },
+    "graph-width": {
+        "type": "spinbutton",
+        "default": 320,
+        "min": 100,
+        "max": 8192,
+        "step": 10,
+        "description": "Graph Popup Width",
+        "value": 320
+    },
+    "graph-height": {
+        "type": "spinbutton",
+        "default": 240,
+        "min": 100,
+        "max": 4096,
+        "step": 10,
+        "description": "Graph Popup Height",
+        "value": 240
+    },
+    "graph-color": {
+        "type": "colorchooser",
+        "default": "red",
+        "description": "Graph Foreground Color",
+        "value": "rgb(114,159,207)"
+    },
+    "alert-enable": {
+        "type": "switch",
+        "default": false,
+        "description": "Enable alerts",
+        "value": true
+    },
+    "alert-any-change": {
+        "type": "switch",
+        "default": false,
+        "description": "Any change",
+        "value": false
+    },
+    "alert-label-color": {
+        "type": "colorchooser",
+        "default": "red",
+        "description": "Label color",
+        "dependency": "alert-enable",
+        "value": "red"
+    },
+    "alert-on-above": {
+        "type": "entry",
+        "default": "",
+        "description": "Absolute maximum (money)",
+        "tooltip": "Alert when current value is above this value",
+        "value": ""
+    },
+    "alert-on-below": {
+        "type": "entry",
+        "default": "",
+        "description": "Absolute minimum (money)",
+        "tooltip": "Alert when current value is below this value",
+        "value": "465"
+    },
+    "alert-on-delta-above": {
+        "type": "entry",
+        "default": "",
+        "description": "Increase variation (%)",
+        "tooltip": "Alert when value increase this delta %",
+        "value": "10"
+    },
+    "alert-on-delta-below": {
+        "type": "entry",
+        "default": "",
+        "description": "Decrease variation (%)",
+        "tooltip": "Alert when value decrease this delta %",
+        "value": "10"
+    },
+    "alert-delta-length": {
+        "type": "spinbutton",
+        "default": 60,
+        "min": 0,
+        "max": 2000,
+        "step": 1,
+        "description": "Delta interval",
+        "value": 180.0
+    },
+    "alert-delta-unit": {
+        "type": "combobox",
+        "description": "Unit of interval",
+        "default": "histominute",
+        "options": {
+            "Minutes": "histominute",
+            "Hours": "histohour",
+            "Days": "histoday"
+        },
+        "dependency": "alert-delta-length",
+        "value": "histominute"
+    },
+    "alert-delta-update-interval": {
+        "type": "spinbutton",
+        "default": 30,
+        "min": 5,
+        "max": 86400,
+        "step": 1,
+        "units": "seconds",
+        "description": "Update interval",
+        "value": 30
+    },
+    "currency-format-enable": {
+        "type": "switch",
+        "default": false,
+        "description": "Custom format",
+        "value": true
+    },
+    "currency-format-symbol": {
+        "type": "entry",
+        "default": "$",
+        "description": "Currency symbol",
+        "dependency": "currency-format-enable",
+        "value": " $"
+    },
+    "currency-format-name": {
+        "type": "entry",
+        "default": "",
+        "description": "Currency name",
+        "dependency": "currency-format-enable",
+        "value": ""
+    },
+    "currency-format-precision": {
+        "type": "spinbutton",
+        "default": 2,
+        "min": 0,
+        "max": 32,
+        "step": 1,
+        "description": "Decimal places",
+        "dependency": "currency-format-enable",
+        "value": 0.0
+    },
+    "__md5__": "ab1c23f2095d8975a94c3699423e80b1"
+}
