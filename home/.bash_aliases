@@ -1,7 +1,10 @@
-##Bash Aliases
-##############
+# bash_aliases Config File:
+#   location: ~/.bash_aliases
+#   author: t3@pfaffe.me  2020-2020
+#   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#Default command aliases
+
+#Built-in commands
 alias cp="cp -i"                          # confirm before overwriting something
 alias df='df -h'                          # human-readable sizes
 alias free='free -m'                      # show sizes in MB
