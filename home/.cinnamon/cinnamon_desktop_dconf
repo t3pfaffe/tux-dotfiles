@@ -1,0 +1,243 @@
+[/]
+alttab-switcher-delay=100
+alttab-switcher-style='preview'
+applet-cache-updated=1606106772
+desklet-cache-updated=1606106772
+desklet-decorations=1
+desklet-snap=true
+desklet-snap-interval=25
+desktop-effects-close-effect='traditional'
+desktop-effects-close-time=120
+desktop-effects-close-transition='easeOutQuad'
+desktop-effects-map-effect='traditional'
+desktop-effects-map-time=100
+desktop-effects-map-transition='easeOutQuad'
+desktop-effects-maximize-effect='none'
+desktop-effects-maximize-time=100
+desktop-effects-maximize-transition='easeInExpo'
+desktop-effects-minimize-effect='traditional'
+desktop-effects-minimize-time=160
+desktop-effects-minimize-transition='easeInQuad'
+desktop-effects-on-dialogs=false
+desktop-effects-style='cinnamon'
+desktop-effects-tile-effect='none'
+desktop-effects-tile-time=100
+desktop-effects-tile-transition='easeInQuad'
+desktop-effects-unmaximize-effect='none'
+desktop-effects-unmaximize-time=100
+desktop-effects-unmaximize-transition='easeNone'
+enabled-applets=['panel1:left:3:grouped-window-list@cinnamon.org:2', 'panel1:right:14:notifications@cinnamon.org:5', 'panel1:right:7:network@cinnamon.org:9', 'panel1:right:5:sound@cinnamon.org:10', 'panel1:right:8:power@cinnamon.org:11', 'panel1:right:9:separator@cinnamon.org:13', 'panel1:right:11:separator@cinnamon.org:14', 'panel1:right:2:workspace-switcher@cinnamon.org:16', 'panel1:right:4:weather@mockturtl:17', 'panel1:right:10:calendar@cinnamon.org:18', 'panel2:right:10:calendar@cinnamon.org:21', 'panel2:right:9:separator@cinnamon.org:22', 'panel2:right:8:cpu-monitor-text@gnemonix:25', 'panel2:right:7:mem-monitor-text@datanom.net:26', 'panel2:right:5:sound150@claudiux:27', 'panel2:right:6:separator@cinnamon.org:28', 'panel2:left:2:grouped-window-list@cinnamon.org:30', 'panel4:left:2:grouped-window-list@cinnamon.org:31', 'panel1:left:2:placesCenter@scollins:35', 'panel4:left:1:placesCenter@scollins:37', 'panel2:left:1:placesCenter@scollins:38', 'panel4:right:8:calendar@cinnamon.org:39', 'panel2:left:0:menu@cinnamon.org:41', 'panel1:left:1:menu@cinnamon.org:46', 'panel1:right:12:SpicesUpdate@claudiux:48', 'panel1:right:13:printers@cinnamon.org:55', 'panel4:left:0:menu@cinnamon.org:57', 'panel1:right:3:collapsible-systray@feuerfuchs.eu:60', 'panel4:right:5:cryptocoin@guantanamoe:63', 'panel4:right:3:cryptocoin@guantanamoe:64', 'panel4:right:4:spacer@cinnamon.org:65', 'panel4:right:7:separator@cinnamon.org:66', 'panel4:right:6:spacer@cinnamon.org:67', 'panel4:right:1:cryptocoin@guantanamoe:68', 'panel4:right:2:spacer@cinnamon.org:69', 'panel1:right:6:gpaste-reloaded@feuerfuchs.eu:70']
+enabled-desklets=['hostcheck@schorschii:0:5725:25', 'hostcheck@schorschii:1:5725:100']
+enabled-extensions=['!gTile@shuairan']
+extension-cache-updated=1606106782
+favorite-apps=['cinnamon-settings.desktop', 'nemo.desktop', 'org.gnome.Calculator.desktop', 'firefox.desktop', 'brave-browser.desktop', 'com.spotify.Client.desktop']
+hotcorner-layout=['expo:false:0', 'scale:false:0', 'scale:false:0', 'desktop:false:0']
+next-applet-id=72
+next-desklet-id=5
+panel-edit-mode=false
+panel-zone-icon-sizes='[{"panelId":1,"left":0,"center":0,"right":24},{"left":0,"center":0,"right":0,"panelId":3},{"left":0,"center":0,"right":0,"panelId":2},{"left":0,"center":0,"right":0,"panelId":4}]'
+panel-zone-symbolic-icon-sizes='[{"panelId":1,"left":28,"center":28,"right":16},{"left":28,"center":28,"right":28,"panelId":3},{"left":28,"center":28,"right":28,"panelId":2},{"left":28,"center":28,"right":28,"panelId":4}]'
+panel-zone-text-sizes='[{"panelId":1,"left":0,"center":0,"right":0},{"left":0,"center":0,"right":0,"panelId":3},{"left":0,"center":0,"right":0,"panelId":2},{"left":0,"center":0,"right":0,"panelId":4}]'
+panels-autohide=['1:false', '2:false', '3:false', '4:false', '5:false']
+panels-enabled=['1:0:bottom', '2:1:bottom', '3:3:bottom', '4:2:bottom']
+panels-height=['1:40', '2:40', '3:40', '4:40', '5:40']
+panels-hide-delay=['1:0', '2:0', '3:0', '4:0', '5:0']
+panels-show-delay=['1:0', '2:0', '3:0', '4:0', '5:0']
+show-media-keys-osd='medium'
+show-tile-hud=true
+workspace-expo-view-as-grid=true
+workspace-osd-visible=true
+
+[cinnamon-session]
+prefer-hybrid-sleep=false
+quit-time-delay=60
+
+[desktop/a11y/keyboard]
+bouncekeys-delay=300
+mousekeys-accel-time=300
+mousekeys-init-delay=300
+mousekeys-max-speed=10
+slowkeys-delay=300
+
+[desktop/a11y/mouse]
+dwell-threshold=10
+dwell-time=1.2
+secondary-click-time=1.2
+
+[desktop/applications/calculator]
+exec='gnome-calculator'
+
+[desktop/applications/terminal]
+exec='io.elementary.terminal'
+
+[desktop/background]
+picture-options='zoom'
+picture-uri='file:///home/t3pfaffe/Pictures/Desktop.Backgrounds/AtlasMars.jpg'
+
+[desktop/background/slideshow]
+delay=15
+image-source='directory:///home/t3pfaffe/Pictures/Desktop.Backgrounds'
+slideshow-enabled=false
+
+[desktop/interface]
+clock-show-date=true
+cursor-blink-time=1200
+cursor-size=24
+font-name='NotoSans Nerd Font 11'
+gtk-theme='Matcha-dark-aliz'
+icon-theme='Papirus'
+scaling-factor=uint32 1
+text-scaling-factor=1.0
+
+[desktop/keybindings]
+custom-list=['custom3', 'custom1', 'custom0', 'custom2', 'custom4']
+looking-glass-keybinding=@as []
+show-desklets=@as []
+
+[desktop/keybindings/custom-keybindings/custom0]
+binding=['<Super>Return']
+command='io.elementary.terminal -n'
+name='terminal'
+
+[desktop/keybindings/custom-keybindings/custom1]
+binding=['<Super>Print']
+command='spectacle -c'
+name='screenshot spectacle'
+
+[desktop/keybindings/custom-keybindings/custom2]
+binding=['<Shift><Super>Print']
+command='spectacle -r -c'
+name='screenshot spectacle region'
+
+[desktop/keybindings/custom-keybindings/custom3]
+binding=['<Super>d', '<Super>s']
+command='albert show'
+name='Albert Show'
+
+[desktop/keybindings/custom-keybindings/custom4]
+binding=['<Super>0']
+command='cinnamon-session-quit --power-off'
+name='Show shutdown menu'
+
+[desktop/keybindings/media-keys]
+area-screenshot=@as []
+area-screenshot-clip=@as []
+help=['<Shift><Super>h']
+home=['<Super>e', 'XF86Explorer', '<Super>F3']
+logout=['<Shift><Super>l']
+next=['XF86AudioNext', '<Super>Page_Down']
+play=['XF86AudioPlay', '<Super>End']
+previous=['XF86AudioPrev', '<Super>Page_Up']
+screensaver=['<Control><Alt>l', '<Super>l']
+screenshot=@as []
+screenshot-clip=@as []
+terminal=['<Primary><Alt>t']
+window-screenshot=@as []
+window-screenshot-clip=@as []
+www=['XF86WWW', '<Super>F2']
+
+[desktop/keybindings/wm]
+close=['<Alt>F4', '<Shift><Super>q']
+maximize=['<Super>m']
+move-to-workspace-1=['<Shift><Super>exclam']
+move-to-workspace-2=['<Shift><Super>at']
+move-to-workspace-3=['<Shift><Super>numbersign']
+move-to-workspace-4=['<Shift><Super>dollar']
+move-to-workspace-5=['<Shift><Super>percent']
+push-snap-left=@as []
+push-snap-right=@as []
+show-desktop=['<Shift><Super>d']
+switch-to-workspace-1=['<Super>1']
+switch-to-workspace-2=['<Super>2']
+switch-to-workspace-3=['<Super>3']
+switch-to-workspace-4=['<Super>4']
+switch-to-workspace-5=['<Super>5']
+switch-to-workspace-down=['<Control><Alt>Down', '<Super>Tab']
+switch-to-workspace-left=['<Primary><Super>Left']
+switch-to-workspace-right=['<Primary><Super>Right']
+switch-to-workspace-up=['<Control><Alt>Up', '<Alt>F1']
+
+[desktop/media-handling]
+autorun-never=false
+
+[desktop/notifications]
+bottom-notifications=true
+display-notifications=false
+remove-old=true
+
+[desktop/screensaver]
+allow-keyboard-shortcuts=false
+default-message='TP-Laptop_TUX'
+show-album-art=true
+
+[desktop/session]
+idle-delay=uint32 0
+
+[desktop/sound]
+event-sounds=false
+maximum-volume=100
+volume-sound-file='/usr/share/sounds/Oxygen-Im-New-Mail.ogg'
+
+[desktop/wm/preferences]
+action-scroll-titlebar='opacity'
+auto-raise=false
+button-layout=':minimize,maximize,close'
+focus-mode='mouse'
+min-window-opacity=30
+num-workspaces=4
+theme='Matcha-dark-aliz'
+titlebar-font='Noto Sans Display 10'
+workspace-names=@as []
+
+[muffin]
+resize-threshold=24
+tile-hud-threshold=25
+workspace-cycle=false
+
+[settings-daemon/peripherals/keyboard]
+delay=uint32 500
+numlock-state='on'
+repeat-interval=uint32 30
+
+[settings-daemon/peripherals/mouse]
+double-click=400
+drag-threshold=8
+motion-threshold=1
+
+[settings-daemon/peripherals/touchpad]
+clickpad-click=3
+custom-threshold=true
+disable-while-typing=true
+motion-threshold=2
+
+[settings-daemon/peripherals/touchscreen]
+orientation-lock=false
+
+[settings-daemon/plugins/power]
+button-power='interactive'
+critical-battery-action='hibernate'
+lid-close-ac-action='blank'
+lid-close-battery-action='suspend'
+lid-close-suspend-with-external-monitor=true
+lock-on-suspend=true
+sleep-display-ac=900
+sleep-display-battery=300
+sleep-inactive-ac-timeout=7200
+sleep-inactive-battery-timeout=600
+
+[sounds]
+close-enabled=false
+close-file='/usr/share/sounds/Oxygen-Window-Close.ogg'
+login-enabled=true
+login-file='/usr/share/sounds/freedesktop/stereo/service-login.oga'
+logout-enabled=true
+logout-file='/usr/share/sounds/freedesktop/stereo/service-logout.oga'
+notification-enabled=true
+notification-file='/usr/share/sounds/Oxygen-Im-Low-Priority-Message.ogg'
+switch-enabled=false
+switch-file='/usr/share/sounds/Oxygen-Im-Nudge.ogg'
+tile-enabled=false
+
+[theme]
+name='Matcha-dark-aliz'
+theme-cache-updated=1606106782
