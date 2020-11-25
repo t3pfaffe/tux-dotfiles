@@ -1,9 +1,21 @@
-#
-# ~/.bashrc
-#
+# bashrc Config File:
+#   location: ~/.bashrc
+#   author: t3@pfaffe.me  2020-2020
+#   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#   Heavy modification from Manjaro's default bashrc:
 
+# If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+# Alias linkage:
+source ~/.bash_aliases
+
+# Set Editor
+export EDITOR='nano'
+export VISUAL='micro'
+
+
+#Set color configs
 colors() {
 	local fgc bgc vals seq0
 
@@ -31,6 +43,7 @@ colors() {
 	done
 }
 
+#enable bash-completion
 [ -r /usr/share/bash-completion/bash_completion ] && . /usr/share/bash-completion/bash_completion
 
 # Change the window title of X terminals
@@ -90,16 +103,6 @@ fi
 
 unset use_color safe_term match_lhs sh
 
-alias cp="cp -i"                          # confirm before overwriting something
-alias df='df -h'                          # human-readable sizes
-alias free='free -m'                      # show sizes in MB
-alias np='nano -w PKGBUILD'
-alias more=less
-
-xhost +local:root > /dev/null 2>&1
-
-complete -cf sudo
-
 # Bash won't get SIGWINCH if another process is in the foreground.
 # Enable checkwinsize so that bash will check the terminal size when
 # it regains control.  #65623
@@ -113,7 +116,6 @@ shopt -s expand_aliases
 # Enable history appending instead of overwriting.  #139609
 shopt -s histappend
 
-#
 # # ex - archive extractor
 # # usage: ex <file>
 ex ()
@@ -137,3 +139,21 @@ ex ()
     echo "'$1' is not a valid file"
   fi
 }
+
+##Environment Configs
+#####################
+
+# Set KDE Qt
+#export QT_QPA_PLATFORMTHEME="qt5ct"
+
+# ROS Noetic Setup:
+source /opt/ros/noetic/setup.bash
+source /home/t3pfaffe/Projects/ROS-Learning/catkin_ws/devel/setup.bash
+
+# ROS ENV:
+export ROS_IP='127.0.0.1'
+export PATH="/home/t3pfaffe/.local/bin:/opt/ros/noetic/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/var/lib/flatpak/exports/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl"
+
+
+# MOTD
+#ufetch
