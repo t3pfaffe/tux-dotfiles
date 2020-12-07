@@ -429,11 +429,10 @@ bindsym $mod+n border normal
 
 ##Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
-font pango:DejaVu Sans 10
+font pango:Noto Sans Medium, NotoSans Nerd Font Display Medium 9
 
 # Title Format
-for_window [class=".*"] title_format "%title"
-#for_window [class="firefox"] title_format "%class"
+#for_window [class=".*"] title_format "%title"
 
 # title_alignment left|center|right
 title_align center
@@ -450,7 +449,7 @@ show_marks yes
 bar {
 		strip_workspace_numbers yes
 
-		font pango: M+ 4m, DejaVu Sans Mono 8, FontAwesome 9
+		font pango:Noto Sans Mono Medium, NotoSansMono Nerd Font Medium 9
 		colors {
 			background $backCl
 			statusline $txtLCl
@@ -554,9 +553,12 @@ border_radius 3
 # Note: Find a window's details in xorg with the command "xprop"
 
 ##Set default monitor assignments
-workspace $ws2 output DP-1-1-1
-workspace $ws3 output eDP-1-1
-workspace $wsM output eDP-1-1
+# workspace $ws2 output DP-1-1-1
+# workspace $ws3 output eDP-1-1
+# workspace $wsM output eDP-1-1
+
+##Set specifica application naming schemes:
+for_window [class="Termite"] title_format "Terminal -  %title "
 
 
 ##Open applications on specific workspaces:
