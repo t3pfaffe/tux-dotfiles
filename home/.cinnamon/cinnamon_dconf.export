@@ -1,8 +1,8 @@
 [/]
 alttab-switcher-delay=100
 alttab-switcher-style='preview'
-applet-cache-updated=1606106772
-desklet-cache-updated=1606106772
+applet-cache-updated=1607274816
+desklet-cache-updated=1607274816
 desklet-decorations=1
 desklet-snap=true
 desklet-snap-interval=25
@@ -26,24 +26,26 @@ desktop-effects-tile-transition='easeInQuad'
 desktop-effects-unmaximize-effect='none'
 desktop-effects-unmaximize-time=100
 desktop-effects-unmaximize-transition='easeNone'
-enabled-applets=['panel1:left:3:grouped-window-list@cinnamon.org:2', 'panel1:right:14:notifications@cinnamon.org:5', 'panel1:right:7:network@cinnamon.org:9', 'panel1:right:5:sound@cinnamon.org:10', 'panel1:right:8:power@cinnamon.org:11', 'panel1:right:9:separator@cinnamon.org:13', 'panel1:right:11:separator@cinnamon.org:14', 'panel1:right:2:workspace-switcher@cinnamon.org:16', 'panel1:right:4:weather@mockturtl:17', 'panel1:right:10:calendar@cinnamon.org:18', 'panel2:right:10:calendar@cinnamon.org:21', 'panel2:right:9:separator@cinnamon.org:22', 'panel2:right:8:cpu-monitor-text@gnemonix:25', 'panel2:right:7:mem-monitor-text@datanom.net:26', 'panel2:right:5:sound150@claudiux:27', 'panel2:right:6:separator@cinnamon.org:28', 'panel2:left:2:grouped-window-list@cinnamon.org:30', 'panel4:left:2:grouped-window-list@cinnamon.org:31', 'panel1:left:2:placesCenter@scollins:35', 'panel4:left:1:placesCenter@scollins:37', 'panel2:left:1:placesCenter@scollins:38', 'panel4:right:8:calendar@cinnamon.org:39', 'panel2:left:0:menu@cinnamon.org:41', 'panel1:left:1:menu@cinnamon.org:46', 'panel1:right:12:SpicesUpdate@claudiux:48', 'panel1:right:13:printers@cinnamon.org:55', 'panel4:left:0:menu@cinnamon.org:57', 'panel1:right:3:collapsible-systray@feuerfuchs.eu:60', 'panel4:right:5:cryptocoin@guantanamoe:63', 'panel4:right:3:cryptocoin@guantanamoe:64', 'panel4:right:4:spacer@cinnamon.org:65', 'panel4:right:7:separator@cinnamon.org:66', 'panel4:right:6:spacer@cinnamon.org:67', 'panel4:right:1:cryptocoin@guantanamoe:68', 'panel4:right:2:spacer@cinnamon.org:69', 'panel1:right:6:gpaste-reloaded@feuerfuchs.eu:70']
-enabled-desklets=['hostcheck@schorschii:0:5725:25', 'hostcheck@schorschii:1:5725:100']
+enabled-applets=['panel1:left:3:grouped-window-list@cinnamon.org:2', 'panel1:right:6:network@cinnamon.org:9', 'panel1:right:5:sound@cinnamon.org:10', 'panel1:right:7:power@cinnamon.org:11', 'panel1:right:12:separator@cinnamon.org:14', 'panel1:right:1:workspace-switcher@cinnamon.org:16', 'panel1:right:9:weather@mockturtl:17', 'panel1:right:11:calendar@cinnamon.org:18', 'panel1:left:2:placesCenter@scollins:35', 'panel1:left:1:menu@cinnamon.org:46', 'panel1:right:13:SpicesUpdate@claudiux:48', 'panel1:right:2:collapsible-systray@feuerfuchs.eu:60', 'panel1:right:3:gpaste-reloaded@feuerfuchs.eu:70', 'panel1:right:8:separator@cinnamon.org:72', 'panel1:right:4:spacer@cinnamon.org:73', 'panel1:right:14:notifications@cinnamon.org:75', 'panel4:right:5:calendar@cinnamon.org:76', 'panel2:right:9:calendar@cinnamon.org:77', 'panel2:right:8:separator@cinnamon.org:78', 'panel2:right:7:mem-monitor-text@datanom.net:79', 'panel2:right:6:cpu-monitor-text@gnemonix:80', 'panel2:right:5:separator@cinnamon.org:81', 'panel2:right:4:sound150@claudiux:82', 'panel1:right:10:spacer@cinnamon.org:83', 'panel4:left:0:menu@cinnamon.org:84', 'panel4:left:2:grouped-window-list@cinnamon.org:85', 'panel4:left:1:placesCenter@scollins:86', 'panel2:left:2:placesCenter@scollins:87', 'panel2:left:0:menu@cinnamon.org:88', 'panel2:left:3:grouped-window-list@cinnamon.org:89', 'panel4:right:1:separator@cinnamon.org:90', 'panel4:right:0:spacer@cinnamon.org:91', 'panel2:left:1:windows-quick-list@cinnamon.org:92']
+enabled-desklets=['hostcheck@schorschii:0:5725:25', 'hostcheck@schorschii:1:5725:125']
 enabled-extensions=['!gTile@shuairan']
-extension-cache-updated=1606106782
-favorite-apps=['cinnamon-settings.desktop', 'nemo.desktop', 'org.gnome.Calculator.desktop', 'firefox.desktop', 'brave-browser.desktop', 'com.spotify.Client.desktop']
+extension-cache-updated=1607274816
+favorite-apps=['cinnamon-settings.desktop', 'nemo.desktop', 'org.gnome.Calculator.desktop', 'spotify.desktop', 'firefox.desktop', 'brave-browser.desktop']
 hotcorner-layout=['expo:false:0', 'scale:false:0', 'scale:false:0', 'desktop:false:0']
-next-applet-id=72
+next-applet-id=93
 next-desklet-id=5
+no-adjacent-panel-barriers=false
 panel-edit-mode=false
-panel-zone-icon-sizes='[{"panelId":1,"left":0,"center":0,"right":24},{"left":0,"center":0,"right":0,"panelId":3},{"left":0,"center":0,"right":0,"panelId":2},{"left":0,"center":0,"right":0,"panelId":4}]'
-panel-zone-symbolic-icon-sizes='[{"panelId":1,"left":28,"center":28,"right":16},{"left":28,"center":28,"right":28,"panelId":3},{"left":28,"center":28,"right":28,"panelId":2},{"left":28,"center":28,"right":28,"panelId":4}]'
+panel-zone-icon-sizes='[{"panelId": 1, "left": 32, "center": 0, "right": 22}, {"left": 0, "center": 0, "right": 0, "panelId": 3}, {"left": 32, "center": 0, "right": 0, "panelId": 2}, {"left": 32, "center": 0, "right": 22, "panelId": 4}]'
+panel-zone-symbolic-icon-sizes='[{"panelId": 1, "left": 34, "center": 16, "right": 18}, {"left": 28, "center": 28, "right": 28, "panelId": 3}, {"left": 34, "center": 18, "right": 18, "panelId": 2}, {"left": 34, "center": 18, "right": 18, "panelId": 4}]'
 panel-zone-text-sizes='[{"panelId":1,"left":0,"center":0,"right":0},{"left":0,"center":0,"right":0,"panelId":3},{"left":0,"center":0,"right":0,"panelId":2},{"left":0,"center":0,"right":0,"panelId":4}]'
 panels-autohide=['1:false', '2:false', '3:false', '4:false', '5:false']
 panels-enabled=['1:0:bottom', '2:1:bottom', '3:3:bottom', '4:2:bottom']
-panels-height=['1:40', '2:40', '3:40', '4:40', '5:40']
+panels-height=['1:38', '2:36', '3:40', '4:40', '5:40']
 panels-hide-delay=['1:0', '2:0', '3:0', '4:0', '5:0']
 panels-show-delay=['1:0', '2:0', '3:0', '4:0', '5:0']
 show-media-keys-osd='medium'
+show-snap-osd=true
 show-tile-hud=true
 workspace-expo-view-as-grid=true
 workspace-osd-visible=true
@@ -72,7 +74,7 @@ exec='io.elementary.terminal'
 
 [desktop/background]
 picture-options='zoom'
-picture-uri='file:///home/t3pfaffe/Pictures/Desktop.Backgrounds/AtlasMars.jpg'
+picture-uri='file:///home/t3pfaffe/Pictures/Desktop.Backgrounds/SpaceMan.jpg'
 
 [desktop/background/slideshow]
 delay=15
@@ -81,11 +83,14 @@ slideshow-enabled=false
 
 [desktop/interface]
 clock-show-date=true
+clock-use-24h=false
 cursor-blink-time=1200
 cursor-size=24
-font-name='NotoSans Nerd Font 11'
+cursor-theme='Adwaita'
+font-name='Ubuntu 10'
+gtk-overlay-scrollbars=true
 gtk-theme='Matcha-dark-aliz'
-icon-theme='Papirus'
+icon-theme='Papirus-Dark'
 scaling-factor=uint32 1
 text-scaling-factor=1.0
 
@@ -162,7 +167,7 @@ autorun-never=false
 
 [desktop/notifications]
 bottom-notifications=true
-display-notifications=false
+display-notifications=true
 remove-old=true
 
 [desktop/screensaver]
@@ -175,7 +180,7 @@ idle-delay=uint32 0
 
 [desktop/sound]
 event-sounds=false
-maximum-volume=100
+maximum-volume=99
 volume-sound-file='/usr/share/sounds/Oxygen-Im-New-Mail.ogg'
 
 [desktop/wm/preferences]
@@ -186,12 +191,14 @@ focus-mode='mouse'
 min-window-opacity=30
 num-workspaces=4
 theme='Matcha-dark-aliz'
-titlebar-font='Noto Sans Display 10'
+titlebar-font='Ubuntu Semi-Bold 12'
 workspace-names=@as []
 
 [muffin]
 resize-threshold=24
+snap-modifier='Super'
 tile-hud-threshold=25
+tile-maximize=true
 workspace-cycle=false
 
 [settings-daemon/peripherals/keyboard]
@@ -202,6 +209,7 @@ repeat-interval=uint32 30
 [settings-daemon/peripherals/mouse]
 double-click=400
 drag-threshold=8
+middle-button-enabled=true
 motion-threshold=1
 
 [settings-daemon/peripherals/touchpad]
@@ -211,7 +219,7 @@ disable-while-typing=true
 motion-threshold=2
 
 [settings-daemon/peripherals/touchscreen]
-orientation-lock=false
+orientation-lock=true
 
 [settings-daemon/plugins/power]
 button-power='interactive'
@@ -222,8 +230,13 @@ lid-close-suspend-with-external-monitor=true
 lock-on-suspend=true
 sleep-display-ac=900
 sleep-display-battery=300
-sleep-inactive-ac-timeout=7200
+sleep-inactive-ac-timeout=0
 sleep-inactive-battery-timeout=600
+
+[settings-daemon/plugins/xsettings]
+buttons-have-icons=true
+hinting='slight'
+menus-have-icons=true
 
 [sounds]
 close-enabled=false
@@ -240,4 +253,4 @@ tile-enabled=false
 
 [theme]
 name='Matcha-dark-aliz'
-theme-cache-updated=1606106782
+theme-cache-updated=1607274816
