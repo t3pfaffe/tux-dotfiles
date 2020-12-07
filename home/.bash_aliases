@@ -10,6 +10,7 @@ alias df='df -h'                          # human-readable sizes
 alias free='free -m'                      # show sizes in MB
 alias np='nano -w PKGBUILD'
 alias more=less
+alias ls='ls --color=auto'
 
 #clear bash history
 alias clrbashhistory='rm ~/.bash_history*; history -c && exit'
@@ -25,6 +26,9 @@ alias pac='sudo pacman'
 
 #micro
 alias mi='micro'
+
+#set script permissions
+alias mkscript='chmod +x '
 
 #i3
 alias i3edit='micro ~/.config/i3/config'

@@ -10,6 +10,9 @@
 # Alias linkage:
 source ~/.bash_aliases
 
+#Prevent Ctrl+S Freezing Terminal
+stty -ixon
+
 # Set Editor
 export EDITOR='nano'
 export VISUAL='micro'
@@ -140,20 +143,20 @@ ex ()
   fi
 }
 
-##Environment Configs
-#####################
-
-# Set KDE Qt
-#export QT_QPA_PLATFORMTHEME="qt5ct"
-
-# ROS Noetic Setup:
-source /opt/ros/noetic/setup.bash
-source /home/t3pfaffe/Projects/ROS-Learning/catkin_ws/devel/setup.bash
-
-# ROS ENV:
-export ROS_IP='127.0.0.1'
-export PATH="/home/t3pfaffe/.local/bin:/opt/ros/noetic/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/var/lib/flatpak/exports/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl"
-
+PS1='[\u@\h \W]\$ '
 
 # MOTD
-#ufetch
+printMOTD () 
+{
+	hostName=$(uname -n)
+	kernelV=$(uname -r)
+	currentTime=$(date +%m/%d/%C-%H:%M)
+
+	printf "$hostName"
+	printf "@"
+	printf "$kernelV"
+	printf " - $currentTime"
+	printf "\n"
+}
+
+printMOTD
