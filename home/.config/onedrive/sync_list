@@ -1,0 +1,18 @@
+# ~/.config/onedrive/sync_list
+#
+
+# Includes:
+School
+Pictures
+*/
+
+# Excludes:
+!ArrowBackup/
+!Backup/
+!Documents/
+!Music/
+!Videos/
+
+# Include all Office-Lens upload directories
+Office Lens
+Documents/Office Lens
