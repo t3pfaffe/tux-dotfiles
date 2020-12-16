@@ -22,7 +22,7 @@ floating_modifier $mod
 ###############
 
 ##Set Display Configuration
-exec_always autorandr -c && sleep 50ms &&  nitrogen --restore
+exec_always autorandr -c && sleep 0.5 &&  nitrogen --restore
 
 
 ##Startup Critical WM Daemons
