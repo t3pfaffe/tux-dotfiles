@@ -1,0 +1,6 @@
+#log/output files
+*.out
+*.log
+
+#duplicate save files
+*~
