@@ -188,7 +188,7 @@
         "dependency": "manualLocation",
         "description": "Location",
         "tooltip": "Acceptable inputs are Latitude,Longitude. e.g.: 68.1932,17.1426 or an address.\nWaits for 3 seconds after you stop typing then refreshes the weather.",
-        "value": "42.9339,-78.8046"
+        "value": " none "
     },
     "saveLocation": {
         "type": "button",
