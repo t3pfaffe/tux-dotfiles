@@ -1,10 +1,10 @@
 #!/bin/bash
-# SRC_BASHRC Config File:
+# bashrc Config File:
 #   location: ~/.SRC_BASHRC
 #   author: t3@pfaffe.me  🄯2020-01/05/2021
 #   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#   Heavy modification from Manjaro's default SRC_BASHRC:
-#   [SRC_BASHRC]( https://gitlab.manjaro.org/packages/core/bash/-/blob/master/dot.bashrc ).
+#   Heavy modification from Manjaro's default .bashrc:
+#   [bashrc]( https://gitlab.manjaro.org/packages/core/bash/-/blob/master/dot.bashrc ).
 
 
 ##########################

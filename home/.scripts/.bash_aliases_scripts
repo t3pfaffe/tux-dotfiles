@@ -1,0 +1,66 @@
+#!/bin/bash
+# Bash Aliases User-Scripts File:
+#   location: ~/Documents/Scripts/.bash_aliases_scripts
+#   author: t3@pfaffe.me  🄯2020-01.05.2021
+#   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#   Other notes / references:
+#    https://github.com/t3pfaffe/
+
+
+#########################
+### DEFINE_VARIABLES: #####################################################
+#########################
+## Setup of ENV vars for user scripts.
+
+# Define DIR for user scripts
+export USER_SCRIPTS_DIR='Documents/Scripts'
+export SCRIPTS_DIR=${USER_SCRIPTS_DIR}
+
+# Define DIR for user public scripts
+PUB_SCRIPTS_DIR=${USER_SCRIPTS_DIR}/Public
+
+
+## 'gen_script_aliases' - dynamic alias generator:
+##  usage: gen_script_aliases <directory>
+# Generates aliases dynamically for scripts
+#  within a given directory.
+#################################################
+#gen_script_aliases () {
+#    local READ_DIR=$1
+#
+#    # Do nothing if directory doesnt exist
+#    [[ -d $READ_DIR ]] || return
+#
+#    # TODO: Do the search for all .sh files,
+#    #        write them all into some file,
+#    #        and then link to said file.
+#}
+#################################################
+
+
+###############################
+### USER_SCRIPTS_SHORTCUTS: ###############################################
+###############################
+## Setup of global shortcuts to user scripts
+
+# If required DIRs do not exist, don't do anything
+file_exists ${PUB_SCRIPTS_DIR}/{*.sh,*.bash} || return
+
+## Manual static aliases:
+#########################
+# CMD: countdownto
+alias countdownto='$PUB_SCRIPTS_DIR/countdownto.sh'
+
+# CMD: display-changeto-60hz
+alias display-changeto-60hz='$PUB_SCRIPTS_DIR/display-changeto-60hz.sh'
+
+# CMD: display-changeto-144hz
+alias display-changeto-144hz='$PUB_SCRIPTS_DIR/display-changeto-144hz.sh'
+
+#########################
+
+
+## Automatic dynamic aliases:
+#############################
+# Dynamically generate aliases from Public script DIR.
+#gen_script_aliases $PUB_SCRIPTS_DIR

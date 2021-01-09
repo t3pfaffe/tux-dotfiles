@@ -1,81 +1,87 @@
 # i3 Config File:
 #   location: ~/.config/i3/config
-#   author: t3@pfaffe.me  2020-2020
-#   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#   Please see https://i3wm.org/docs/userguide.html for a complete reference.
-#   Heavy modification from Manjaro's default i3-config:
-#    https://gitlab.manjaro.org/profiles-and-settings/desktop-settings/-/blob/master/community/i3/skel/.i3/config
+#   author: t3@pfaffe.me    🄯2020-01.05.2021
+#   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#   Please see [i3wm]( https://i3wm.org/docs/userguide.html ) for a complete reference.
+#   Heavy modification from Manjaro's
+#    [i3-config]( https://gitlab.manjaro.org/profiles-and-settings/desktop-settings/-/blob/master/community/i3/skel/.i3/config ).
 
 
 ################
 ### STARTUP: ##############################################################
 ################
 
-#Set mod-key to Super_L & keep Alt_L
+# Define mod-key & set it to Super_L
 set $mod Mod4
+
+## Define VARs for Alt_L and Caps_Lock:
 set $alt Mod1
 set $cap Caps_Lock
 
-##Notification Templating:
-set $wm_logo_path /home/$USER/.config/i3/i3logo.png
-set $distro_logo_path /home/$USER/.config/i3/i3logo.png
-set $notify_critical notify-send -i "/home/$USER/.config/i3/i3logo.png" -a "i3wm" -t 10000 -u critical
-set $notify_normal notify-send   -i "/home/$USER/.config/i3/i3logo.png" -a "i3wm" -t 5000  -u normal
-set $notify_low notify-send -i "/home/$USER/.config/i3/i3logo.png" -a "i3wm" -t 5000 -u low
-
-##Debug Tools
-set $exec_debug     debuglog on; shmlog on; reload
-set $exec_debug_off debuglog off; shmlog off
-bindsym $mod+Ctrl+Shift+d exec $exec_debug_off ; $exec_debug; exec $notify_critical "Notice: i3wm Debugging Enabled!"
-bindsym $mod+$alt+t exec $notify_critical 'test notification!!'
-###exec_always $exec_debug
+## Environment Variables:
+set $WM_LOGO ~/.config/i3/i3logo.png
+set $DIST_LOGO /usr/share/aarchup/archlogo.png
 
 
-##Set Display Configuration
+## Notification Templating:
+# TODO: move to external script.
+set $notify_critical notify-send -i "/home/$USER/.config/i3/i3logo.png" -a "i3wm" -t 10000  -u critical
+set $notify_normal notify-send   -i "/home/$USER/.config/i3/i3logo.png" -a "i3wm" -t 5000   -u normal
+set $notify_low notify-send      -i "/home/$USER/.config/i3/i3logo.png" -a "i3wm" -t 5000   -u low
+
+## Enable Debugging:
+# Comment/Un-comment cmd below to
+#  toggle debug-logging by default.
+#
+#exec_always $exec_debug
+
+
+## Set Display Configuration
 set $set_wallpaper nitrogen --restore &
 exec $set_wallpaper
 exec_always autorandr -c && sleep 0.5 && $set_wallpaper
 
-##Startup Critical WM Daemons
-##############################
-##Compositor
+## Startup Critical WM Daemons
+###############################
+## Compositor
 set $exec_picom picom -b --experimental-backend
 exec --no-startup-id picom --experimental-backends || notify-send -i "/home/$USER/.config/i3/i3logo.png" -a "i3wm" -t 10000 -u critical "The compositor picom has crashed!" &
 exec_always --no-startup-id pgrep -x picom || $( $notify_low 'Restarting compositor...' & $exec_picom || $notify_critical 'WARNING! The compositor picom crashed on start!' )
 
-##Notification Daemon
+## Notification Daemon
 set $exec_dunst systemctl --user start --quiet dunst.service
 exec --no-startup-id $exec_dunst || $notify_critical 'WARNING! The notification-daemon dunst crashed on start!'
 exec_always --no-startup-id $(systemctl --user is-active --quiet dunst.service) || $( $notify_low 'Restarting notification-daemon...' & pkill dunst; $exec_dunst || $notify_critical 'WARNING! The notification-daemon dunst crashed on start!' )
 
-##Screensaver/Lock
-set $exec_lock betterlockscreen -l dimblur
+## Screensaver/Lock
+set $exec_lock ~/.config/i3/lock-screen.sh
 set $exec_idlehook ~/.config/i3/idleLocker.sh
-exec        --no-startup-id betterlockscreen -w blur
+exec        $exec_lock -i
 exec_always --no-startup-id $exec_xidlehook
-##############################
+###############################
 
-##Startup Critical WM Applets
+## Startup System- Applets:
 exec --no-startup-id nm-apple
 exec --no-startup-id pa-applet
 exec --no-startup-id blueman-applet
 
-##Startup Non-Critical System Daemons
+## Startup Non-Crit System Daemons:
 exec --no-startup-id aarchup -p /usr/share/aarchup/archlogo.png --loop-time 1440
-#exec --no-startup-id albert
-exec --no-startup-id onedrive --monitor
-#   starting with Systemd instead.
+# exec --no-startup-id arch-audit -uf "%n - %v" --color always ## TODO: add notif to this.
+exec --no-startup-id albert
 
-##Startup Non-Critical System Applets
+
+## Startup User Applets
 exec --no-startup-id kdeconnect-indicator
 exec --no-startup-id nextcloud --background
+exec --no-startup-id albert
 
 
 ####################
 ### APP-KEYBINDS ##########################################################
 ####################
 
-##Application-Launchers:
+## Application-Launchers:
 	bindsym $mod+Return exec termite
 	bindsym $mod+Shift+Return exec io.elementary.terminal -n
 	bindsym $mod+F2 exec firefox
@@ -86,15 +92,17 @@ exec --no-startup-id nextcloud --background
 	bindsym $mod+Shift+M exec protonmail-bridge --no-window & sleep 5s && exec evolution &
 ##
 
-##System Daemon Controls Keybinds
-# bindsym $mod+Ctrl+Shift+n exec --no-startup-id pkill dunst;     sleep 0.5; $notify_low 'Restarting notification-daemon...' & $exec_dunst || $notify_critical 'WARNING! The notification-daemon dunst crashed on start!'
-# bindsym $mod+Ctrl+Shift+l exec --no-startup-id pkill xidlehook; sleep 0.5; $notify_low 'Restarting idlehook...' &            $exec_idlehook || $notify_critical 'WARNING! The autolock xidlehook crashed on start!'
-# bindsym $mod+Ctrl+Shift+t exec --no-startup-id "pkill picom; sleep 0.5; $($notify_low 'Restarting compositor...') & $exec_picom || $($notify_critical 'WARNING! The compositor picom crashed on start!')"
+## System Daemon Controls Keybinds:
+#   TODO: move these CMD's to external scripts like xidlehook.
+#bindsym $mod+Ctrl+Shift+n exec --no-startup-id pkill dunst;     sleep 0.5; $notify_low 'Restarting notification-daemon...' & $exec_dunst || $notify_critical 'WARNING! The notification-daemon dunst crashed on start!'
+#bindsym $mod+Ctrl+Shift+l exec --no-startup-id pkill xidlehook; sleep 0.5; $notify_low 'Restarting idlehook...' &            $exec_idlehook || $notify_critical 'WARNING! The autolock xidlehook crashed on start!'
+#bindsym $mod+Ctrl+Shift+t exec --no-startup-id "pkill picom; sleep 0.5; $($notify_low 'Restarting compositor...') & $exec_picom || $($notify_critical 'WARNING! The compositor picom crashed on start!')"
+#  More simple binds until i3wm can be figured out.
 bindsym $mod+Ctrl+Shift+n exec --no-startup-id " pkill dunst; sleep 0.5; $exec_dunst "
 bindsym $mod+Ctrl+Shift+t exec --no-startup-id " pkill picom; sleep 0.5; $exec_picom "
 bindsym $mod+Ctrl+Shift+l exec --no-startup-id $exec_xidlehook
 
-#Launch program launcher (dmenu)
+# Launch program launcher (dmenu)
 bindsym $mod+d exec --no-startup-id rofi -show drun
 bindsym $mod+Shift+d exec --no-startup-id rofi -show run
 bindsym $mod+s exec --no-startup-id albert show
@@ -102,7 +110,7 @@ bindsym $mod+s exec --no-startup-id albert show
 #Launch categorized menu
 # bindsym $mod+z exec --no-startup-id morc_menu
 
-##Monitor Brightness Controls:
+## Monitor Brightness Controls:
     #set $notify_bright $notify_low  -t 500 "Brightness: $(light -G)"
     #set $exec_bright_up   light -A 5 ; $notify_low  -t 750 "Brightness: $(light -G)"
     #set $exec_bright_down light -U 5 ; $notify_low  -t 750 "Brightness: $(light -G)"
@@ -112,7 +120,7 @@ bindsym $mod+s exec --no-startup-id albert show
     bindsym XF86MonBrightnessDown   exec --no-startup-id light -U 5 && $notify_low -h string:x-dunst-stack-tag:XF86brightness -a "light" -t 750 "Brightness: $(light -G)"
 ##
 
-##Audio Volume Controls:
+## Audio Volume Controls:
 	set $refresh_i3status killall -SIGUSR1 i3status
 	bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10%
 	bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10%
@@ -120,7 +128,7 @@ bindsym $mod+s exec --no-startup-id albert show
 	bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
 ##
 
-##Media Controls:
+## Media Controls:
 	bindsym Prior   exec "playerctl --player=spotify,%any previous"
 	bindsym Next    exec "playerctl --player=spotify,%any next"
 	bindsym End     exec "playerctl --player=spotify,%any play-pause"
@@ -129,14 +137,15 @@ bindsym $mod+s exec --no-startup-id albert show
 	bindsym XF86AudioPlay  exec "playerctl --player=spotify,%any play-pause"
 ##
 
-##Screenshots
-# TODO: screnshot-mode
-bindsym --release Print exec spectacle -c
-bindsym --release $mod+Shift+Print exec "spectacle --region"
+## Screenshot Controls:
+#   TODO: screnshot-mode
+bindsym --release Print             exec spectacle -c
+bindsym --release $mod+Print        exec spectacle
+bindsym --release $mod+Shift+Print  exec spectacle --region
 
-##Reload Config / Restart i3
-bindsym $mod+Shift+r reload
-bindsym $mod+Ctrl+Shift+r restart
+## Reload Config / Restart i3:
+bindsym $mod+Shift+r reload; exec $notify_normal -t 2000 "Reloading i3's config..."
+bindsym $mod+Ctrl+Shift+r restart; exec $notify_normal -t 2000 "Restarting i3wm..."
 
 ##Logout & Exit Xsession
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
@@ -154,6 +163,7 @@ set $exec_i3exit exec --no-startup-id i3exit
 set $system_state_key 0
 set $system_state (l)ock, (e)xit, switch_(u)ser, (s)uspend, (h)ibernate, (Shift+r)eboot, (Shift+s)hutdown
 mode "$system_state" {
+    ## Mode
     bindsym l       $exec_i3exit lock,          mode "default"
     bindsym s       $exec_i3exit suspend,       mode "default"
     bindsym u       $exec_i3exit switch_user,   mode "default"
@@ -176,13 +186,13 @@ bindsym $mod+$system_state_key mode "$system_state"
 ### NAVIGATION-KEYBINDS ###################################################
 ###########################
 
-##Container Navigation Controls
-###############################
+## Container Navigation Controls:
+################################{
 
-#Use Mouse+$mod to drag floating windows
+# Use Mouse+$mod to drag floating windows
 floating_modifier $mod
 
-##Change focus
+## Change focus
     bindsym $mod+semicolon focus right
     bindsym $mod+Left focus left
     bindsym $mod+Down focus down
@@ -190,7 +200,7 @@ floating_modifier $mod
     bindsym $mod+Right focus right
 ##
 
-##Change container layout (stacked, tabbed, toggle split)
+## Change container layout (stacked, tabbed, toggle split)
     bindsym $mod+e layout toggle split
     bindsym $mod+Shift+t layout toggle tabbed stacking split
     # individual h, v, & tabbed controls
@@ -199,50 +209,50 @@ floating_modifier $mod
     bindsym $mod+t layout tabbed
 ##
 
-##Move focused container in stack
+## Move focused container in stack
     bindsym $mod+Shift+Left move left
     bindsym $mod+Shift+Down move down
     bindsym $mod+Shift+Up move up
     bindsym $mod+Shift+Right move right
 ##
 
-#Kill focused container
+# Kill focused container
 bindsym $mod+Shift+q kill
 
 
-#Enter fullscreen mode for the focused container
+# Enter fullscreen mode for the focused container
 bindsym $mod+f fullscreen toggle
 
-#Enter fullscreen mode for the focused parent container
+# Enter fullscreen mode for the focused parent container
 bindsym $mod+Ctrl+f focus parent; fullscreen; focus child
 
-#Enter Sticky mode for the focused container
+# Enter Sticky mode for the focused container
 bindsym $mod+Shift+s sticky toggle
 
-#Set default desktop layout (default is tiling)
+# Set default desktop layout (default is tiling)
 # workspace_layout tabbed <stacking|tabbed>
 
-#Toggle tiling / floating
+# Toggle tiling / floating
 bindsym $mod+Shift+space floating toggle
 
-#Change focus between tiling / floating windows
+# Change focus between tiling / floating windows
 bindsym $mod+space focus mode_toggle
 
-#Focus the parent container
+# Focus the parent container
 bindsym $mod+a focus parent
 
-#Focus the child container
+# Focus the child container
 bindsym $mod+z focus child
 
-##Quick resize
+## Quick resize:
 bindsym $mod+$alt+Left  resize shrink width 10 px or 10 ppt
 bindsym $mod+$alt+Right resize grow width 10 px or 10 ppt
 bindsym $mod+$alt+Up    resize shrink height 10 px or 10 ppt
 bindsym $mod+$alt+Down  resize grow height 10 px or 10 ppt
 
-##Resize Container Mode:
-# an interactive menu for resizing containers.
-###############################################
+## Resize Container Mode:
+#   an interactive menu for resizing containers.
+###############################################{
 set $resize_mode_key r
 set $resize_mode "resize container"
 mode $resize_mode {
@@ -267,55 +277,52 @@ mode $resize_mode {
     bindsym $mod+$resize_mode_key mode "default"
 }
 bindsym $mod+$resize_mode_key mode $resize_mode
-###############################################
+###############################################}
 
-#Quiet Mode:
-# to isloate a container with large gaps.
-#########################################
-set $exec_quiet exec --no-star quiet-cmd.py
+## Quiet Mode:
+#   to isloate a container with large gaps.
+###########################################{
+set $exec_quiet exec --no-startup-id ~/.config/i3/quiet-cmd.py
 
-set $quiet_key Shift+F
-set $quiet (q)uiet_toggle, (s)mall, (m)edium, (l)arge, (esc)ape
-mode "$quiet" {
-    #These bindings trigger as soon as you enter the quiet mode
+set $quiet_mode_key Shift+F
+set $quiet_mode (q)uiet_toggle, (s)mall, (m)edium, (l)arge, (esc)ape
+mode "$quiet_mode" {
 
-    #Move a window in and out the quiet mode
-    bindsym q exec ~/.config/i3/quiet-cmd.py toggle ; mode "default"
+    ## Mode keybindings:
+    # Toggle quiet mode
+    bindsym q   $exec_quiet toggle ; mode "default"
+    # Resize the window in quiet mode
+    bindsym s   $exec_quiet resize small
+    bindsym m   $exec_quiet resize medium
+    bindsym l   $exec_quiet resize large
 
-    #Resize the window in quiet mode
-    bindsym s $exec_quiet resize small
-    bindsym m $exec_quiet resize medium
-    bindsym l $exec_quiet resize large
-
-    #Exit mode
+    # Exit mode
     bindsym Escape          mode "default"
     bindsym Return          mode "default"
-    bindsym $mod+$quiet_key mode "default"
+    bindsym $mod+$quiet_mode_key mode "default"
 
 }
-
-bindsym $mod+$quiet_key mode "$quiet"
-#########################################
-###############################
-
+bindsym $mod+$quiet_mode_key mode "$quiet_mode"
+###########################################}
+################################}
 
 ##Workspace Naviation
-#####################
+#####################{
 
-#Navigate workspaces next / previous
+## Navigate workspaces next / previous
 bindsym $mod+Ctrl+Right workspace next
 bindsym $mod+Ctrl+Left workspace prev
 
-#Move between container workspaces next / previous
+## Move between container workspaces next / previous
 bindsym $mod+Shift+Ctrl+Right move container to workspace next
 bindsym $mod+Shift+Ctrl+Left  move container to workspace prev
 
-#Workspace back and forth (with/without active container)
+## Workspace back and forth (with/without active container)
 workspace_auto_back_and_forth yes
 bindsym $mod+Tab workspace back_and_forth
 bindsym $mod+Shift+Tab move container to workspace back_and_forth; workspace back_and_forth
 
-##Scratchapd
+## Scratchapd Manipulation:
     #Move the currently focused window to the scratchpad
     bindsym $mod+Shift+minus move scratchpad
 
@@ -324,7 +331,7 @@ bindsym $mod+Shift+Tab move container to workspace back_and_forth; workspace bac
     bindsym $mod+minus scratchpad show
 ##
 
-##Workspace Definitions
+## Workspace Name Definitions:
     set $ws1 "1"
     set $ws2 "2"
     set $ws3 "3"
@@ -337,7 +344,7 @@ bindsym $mod+Shift+Tab move container to workspace back_and_forth; workspace bac
     set $wsM "0 🎝 "
 ##
 
-##Workspace Binds
+## Workspace Keybinds:
     set $wsKey1 1
     set $wsKey2 2
     set $wsKey3 3
@@ -350,7 +357,7 @@ bindsym $mod+Shift+Tab move container to workspace back_and_forth; workspace bac
     set $wsKeyM grave
 ##
 
-##Switch to workspace (i3Native)
+## Switch to workspace (i3Native):
     bindsym $mod+Control+$wsKey1 workspace number $ws1
     bindsym $mod+Control+$wsKey2 workspace number $ws2
     bindsym $mod+Control+$wsKey3 workspace number $ws3
@@ -363,7 +370,7 @@ bindsym $mod+Shift+Tab move container to workspace back_and_forth; workspace bac
     bindsym $mod+Control+$wsKeyM workspace number $wsM
 ##
 
-##Move focused container to workspace (i3Native)
+## Move focused container to workspace (i3Native):
     bindsym $mod+Control+Shift+$wsKey1 move container to workspace $ws1
     bindsym $mod+Control+Shift+$wsKey2 move container to workspace $ws2
     bindsym $mod+Control+Shift+$wsKey3 move container to workspace $ws3
@@ -375,16 +382,16 @@ bindsym $mod+Shift+Tab move container to workspace back_and_forth; workspace bac
     bindsym $mod+Control+Shift+$wsKey9 move container to workspace $ws9
     bindsym $mod+Control+Shift+$wsKeyM move container to workspace $wsM
 ##
-#######################
+#######################}
 
 
 ##Grouped Workspaces Naviation
-##############################
+##############################{
 
 #Set i3_groups command
 set $exec_i3_groups exec --no-startup-id i3-workspace-groups
 
-##Switch to workspace
+##Switch to workspace:
     bindsym $mod+$wsKey1 workspace number $ws1
     bindsym $mod+$wsKey2 workspace number $ws2
     bindsym $mod+$wsKey3 workspace number $ws3
@@ -397,7 +404,7 @@ set $exec_i3_groups exec --no-startup-id i3-workspace-groups
     bindsym $mod+$wsKeyM workspace number $wsM
 ##
 
-##Move focused container to workspace
+## Move focused container to workspace:
     bindsym $mod+Shift+$wsKey1 move container to workspace number $ws1
     bindsym $mod+Shift+$wsKey2 move container to workspace number $ws2
     bindsym $mod+Shift+$wsKey3 move container to workspace number $ws3
@@ -410,22 +417,22 @@ set $exec_i3_groups exec --no-startup-id i3-workspace-groups
     bindsym $mod+Shift+$wsKeyM move container to workspace number $wsM
 ##
 
-#Switch active workspace group
+# Switch active workspace group
 bindsym $mod+g exec --no-startup-id i3-switch-active-workspace-group
 
 #Assign workspace to a group
 bindsym $mod+Shift+g exec --no-startup-id i3-assign-workspace-to-group
 
-# elect workspace to focus on
+# Select workspace to focus on
 bindsym $mod+w exec --no-startup-id i3-focus-on-workspace
 
-#Move the focused container to another workspace
+# Move the focused container to another workspace
 bindsym $mod+Shift+w exec --no-startup-id i3-move-to-workspace
 
-#Rename/renumber workspace. Uses Super+Alt+n
+# Rename/renumber workspace. Uses Super+Alt+n
 bindsym $alt+$mod+n exec --no-startup-id i3-rename-workspace
 
-##############################
+##############################}
 
 
 #################
@@ -472,23 +479,23 @@ title_align center
 for_window [class=".*"] border pixel $default_border_px
 
 #Drawing marks on window decoration
-show_marks yes
+show_marks NO
 
-##Configure border style <normal|1pixel|pixel xx|none|pixel>
-set $default_border_px 2
+## Configure border style <normal|1pixel|pixel xx|none|pixel>
+set $default_border_px 0
 default_border pixel $default_border_px
 default_floating_border pixel 4
 hide_edge_borders smart_no_gaps
 
-##Quick Border Modification
+## Quick Border Modification
 bindsym $mod+$alt+o border none
 bindsym $mod+$alt+i border pixel 1
 bindsym $mod+$alt+u border normal
 bindsym $mod+$alt+y border pixel 4
 
-##Resize Borders Mode:
-# an interactive menu for resizing container borders.
-######################################################
+## Resize Borders Mode:
+#   an interactive menu for resizing container borders.
+######################################################{
 set $modify_border_mode_key Shift+b
 
 set $modify_border_mode modify borders: <4|3|2|1|0|(n)ormal|(d)efault>
@@ -509,7 +516,7 @@ mode "$modify_border_mode" {
     bindsym $mod+$modify_border_mode_key mode "default"
 }
 bindsym $mod+$modify_border_mode_key mode "$modify_border_mode"
-######################################################
+######################################################}
 
 
 #################
@@ -556,7 +563,7 @@ bar {
 set $default_gaps_inner 8
 set $default_gaps_outer 0
 
-##Smart borders (draw borders around container only if it is not the only container on this workspace)
+## Smart borders (draw borders around container only if it is not the only container on this workspace)
 # on|no_gaps (on=always activate and no_gaps=only activate if the gap size to the edge of the screen is 0)
 smart_borders on
 smart_borders no_gaps
@@ -568,7 +575,7 @@ smart_gaps inverse_outer
 gaps inner $default_gaps_inner
 gaps outer $default_gaps_outer
 
-##Quick Gap Resize
+## Quick Gap Resize
 bindsym $mod+$alt+bracketright          gaps inner current plus 1
 bindsym $mod+$alt+bracketleft           gaps inner current minus 1
 bindsym $mod+$alt+Shift+bracketright    gaps outer current plus 1
@@ -641,15 +648,15 @@ bindsym $mod+Shift+bar mode "$resize_gap_mode"
 # Note: Find a window's details in xorg with the command "xprop"
 
 
-##Open applications on specific workspaces
-##########################################
+## Open applications on specific workspaces
+###########################################
 for_window [class="Spotify"] move to workspace $wsM
 for_window [class="Plexamp"] move to workspace $wsM
-##########################################
+###########################################
 
-##Open applications in floating mode
-####################################
-##Generic roles
+## Open applications in floating mode
+#####################################
+## Generic roles:
     for_window [window_role="About"] floating enable
     for_window [window_role="Preferences"] floating enable
     for_window [window_role="pop-up"] floating enable
@@ -657,7 +664,7 @@ for_window [class="Plexamp"] move to workspace $wsM
     for_window [window_role="bubble"] floating enable
 ##
 
-##Generic types
+## Generic types:
     for_window [window_type="dialog"] floating enable
     for_window [window_type="menu"] floating enable
     for_window [window_type="splash"] floating enable
@@ -665,7 +672,7 @@ for_window [class="Plexamp"] move to workspace $wsM
     for_window [window_type="notification"] floating enable
 ##
 
-##Specific applications
+## Specific applications:
     for_window [title="alsamixer"] floating enable border pixel 1
     for_window [class="gnome-calculator"] floating enable border pixel 1
     for_window [class="spectacle"] floating enable border pixel 1
@@ -681,4 +688,48 @@ for_window [class="Plexamp"] move to workspace $wsM
     for_window [class="Font-manager"] floating enable
     for_window [class="(?i)virtualbox"] floating enable border normal
 ##
-####################################
+#####################################
+
+
+##############################
+### i3 Debugging Settings: ###############################################
+##############################
+
+set $exec_debug     debuglog on; shmlog on; reload
+set $exec_debug_off debuglog off; shmlog off
+
+bindsym $mod+$alt+t exec $notify_critical 'test notification!!'
+
+# Quick Toggle debuglog
+bindsym $mod+Ctrl+Shift+d exec $exec_debug_off ; $exec_debug; exec $notify_critical "Notice: i3wm Debugging Enabled!"
+
+## Debug Settings Mode:
+#   options for debugging i3.
+##############################
+set $debug_settings_mode_key Shift+F1
+set $debug_settings_mode i3 debugging options: <(e)enable log|(d)isable log|(s)how log|Shift+(E)nable unlimited_core_dumps> <Ctrl+(e)dit i3_config|(r)eload i3_config|Shift+(R)estart i3>
+mode "$debug_settings_mode" {
+    ## Mode Keybindings:
+
+    bindsym e       $exec_debug;     exec $notify_critical "Notice: i3wm_debuglog  Enabled!"
+    bindsym d       $exec_debug_off; exec $notify_critical "Notice: i3wm_debuglog Disabled!"
+    bindsym s       exec i3-sensible-terminal -e "i3-dump-log | less || echo 'Failed to load i3-logs! \n" &
+
+    bindsym Shift+E exec --no-startup-id ulimit -c unlimited && $notify_normal "Notice: max core-dump's set to unlimited."
+
+    bindsym Ctrl+e  exec i3-sensible-terminal -e '$EDITOR ~/.config/i3/config' &
+
+    bindsym r       reload;  exec $notify_normal -t 2000 'Reloading i3/config...' ,    mode "default"
+    bindsym Shift+r restart; exec $notify_normal -t 2000 'Restarting i3...' ,          mode "default"
+
+    ## Exit mode:
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym $mod+$debug_settings_mode_key mode "default"
+}
+bindsym $mod+$debug_settings_mode_key mode "$debug_settings_mode"
+##############################
+
+
+#
+## END_FILE

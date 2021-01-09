@@ -5,7 +5,7 @@
 #   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-SRC_BASH_ALIASES_SCRIPTS=~/Documents/Scripts/.bash_aliases_scripts
+SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
 
 #####################
 ### CMD Wrappers: ########################################################
