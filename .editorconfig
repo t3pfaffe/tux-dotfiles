@@ -1,0 +1,23 @@
+# EditorConfig:
+#   location: ~/.tux-dotfiles/.editorconfig
+#   author: t3@pfaffe.me    🄯2020-01.05.2021
+#   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#   Other notes/references:
+#    [ref]( https://EditorConfig.org )
+
+# Set as top-most EditorConfig file
+root = true
+
+# Catch-All files
+[*]
+# Set charset
+charset = utf-8
+# Set tab/indent to 4 spaces
+indent_style = space
+indent_size = 4
+# Unix-style newlines with a newline ending every file
+end_of_line = lf
+insert_final_newline = true
+# Misc formattings
+trim_trailing_whitespace = true
+insert_final_newline = true
