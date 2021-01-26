@@ -7,6 +7,18 @@
 #    https://github.com/t3pfaffe/
 
 
+
+###################
+### INITIALIZE: ###########################################################
+###################
+
+# Tag self for dependents
+HAS_BASH_ALIASES_SCRIPTS=true
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+
 #########################
 ### DEFINE_VARIABLES: #####################################################
 #########################
@@ -44,7 +56,7 @@ PUB_SCRIPTS_DIR=${USER_SCRIPTS_DIR}/Public
 ## Setup of global shortcuts to user scripts
 
 # If required DIRs do not exist, don't do anything
-file_exists ${PUB_SCRIPTS_DIR}/{*.sh,*.bash} || return
+if ! file_exists ${PUB_SCRIPTS_DIR}/*.sh && ! file_exists ${PUB_SCRIPTS_DIR}/*.bash ; then return ; fi
 
 ## Manual static aliases:
 #########################

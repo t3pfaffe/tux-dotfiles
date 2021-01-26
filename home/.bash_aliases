@@ -1,20 +1,29 @@
 #!/bin/bash
 # bash_aliases Config File:
 #   location: ~/.bash_aliases
-#   author: t3@pfaffe.me  🄯2020-01/05/2021
+#   author: t3@pfaffe.me  🄯2020-01/26/2021
 #   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+
+
+################################
+### INITIALIZE_BASH_ALIASES: ##############################################
+################################
+
+# Tag self for dependents
+HAS_BASH_ALIASES=true
 
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+#
+if ! $HAS_BASHRC ; then "ERROR! ~/.bash_aliases is not meant to be run without ~/.bashrc !" ; return ; fi
 
 #####################
 ### CMD Wrappers: ########################################################
 #####################
 
-## Define Used Files:
-SRC_BASHRC=~/.bashrc
+## Define Utilized Files:
 SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
 
 ## Native bash/unix cmds:
@@ -29,7 +38,7 @@ alias clsfull='clear_full; motd'
 alias cls='clear'
 
 ## Shortcuts to reload ~/.bashrc:
-alias reload_bash='clear_full; reset_debug_logs ; notify_reload "~/.bashrc" ; source ~/.bashrc'
+alias reload_bash='clear_full; reset_debug_logs ; reset_init_msgs ; notify_reload "~/.bashrc" ; source ~/.bashrc'
 # Shortcut reload_bash
 alias rld='reload_bash'
 
@@ -144,25 +153,9 @@ alias getclip="xclip -selection c -o"
 ##################
 ## Static and dynamically linked functions, scripts, & utilities.
 
-## 'debug_bool_out' - inline boolean test:
-## usage: debug_bool_out <bash_cmd>
-##########################################
-debug_bool_out () {
-    local args="$*"
-
-    if "$args" 2>/dev/null ; then
-        printf "RETURNED=${COLOR_GREEN}TRUE${COLOR_NC}\n"; return 0
-    else
-        printf "RETURNED=${COLOR_RED}FALSE ${COLOR_NC}\n"; return 1
-    fi;
-
-}
-alias debool='debug_bool_out'
-##########################################
-
-## 'edit' - Preferential text-editor selector with fail-over:
+## 'edit' - Preferential text-editor:
 ## usage: edit <file>
-########################################
+####################################
 edit () {
 
 	# Tries i3s preferential edit
@@ -171,25 +164,23 @@ edit () {
     $VISUAL  "$1" && return 0
     $EDITOR  "$1" && return 0
     xdg-open "$1" && return 0
-
     return 1 # return fail status
 }
-
 # Shortcut to edit function
 alias ed='edit'
-########################################
+#####################################
 
 ## 'mandir' - Preferential file-manager selector with fail-over:
 ## usage: mandir <directory>
 ########################################
 mandir () {
-    # Tries $VISUAL, $EDITOR, and finally xdg-open.
     local args=""; if str_empty "$1"; then args=$(pwd); else args="$1" ; fi
 
+    # Tries $VISUAL, $EDITOR, and finally xdg-open.
     ranger "$args"  && return 0
     xdg-open "$args" && return 0
-    show_dir "$args"  && return 1
-
+    show_dir "$args"  && return 0
+    return 1 # return fail status
 }
 # Shortcut to mandir function
 alias md='mandir'

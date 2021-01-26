@@ -3,6 +3,7 @@
 #   location:~/.bash_logout
 #   author: t3@pfaffe.me  🄯2020-01/05/2021
 #   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#    - Bash script executed on
 
 
 # If not running interactively, don't do anything
