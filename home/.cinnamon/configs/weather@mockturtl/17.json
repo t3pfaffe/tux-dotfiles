@@ -221,7 +221,7 @@
         "units": "minutes",
         "step": 5,
         "description": "Update interval",
-        "value": 60
+        "value": 30
     },
     "forecastDays": {
         "type": "spinbutton",

@@ -22,7 +22,7 @@
         "description": "Show menu",
         "default": "<Shift><Super>s",
         "tooltip": "Set keybinding(s) to show the sound applet menu.",
-        "value": "<Shift><Super>s"
+        "value": "::"
     },
     "_knownPlayers": {
         "type": "generic",
@@ -68,7 +68,7 @@
         "description": "Limit song information to",
         "dependency": "showtrack",
         "indent": true,
-        "value": 30
+        "value": 10.0
     },
     "middleClickAction": {
         "type": "combobox",
@@ -101,7 +101,7 @@
         "default": true,
         "description": "Keep album art aspect ratio",
         "dependency": "playerControl",
-        "value": true
+        "value": false
     },
     "hideSystray": {
         "type": "switch",

@@ -212,6 +212,11 @@
         "show-buttons": false,
         "value": [
             {
+                "name": "cinnamon-timer@jake1164",
+                "isunprotected": true,
+                "requestnewdownload": false
+            },
+            {
                 "name": "collapsible-systray@feuerfuchs.eu",
                 "isunprotected": true,
                 "requestnewdownload": false
@@ -228,6 +233,11 @@
             },
             {
                 "name": "gpaste-reloaded@feuerfuchs.eu",
+                "isunprotected": true,
+                "requestnewdownload": false
+            },
+            {
+                "name": "kdeccc@Severga",
                 "isunprotected": true,
                 "requestnewdownload": false
             },
@@ -347,6 +357,11 @@
             },
             {
                 "name": "kdecdesklet@joejoetv",
+                "isunprotected": true,
+                "requestnewdownload": false
+            },
+            {
+                "name": "notes@schorschii",
                 "isunprotected": true,
                 "requestnewdownload": false
             }

@@ -5,11 +5,17 @@
 #   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
 
 #####################
 ### CMD Wrappers: ########################################################
 #####################
+
+## Define Used Files:
+SRC_BASHRC=~/.bashrc
+SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
 
 ## Native bash/unix cmds:
 #########################
@@ -23,7 +29,7 @@ alias clsfull='clear_full; motd'
 alias cls='clear'
 
 ## Shortcuts to reload ~/.bashrc:
-alias reload_bash="clear_full; notify_reload '~/.bashrc'; source ~/.bashrc"
+alias reload_bash='clear_full; reset_debug_logs ; notify_reload "~/.bashrc" ; source ~/.bashrc'
 # Shortcut reload_bash
 alias rld='reload_bash'
 
@@ -37,15 +43,43 @@ alias cp="cp -i"            # confirm before overwriting something
 alias df='df -h'            # human-readable sizes
 alias free='free -m'        # show sizes in MB
 alias lsall="pwd; ls -a"
-alias more=less
+
+## Return directory sizes:
+function dir_size() {
+    local dir_arg=""
+    str_empty "$1"  && dir_arg=$(pwd) || dir_arg=$1 && shift
+    local args="$*"
+    echo "$( du -sh --apparent-size "$args" "$dir_arg"  2>/dev/null | cut -d/ -f1 )"
+}
+alias dsize="dir_size"
+
+## Visualize directory:
+show_dir () {
+    local dir_arg="" ; if str_empty "$1" ; then dir_arg=$(pwd) ; else dir_arg=$1 && shift; fi
+    local args="$*"
+    local fileCnt="" ; fileCnt=$( /usr/bin/ls  "$args" "$dir_arg" -1 | /usr/bin/wc -l ) || local fileCnt="null"
+
+
+    printf "%s/: %s files, \n" "$dir_arg"  "$fileCnt"
+    ls "$args" "$dir_arg"
+}
+
+## More visual directory change::
+change_dir () {
+    str_empty "$1"  && return 1
+    local dir_arg="$1"; shift
+    local args="$*"
+
+    cd "$dir_arg" || return 1; show_dir "$args" ; return 0
+}
+alias cdir="change_dir"
 
 ## Shortcut for common directories to cd to:
 alias cdhome='cd ~'
-alias cd~='cd ~'
 alias cddownloads='cd ~/Downloads'
-alias cdprojects='cd ~/Projects'
-alias cdscripts='cd ~/Documents/Scripts'
 alias cdconfig='cd ~/.config/'
+alias cdprojects='cdir ~/Projects'
+alias cdscripts='cdir ~/Documents/Scripts'
 
 # Shortcut to set writable script permissions
 alias mkscript='chmod +x '
@@ -82,7 +116,7 @@ alias ra='ranger'
 # Shortcut to restore wallpapers with nitrogen
 alias fixwallpaper="nitrogen --restore"
 ## Pull wallpaper location from nitrogen's' config:
-get_wallpaper () {
+get_nitrogen_wallpaper () {
     command -v nitrogen >/dev/null || return 1
     nitrogen_conf=~/.config/nitrogen/bg-saved.cfg
     [ -f $nitrogen_conf ] && echo "$( sed -n 's/^file=//p' $nitrogen_conf | head -n 1 )" || return 1
@@ -92,6 +126,9 @@ get_wallpaper () {
 alias i3edit="cd ~/.config/i3/ ; edit ~/.config/i3/config && ls"
 alias i3statusedit="cd ~/.config/i3status/ ; edit ~/.config/i3status/config && ls"
 alias lock_screen='~/.config/i3/lock-screen.sh'
+
+## Shortcut to restart i3WM
+alias reload_i3="i3-msg 'restart'"
 
 ## Shortcut to restart CinnamonDE
 alias reload_cinnamon='cinnamon -replace -d :0.0 > /dev/null 2>&1 &'
@@ -105,40 +142,57 @@ alias getclip="xclip -selection c -o"
 ##################
 ### SCRIPTING: ############################################################
 ##################
-## Static and dynamically linked scripts / utilities.
+## Static and dynamically linked functions, scripts, & utilities.
+
+## 'debug_bool_out' - inline boolean test:
+## usage: debug_bool_out <bash_cmd>
+##########################################
+debug_bool_out () {
+    local args="$*"
+
+    if "$args" 2>/dev/null ; then
+        printf "RETURNED=${COLOR_GREEN}TRUE${COLOR_NC}\n"; return 0
+    else
+        printf "RETURNED=${COLOR_RED}FALSE ${COLOR_NC}\n"; return 1
+    fi;
+
+}
+alias debool='debug_bool_out'
+##########################################
 
 ## 'edit' - Preferential text-editor selector with fail-over:
 ## usage: edit <file>
 ########################################
 edit () {
-	# Tries i3's preferential edit
-	i3-sensible-editor $1 && return 0
+
+	# Tries i3s preferential edit
+	i3-sensible-editor "$1"  && return 0
     # Tries $VISUAL, $EDITOR, and finally xdg-open.
-    $VISUAL $1  && return 0
-    printf '$VISUAL editor failed. Trying $EDITOR... \n'
-    $EDITOR $1  && return 0
-    printf '$VISUAL & $EDITOR editor both failed. Trying xdg-open... \n'
-    xdg-open $1 && return 0 || return 1
+    $VISUAL  "$1" && return 0
+    $EDITOR  "$1" && return 0
+    xdg-open "$1" && return 0
+
+    return 1 # return fail status
 }
 
-# Shortcut to edit script
+# Shortcut to edit function
 alias ed='edit'
 ########################################
 
-## 'showdir' - Preferential file-manager selector with fail-over:
-## usage: showdir <directory>
+## 'mandir' - Preferential file-manager selector with fail-over:
+## usage: mandir <directory>
 ########################################
-showdir () {
+mandir () {
     # Tries $VISUAL, $EDITOR, and finally xdg-open.
     local args=""; if str_empty "$1"; then args=$(pwd); else args="$1" ; fi
 
-    ranger $args  && return 0
-    xdg-open $args && return 0 && return 0
-    pwd $args; ls $args && return 0 || return 1
-}
+    ranger "$args"  && return 0
+    xdg-open "$args" && return 0
+    show_dir "$args"  && return 1
 
-# Shortcut to edit script
-alias sd='showdir'
+}
+# Shortcut to mandir function
+alias md='mandir'
 
 ########################################
 
@@ -146,20 +200,20 @@ alias sd='showdir'
 ## usage: extract <file>
 #################################
 extract () {
-  if [ -f $1 ] ; then
-    case $1 in
-      *.tar.bz2)   tar xjf $1   ;;
-      *.tar.gz)    tar xzf $1   ;;
-      *.bz2)       bunzip2 $1   ;;
-      *.rar)       unrar x $1   ;;
-      *.gz)        gunzip $1    ;;
-      *.tar)       tar xf $1    ;;
-      *.tbz2)      tar xjf $1   ;;
-      *.tgz)       tar xzf $1   ;;
-      *.zip)       unzip $1     ;;
-      *.Z)         uncompress $1;;
-      *.7z)        7z x $1      ;;
-      *)           echo "'$1' cannot be extracted via extract()" ;;
+  if [ -f "$1"  ] ; then
+    case "$1"  in
+      *.tar.bz2)   tar xjf "$1"     ;;
+      *.tar.gz)    tar xzf "$1"     ;;
+      *.bz2)       bunzip2 "$1"     ;;
+      *.rar)       unrar x "$1"     ;;
+      *.gz)        gunzip "$1"      ;;
+      *.tar)       tar xf "$1"      ;;
+      *.tbz2)      tar xjf "$1"     ;;
+      *.tgz)       tar xzf "$1"     ;;
+      *.zip)       unzip "$1"       ;;
+      *.Z)         uncompress "$1"  ;;
+      *.7z)        7z x "$1"        ;;
+      *)           echo "File '$1' cannot be extracted via extract()." ;;
     esac
   else
     echo "'$1' is not a valid file"
@@ -179,7 +233,7 @@ pacman_audit () {
     local upgradeable_pkgs=""; upgradeable_pkgs="$(arch-audit -uf '    Package %n has a %s CVE. UPGRADE to version %v!')"
     if [[ ! -z "${upgradeable_pkgs// }" ]]; then
         printf "\n"
-        echo $upgradeable_pkgs
+        echo "$upgradeable_pkgs"
     fi
 
     printf "\n * Checking for all installed packages with known vulnerabilities... \n"
@@ -195,8 +249,9 @@ pacman_audit () {
 alias pac_audit='pacman_audit'
 ################################################
 
-##Show terminal colors:
-#######################
+## 'show_colors' - display terminal colors:
+## usage: 'show_colors'
+###########################################
 show_colors () {
 	local fgc bgc vals seq0
 
@@ -223,21 +278,20 @@ show_colors () {
 		echo; echo
 	done
 }
-#######################
+###########################################
 
 ## Get & Set wallpaper ENV Var:
 ##############################
-set_wallpaper_var () {
+define_wallpaper_var () {
     # Set Wallpaper location ENV Var
-    local cmd_output="";cmd_output=$(get_wallpaper) || return 1
+    local cmd_output="";cmd_output=$(get_nitrogen_wallpaper) || return 1
     export WALLPAPER=${cmd_output} && return 0 || return 1
 }
 ##############################
 
 ## Link to user scripts bash_aliases_scripts file:
 # shellcheck source=src/Documents/Scripts/.bash_aliases_scripts
-if file_exists $SRC_BASH_ALIASES_SCRIPTS; then  source $SRC_BASH_ALIASES_SCRIPTS || notify_link_err $SRC_BASH_ALIASES_SCRIPTS; fi
-
+if file_exists $SRC_BASH_ALIASES_SCRIPTS; then  source $SRC_BASH_ALIASES_SCRIPTS || debug_notify_link_warn $SRC_BASH_ALIASES_SCRIPTS; fi
 
 
 #

@@ -67,7 +67,7 @@
         "step": 1,
         "description": "Limit song information to",
         "dependency": "showtrack",
-        "value": 100
+        "value": 200.0
     },
     "middleClickAction": {
         "type": "combobox",
@@ -86,7 +86,7 @@
         "default": false,
         "description": "Use horizontal scrolling to move between tracks",
         "dependency": "playerControl",
-        "value": false
+        "value": true
     },
     "showalbum": {
         "type": "switch",
@@ -130,7 +130,7 @@
         },
         "tooltip": "% of nominal volume",
         "description": "+/-",
-        "value": 6
+        "value": 1
     },
     "magneticOn": {
         "type": "switch",
@@ -144,7 +144,7 @@
         "description": "Adjust the color of the icon to the volume",
         "tooltip": "From 101% to 115%: yellow; from 116% to 130%: orange; beyond 130%: red.",
         "default": true,
-        "value": true
+        "value": false
     },
     "__md5__": "597454e18c86f16042bf7c61aea1707b"
 }

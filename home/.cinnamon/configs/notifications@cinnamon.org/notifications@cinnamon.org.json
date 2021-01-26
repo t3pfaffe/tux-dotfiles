@@ -19,7 +19,7 @@
         "default": false,
         "description": "Show empty tray",
         "tooltip": "Check this to show the tray even when there are no new notifications.",
-        "value": true
+        "value": false
     },
     "section3": {
         "type": "section",

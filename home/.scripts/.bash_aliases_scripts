@@ -1,6 +1,6 @@
 #!/bin/bash
 # Bash Aliases User-Scripts File:
-#   location: ~/Documents/Scripts/.bash_aliases_scripts
+#   location: ~/.scripts/.bash_aliases_scripts
 #   author: t3@pfaffe.me  🄯2020-01.05.2021
 #   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #   Other notes / references:
@@ -60,7 +60,7 @@ alias display-changeto-144hz='$PUB_SCRIPTS_DIR/display-changeto-144hz.sh'
 #########################
 
 
-## Automatic dynamic aliases:
-#############################
+## Automaticly generated dynamic aliases:
+#########################################
 # Dynamically generate aliases from Public script DIR.
 #gen_script_aliases $PUB_SCRIPTS_DIR

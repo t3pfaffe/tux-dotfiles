@@ -39,7 +39,7 @@ set $notify_low notify-send      -i "/home/$USER/.config/i3/i3logo.png" -a "i3wm
 ## Set Display Configuration
 set $set_wallpaper nitrogen --restore &
 exec $set_wallpaper
-exec_always autorandr -c && sleep 0.5 && $set_wallpaper
+exec_always --no-startup-id autorandr -c && sleep 0.5 && $set_wallpaper
 
 ## Startup Critical WM Daemons
 ###############################
@@ -54,10 +54,10 @@ exec --no-startup-id $exec_dunst || $notify_critical 'WARNING! The notification-
 exec_always --no-startup-id $(systemctl --user is-active --quiet dunst.service) || $( $notify_low 'Restarting notification-daemon...' & pkill dunst; $exec_dunst || $notify_critical 'WARNING! The notification-daemon dunst crashed on start!' )
 
 ## Screensaver/Lock
-set $exec_lock ~/.config/i3/lock-screen.sh
-set $exec_idlehook ~/.config/i3/idleLocker.sh
-exec        $exec_lock -i
-exec_always --no-startup-id $exec_xidlehook
+set $exec_lock ~/.config/i3/scripts/lock-screen.sh
+set $exec_idlehook ~/.config/i3/scripts/idle-lock.sh
+exec_always --no-startup-id $exec_lock -i &
+exec_always --no-startup-id $exec_xidlehook &
 ###############################
 
 ## Startup System- Applets:
@@ -81,68 +81,68 @@ exec --no-startup-id albert
 ### APP-KEYBINDS ##########################################################
 ####################
 
+# Category: Applications
+########################
+
 ## Application-Launchers:
-	bindsym $mod+Return exec termite
-	bindsym $mod+Shift+Return exec io.elementary.terminal -n
-	bindsym $mod+F2 exec firefox
-	bindsym $mod+Shift+F2 exec brave
-	bindsym $mod+F3 exec nemo
-	bindsym $mod+P  exec spectacle
-	bindsym $mod+Shift+End exec spotify
-	bindsym $mod+Shift+M exec protonmail-bridge --no-window & sleep 5s && exec evolution &
-##
+bindsym $mod+Return exec termite
+bindsym $mod+Shift+Return exec io.elementary.terminal -n
+bindsym $mod+F2 exec firefox
+bindsym $mod+Shift+F2 exec brave
+bindsym $mod+F3 exec nemo
+bindsym $mod+P  exec spectacle
+bindsym $mod+Shift+End exec spotify
+bindsym $mod+Shift+M exec protonmail-bridge --no-window & sleep 5s && exec evolution &
+
+## Menu Launchers (rofi)
+bindsym $mod+d exec --no-startup-id rofi -show drun
+bindsym $mod+Shift+d exec --no-startup-id rofi -show run
+bindsym $mod+s exec --no-startup-id albert show
+bindsym $mod+c exec --no-startup-id =
+
+# Category: Display
+###################
+
+## Monitor Brightness Controls:
+bindsym XF86MonBrightnessUp     exec --no-startup-id light -A 5 && $notify_low -h string:x-dunst-stack-tag:XF86brightness -a "light" -t 750 "Brightness: $(light -G)"
+bindsym XF86MonBrightnessDown   exec --no-startup-id light -U 5 && $notify_low -h string:x-dunst-stack-tag:XF86brightness -a "light" -t 750 "Brightness: $(light -G)"
+
+## Screenshot Controls:
+# TODO: screnshot 'mode'
+# Category: Applications
+bindsym --release Print             exec spectacle -c
+bindsym --release $mod+Print        exec spectacle
+bindsym --release $mod+Shift+Print  exec spectacle --region
+
+# Category: Audio
+#################
+
+## Audio Volume Controls:
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10%
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10%
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
+
+## Media Controls:
+bindsym Prior   exec "playerctl --player=spotify,%any previous"
+bindsym Next    exec "playerctl --player=spotify,%any next"
+bindsym End     exec "playerctl --player=spotify,%any play-pause"
+bindsym XF86AudioPrev  exec "playerctl --player=spotify,%any previous"
+bindsym XF86AudioNext  exec "playerctl --player=spotify,%any next"
+bindsym XF86AudioPlay  exec "playerctl --player=spotify,%any play-pause"
+
+# Category: System
+##################
 
 ## System Daemon Controls Keybinds:
 #   TODO: move these CMD's to external scripts like xidlehook.
 #bindsym $mod+Ctrl+Shift+n exec --no-startup-id pkill dunst;     sleep 0.5; $notify_low 'Restarting notification-daemon...' & $exec_dunst || $notify_critical 'WARNING! The notification-daemon dunst crashed on start!'
 #bindsym $mod+Ctrl+Shift+l exec --no-startup-id pkill xidlehook; sleep 0.5; $notify_low 'Restarting idlehook...' &            $exec_idlehook || $notify_critical 'WARNING! The autolock xidlehook crashed on start!'
 #bindsym $mod+Ctrl+Shift+t exec --no-startup-id "pkill picom; sleep 0.5; $($notify_low 'Restarting compositor...') & $exec_picom || $($notify_critical 'WARNING! The compositor picom crashed on start!')"
-#  More simple binds until i3wm can be figured out.
+#   More simple binds until i3wm can be figured out.
 bindsym $mod+Ctrl+Shift+n exec --no-startup-id " pkill dunst; sleep 0.5; $exec_dunst "
 bindsym $mod+Ctrl+Shift+t exec --no-startup-id " pkill picom; sleep 0.5; $exec_picom "
 bindsym $mod+Ctrl+Shift+l exec --no-startup-id $exec_xidlehook
-
-# Launch program launcher (dmenu)
-bindsym $mod+d exec --no-startup-id rofi -show drun
-bindsym $mod+Shift+d exec --no-startup-id rofi -show run
-bindsym $mod+s exec --no-startup-id albert show
-
-#Launch categorized menu
-# bindsym $mod+z exec --no-startup-id morc_menu
-
-## Monitor Brightness Controls:
-    #set $notify_bright $notify_low  -t 500 "Brightness: $(light -G)"
-    #set $exec_bright_up   light -A 5 ; $notify_low  -t 750 "Brightness: $(light -G)"
-    #set $exec_bright_down light -U 5 ; $notify_low  -t 750 "Brightness: $(light -G)"
-    #set $exec_bright_dimm light -S 5 ; $notify_low  -t 750 "Brightness: $(light -G)"
-
-    bindsym XF86MonBrightnessUp     exec --no-startup-id light -A 5 && $notify_low -h string:x-dunst-stack-tag:XF86brightness -a "light" -t 750 "Brightness: $(light -G)"
-    bindsym XF86MonBrightnessDown   exec --no-startup-id light -U 5 && $notify_low -h string:x-dunst-stack-tag:XF86brightness -a "light" -t 750 "Brightness: $(light -G)"
-##
-
-## Audio Volume Controls:
-	set $refresh_i3status killall -SIGUSR1 i3status
-	bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10%
-	bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10%
-	bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
-	bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
-##
-
-## Media Controls:
-	bindsym Prior   exec "playerctl --player=spotify,%any previous"
-	bindsym Next    exec "playerctl --player=spotify,%any next"
-	bindsym End     exec "playerctl --player=spotify,%any play-pause"
-	bindsym XF86AudioPrev  exec "playerctl --player=spotify,%any previous"
-	bindsym XF86AudioNext  exec "playerctl --player=spotify,%any next"
-	bindsym XF86AudioPlay  exec "playerctl --player=spotify,%any play-pause"
-##
-
-## Screenshot Controls:
-#   TODO: screnshot-mode
-bindsym --release Print             exec spectacle -c
-bindsym --release $mod+Print        exec spectacle
-bindsym --release $mod+Shift+Print  exec spectacle --region
-
 ## Reload Config / Restart i3:
 bindsym $mod+Shift+r reload; exec $notify_normal -t 2000 "Reloading i3's config..."
 bindsym $mod+Ctrl+Shift+r restart; exec $notify_normal -t 2000 "Restarting i3wm..."
@@ -164,7 +164,7 @@ set $system_state_key 0
 set $system_state (l)ock, (e)xit, switch_(u)ser, (s)uspend, (h)ibernate, (Shift+r)eboot, (Shift+s)hutdown
 mode "$system_state" {
     ## Mode
-    bindsym l       $exec_i3exit lock,          mode "default"
+    bindsym l       $exec_lock,                 mode "default"
     bindsym s       $exec_i3exit suspend,       mode "default"
     bindsym u       $exec_i3exit switch_user,   mode "default"
     bindsym e       $exec_i3exit logout,        mode "default"
@@ -186,8 +186,12 @@ bindsym $mod+$system_state_key mode "$system_state"
 ### NAVIGATION-KEYBINDS ###################################################
 ###########################
 
+
 ## Container Navigation Controls:
 ################################{
+
+# Category: Layout
+##################
 
 # Use Mouse+$mod to drag floating windows
 floating_modifier $mod
@@ -282,7 +286,7 @@ bindsym $mod+$resize_mode_key mode $resize_mode
 ## Quiet Mode:
 #   to isloate a container with large gaps.
 ###########################################{
-set $exec_quiet exec --no-startup-id ~/.config/i3/quiet-cmd.py
+set $exec_quiet exec --no-startup-id ~/.config/i3/scripts/quiet-cmd.py
 
 set $quiet_mode_key Shift+F
 set $quiet_mode (q)uiet_toggle, (s)mall, (m)edium, (l)arge, (esc)ape
@@ -308,6 +312,9 @@ bindsym $mod+$quiet_mode_key mode "$quiet_mode"
 
 ##Workspace Naviation
 #####################{
+
+# Category: Worksapces
+######################
 
 ## Navigate workspaces next / previous
 bindsym $mod+Ctrl+Right workspace next
@@ -388,6 +395,9 @@ bindsym $mod+Shift+Tab move container to workspace back_and_forth; workspace bac
 ##Grouped Workspaces Naviation
 ##############################{
 
+# Category: Worksapce Groups
+############################
+
 #Set i3_groups command
 set $exec_i3_groups exec --no-startup-id i3-workspace-groups
 
@@ -439,19 +449,19 @@ bindsym $alt+$mod+n exec --no-startup-id i3-rename-workspace
 ### Theming: ##############################################################
 #################
 
-##Define Theme Colors
-    # Primary, Background, Highlight
-    set $primaC #BF4040
-    set $backCl #222222
-    set $highCl #FDF6E3
-    # Text & Secondary in Dark Environment  (Light to contrast Dark background)
-    set $txtLCl #F9FAF9
-    set $secLCl #EEE8D5
-    # Text in Dark Environment              (Faded-Light on Dark Background)
-    set $txtFCl #C7C8C7
-    # Text & Secondary in Light Environment (Dark to contrast Light background)
-    set $txtDCl #292F34
-    set $secDCl #454947
+# Category: Theme Settings
+##########################
+
+##Define Theme Colors:
+# TODO: move to be managed separately for global theme.
+    set $primCl #BF4040 # All   ENV Primary
+    set $backCl #222222 # All   ENV Background
+    set $highCl #FDF6E3 # All   ENV Highlight
+    set $txtFCl #C7C8C7 # All   ENV Faded-TXT
+    set $txtLCl #F9FAF9 # Dark  ENV TXT         (Light to contrast dark background)
+    set $secLCl #EEE8D5 # Dark  ENV Secondary
+    set $txtDCl #292F34 # Light ENV TXT         (Dark to contrast light background)
+    set $secDCl #454947 # Light ENV Secondary
 ##
 
 
@@ -482,9 +492,9 @@ for_window [class=".*"] border pixel $default_border_px
 show_marks NO
 
 ## Configure border style <normal|1pixel|pixel xx|none|pixel>
-set $default_border_px 0
+set $default_border_px 1
 default_border pixel $default_border_px
-default_floating_border pixel 4
+default_floating_border pixel 3
 hide_edge_borders smart_no_gaps
 
 ## Quick Border Modification
@@ -523,6 +533,9 @@ bindsym $mod+$modify_border_mode_key mode "$modify_border_mode"
 ### Task Bar: #############################################################
 #################
 
+
+set $refresh_i3status killall -SIGUSR1 i3status
+
 ##Start i3bar
 bar {
 	strip_workspace_numbers yes
@@ -534,11 +547,11 @@ bar {
 		separator  $secDCl
 
 		# # # # # # # # #  border  backgr. text
-		focused_workspace  $highCl $primaC $txtDCl
-		active_workspace   $secDCl $primaC $txtFCl
+		focused_workspace  $highCl $primCl $txtDCl
+		active_workspace   $secDCl $primCl $txtFCl
 		inactive_workspace $secDCl $secDCl $txtFCl
 		urgent_workspace   $secDCl $highCl $txtDCl
-		binding_mode       $primaC $backCl $txtFCl
+		binding_mode       $primCl $backCl $txtFCl
 
 		##Note: The focused_workspace is under the cursor,
         #        active_workspace(s) are all containers
@@ -551,13 +564,16 @@ bar {
 
 	position top
 
-    status_command ~/.config/i3/getMediaInfo.sh
+    status_command ~/.config/i3/scripts/getMediaInfo.sh
 }
 
 
 #############################
 ### Settings for i3-gaps: #################################################
 #############################
+
+# Category: i3-gaps
+###################
 
 ##Default gap values
 set $default_gaps_inner 8
@@ -695,6 +711,9 @@ for_window [class="Plexamp"] move to workspace $wsM
 ### i3 Debugging Settings: ###############################################
 ##############################
 
+# Category: System Debugging
+############################
+
 set $exec_debug     debuglog on; shmlog on; reload
 set $exec_debug_off debuglog off; shmlog off
 
@@ -713,11 +732,11 @@ mode "$debug_settings_mode" {
 
     bindsym e       $exec_debug;     exec $notify_critical "Notice: i3wm_debuglog  Enabled!"
     bindsym d       $exec_debug_off; exec $notify_critical "Notice: i3wm_debuglog Disabled!"
-    bindsym s       exec i3-sensible-terminal -e "i3-dump-log | less || echo 'Failed to load i3-logs! \n" &
+    bindsym s       exec "i3-dump-log > /tmp/i3-dump.log && gzip -9 -f /tmp/i3-dump.log > ~/i3-log.gz & termite -e 'less /tmp/i3-dump.log' " mode "default"
 
     bindsym Shift+E exec --no-startup-id ulimit -c unlimited && $notify_normal "Notice: max core-dump's set to unlimited."
 
-    bindsym Ctrl+e  exec i3-sensible-terminal -e '$EDITOR ~/.config/i3/config' &
+    bindsym Ctrl+e  exec i3-sensible-terminal -e '~/.config/i3/config' &
 
     bindsym r       reload;  exec $notify_normal -t 2000 'Reloading i3/config...' ,    mode "default"
     bindsym Shift+r restart; exec $notify_normal -t 2000 'Restarting i3...' ,          mode "default"

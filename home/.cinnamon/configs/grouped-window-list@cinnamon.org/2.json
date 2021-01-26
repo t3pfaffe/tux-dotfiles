@@ -132,7 +132,7 @@
             "Cycle apps": 2,
             "Cycle windows": 3
         },
-        "value": 3
+        "value": 1
     },
     "left-click-action": {
         "type": "combobox",
@@ -164,9 +164,7 @@
             "nemo.desktop"
         ],
         "value": [
-            "firefox.desktop",
-            "org.gnome.Terminal.desktop",
-            "nemo.desktop"
+            "firefox.desktop"
         ]
     },
     "group-apps": {
