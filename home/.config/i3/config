@@ -1,3 +1,4 @@
+
 # i3 Config File:
 #   location: ~/.config/i3/config
 #   author: t3@pfaffe.me    🄯2020-01.05.2021
@@ -454,14 +455,22 @@ bindsym $alt+$mod+n exec --no-startup-id i3-rename-workspace
 
 ##Define Theme Colors:
 # TODO: move to be managed separately for global theme.
-    set $primCl #BF4040 # All   ENV Primary
-    set $backCl #222222 # All   ENV Background
-    set $highCl #FDF6E3 # All   ENV Highlight
-    set $txtFCl #C7C8C7 # All   ENV Faded-TXT
-    set $txtLCl #F9FAF9 # Dark  ENV TXT         (Light to contrast dark background)
-    set $secLCl #EEE8D5 # Dark  ENV Secondary
-    set $txtDCl #292F34 # Light ENV TXT         (Dark to contrast light background)
-    set $secDCl #454947 # Light ENV Secondary
+        # All ENV Primary
+    set $primCl #BF4040 
+        # All ENV Background
+    set $backCl #222222
+        # All ENV Highlight
+    set $highCl #FDF6E3 
+        # All ENV Faded-TXT
+    set $txtFCl #C7C8C7 
+        # Dark ENV TXT  (Light to contrast dark background)
+    set $txtLCl #F9FAF9 
+        # Dark ENV Secondary
+    set $secLCl #EEE8D5 
+        # Light ENV TXT (Dark to contrast light background) 
+    set $txtDCl #292F34
+        # Light ENV Secondary
+    set $secDCl #454947 
 ##
 
 

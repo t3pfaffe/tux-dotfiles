@@ -9,7 +9,6 @@ MEDIA_INFO=""
 MEDIA_INFO_LONG=""
 
 xml_escape() {
-    if
 	local JSON_TOPIC_RAW="$1"
 	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//\\/\\\\}		# \
 	local JSON_TOPIC_RAW=${JSON_TOPIC_RAW//\//\\\/}		# /
