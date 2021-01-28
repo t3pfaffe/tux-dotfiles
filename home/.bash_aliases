@@ -114,6 +114,12 @@ get_fastest_mirrors () {
 # Use sudo politely
 alias please='sudo'
 
+# Use paru instead of yay
+alias yay='paru'
+
+# Shortcut to package manager
+alias up='paru'
+
 # Shortcut for micro text-editor
 alias mi='micro'
 

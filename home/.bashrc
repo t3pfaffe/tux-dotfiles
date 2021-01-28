@@ -43,7 +43,7 @@ link_source () {
 }
 
 ## Link bash utilities
- link_source $SRC_BASH_UTILS
+link_source $SRC_BASH_UTILS
 link_source $SRC_BASH_DEBUG_UTILS
 
 #######################
@@ -328,4 +328,4 @@ PERL_MM_OPT="INSTALL_BASE=/home/t3pfaffe/perl5"; export PERL_MM_OPT;
 ##################
 
 ## Rust ENV Setup:
-source "$HOME/.cargo/env"
+#source "$HOME/.cargo/env"
