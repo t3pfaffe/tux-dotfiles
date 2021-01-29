@@ -1,4 +1,3 @@
-
 # i3 Config File:
 #   location: ~/.config/i3/config
 #   author: t3@pfaffe.me    🄯2020-01.05.2021
@@ -33,7 +32,6 @@ set $notify_low notify-send      -i "/home/$USER/.config/i3/i3logo.png" -a "i3wm
 ## Enable Debugging:
 # Comment/Un-comment cmd below to
 #  toggle debug-logging by default.
-#
 #exec_always $exec_debug
 
 
@@ -55,8 +53,8 @@ exec --no-startup-id $exec_dunst || $notify_critical 'WARNING! The notification-
 exec_always --no-startup-id $(systemctl --user is-active --quiet dunst.service) || $( $notify_low 'Restarting notification-daemon...' & pkill dunst; $exec_dunst || $notify_critical 'WARNING! The notification-daemon dunst crashed on start!' )
 
 ## Screensaver/Lock
-set $exec_lock ~/.config/i3/scripts/lock-screen.sh
-set $exec_idlehook ~/.config/i3/scripts/idle-lock.sh
+set $exec_lock ~/.config/i3/scripts/sensible-xlock.sh
+set $exec_idlehook ~/.config/i3/scripts/sensible-xidlelock.sh
 exec_always --no-startup-id $exec_lock -i &
 exec_always --no-startup-id $exec_xidlehook &
 ###############################
@@ -456,21 +454,21 @@ bindsym $alt+$mod+n exec --no-startup-id i3-rename-workspace
 ##Define Theme Colors:
 # TODO: move to be managed separately for global theme.
         # All ENV Primary
-    set $primCl #BF4040 
+    set $primCl #BF4040
         # All ENV Background
     set $backCl #222222
         # All ENV Highlight
-    set $highCl #FDF6E3 
+    set $highCl #FDF6E3
         # All ENV Faded-TXT
-    set $txtFCl #C7C8C7 
+    set $txtFCl #C7C8C7
         # Dark ENV TXT  (Light to contrast dark background)
-    set $txtLCl #F9FAF9 
+    set $txtLCl #F9FAF9
         # Dark ENV Secondary
-    set $secLCl #EEE8D5 
-        # Light ENV TXT (Dark to contrast light background) 
+    set $secLCl #EEE8D5
+        # Light ENV TXT (Dark to contrast light background)
     set $txtDCl #292F34
         # Light ENV Secondary
-    set $secDCl #454947 
+    set $secDCl #454947
 ##
 
 

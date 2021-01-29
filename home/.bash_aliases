@@ -140,7 +140,8 @@ get_nitrogen_wallpaper () {
 ## Shortcuts for i3 configuration
 alias i3edit="cd ~/.config/i3/ ; edit ~/.config/i3/config && ls"
 alias i3statusedit="cd ~/.config/i3status/ ; edit ~/.config/i3status/config && ls"
-alias lock_screen='~/.config/i3/lock-screen.sh'
+alias x-lock='~/.config/i3/scripts/sensible-xlock.sh'
+alias xidle-lock='~/.config/i3/scripts/sensible-xidlelock.sh'
 
 ## Shortcut to restart i3WM
 alias reload_i3="i3-msg 'restart'"

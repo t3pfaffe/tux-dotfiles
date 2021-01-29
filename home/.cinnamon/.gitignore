@@ -1,0 +1,3 @@
+# Ignore unnecessary configs:
+configs/weather@mockturtl/*
+configs/sound@cinnamon.org/*

@@ -1,6 +1,6 @@
-#log/output files
+#ignore log/output files
 *.out
 *.log
 
-#duplicate save files
+#ignore duplicate save files
 *~

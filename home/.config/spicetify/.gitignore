@@ -1,0 +1,6 @@
+# Exclude misc
+./*
+
+# Include the config file
+!./config.ini
+!./color.ini
