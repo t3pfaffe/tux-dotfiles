@@ -56,7 +56,7 @@ exec_always --no-startup-id $(systemctl --user is-active --quiet dunst.service) 
 set $exec_lock ~/.config/i3/scripts/sensible-xlock.sh
 set $exec_idlehook ~/.config/i3/scripts/sensible-xidlelock.sh
 exec_always --no-startup-id $exec_lock -i &
-exec_always --no-startup-id $exec_xidlehook &
+exec_always --no-startup-id $exec_idlehook &
 ###############################
 
 ## Startup System- Applets:
@@ -141,7 +141,7 @@ bindsym XF86AudioPlay  exec "playerctl --player=spotify,%any play-pause"
 #   More simple binds until i3wm can be figured out.
 bindsym $mod+Ctrl+Shift+n exec --no-startup-id " pkill dunst; sleep 0.5; $exec_dunst "
 bindsym $mod+Ctrl+Shift+t exec --no-startup-id " pkill picom; sleep 0.5; $exec_picom "
-bindsym $mod+Ctrl+Shift+l exec --no-startup-id $exec_xidlehook
+bindsym $mod+Ctrl+Shift+l exec $exec_xidlehook
 ## Reload Config / Restart i3:
 bindsym $mod+Shift+r reload; exec $notify_normal -t 2000 "Reloading i3's config..."
 bindsym $mod+Ctrl+Shift+r restart; exec $notify_normal -t 2000 "Restarting i3wm..."

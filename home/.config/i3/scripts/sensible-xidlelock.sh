@@ -13,8 +13,7 @@
 ## Defining default variable states and other setup configurations.
 
 # Define lock timers
-# time_lock=450
-time_lock=5
+time_lock=450
 time_suspend=1320
 
 
@@ -69,7 +68,6 @@ clr_warn_lock="dunstify -C 99"
 ## Primary idle-lock option
 exec_idlehook() {
     nohup xidlehook --not-when-fullscreen --timer $time_lock "$warn_lock" "$clr_warn_lock" --timer 30 "${exec_lock} ${lock_text}" '' --timer $time_suspend 'systemctl suspend' '' & disown
-    # xidlehook --not-when-fullscreen --timer $time_lock "$warn_lock" "$clr_warn_lock" --timer 30 "${exec_lock} ${lock_text}" '' --timer $time_suspend 'systemctl suspend' ''
 }
 
 ## Backup idle-lock option
@@ -83,7 +81,8 @@ exec_xautolock() {
 #######################
 ## Execute script linearly from this point.
 
-## Check for additional parameters
+# TODO: add force param so it doesnt always restart
+# Check for additional parameters
 for i in "$@"
 do
 case $i in
@@ -96,7 +95,7 @@ esac
 done
 
 # Supress command outputs
-# exec 1>/dev/null 2>&1
+exec 1>/dev/null 2>&1
 
 # Fallback if xidlehook is not installed
 if ! command -v xidlehook >/dev/null

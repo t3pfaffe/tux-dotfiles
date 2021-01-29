@@ -23,6 +23,8 @@
 #######################
 ## Execute script linearly from this point.
 
+## TODO: migrate display brightness cmds here
+
 
 #######################
 ### SCRIPT_CLEANUP: #######################################################

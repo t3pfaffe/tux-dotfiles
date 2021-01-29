@@ -12,9 +12,6 @@
 #####################
 ## Defining default variable states and other setup configurations.
 
-START_TIME=$(date +%m/%d/%C-%H:%M)
-TIME_ZONE=$(date +%Z)
-
 
 #########################
 ### DEFINE_FUNCTIONS: #####################################################
@@ -27,8 +24,7 @@ TIME_ZONE=$(date +%Z)
 #######################
 ## Execute script linearly from this point.
 
-printf 'This is an example script. For demonstration purposes...\n'
-printf '	the current system time is %s \n' "$START_TIME $TIME_ZONE"
+## TODO: migrate notification cmds here
 
 #######################
 ### SCRIPT_CLEANUP: #######################################################
