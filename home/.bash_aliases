@@ -81,7 +81,7 @@ change_dir () {
 
     cd "$dir_arg" || return 1; show_dir "$args" ; return 0
 }
-alias cdir="change_dir"
+alias cdir="change_dir" ## TODO: fix me
 
 ## Shortcut for common directories to cd to:
 alias cdhome='cd ~'
@@ -127,6 +127,8 @@ alias mi='micro'
 alias ra='ranger'
 #cmd_exists $RANGERCD && unset RANGERCD && ranger_cd
 
+# Shortcuts for Xorg multiseat
+alias enable-multi="xhost + ; export DISPLAY=:0.0"
 
 # Shortcut to restore wallpapers with nitrogen
 alias fixwallpaper="nitrogen --restore"
