@@ -1,35 +1,54 @@
 #!/bin/sh
 # /usr/bin/i3exit
 
-# with openrc use loginctl
-[ "$(cat /proc/1/comm)" = "systemd" ] && logind=systemctl || logind=loginctl
+SRC_USER_CONFIG=~/.config/i3exit/i3exit.sh
 
-case "$1" in
-    lock)
-        betterlockscreen -l blur
-        ;;
-    logout)
-        i3-msg exit
-        ;;
-    switch_user)
-        dm-tool switch-to-greeter
-        ;;
-    suspend)
-        cinnamon-screensaver-command -l -m "user suspended session" && $logind suspend
-        ;;
-    hibernate)
-        cinnamon-screensaver-command -l && $logind hibernate
-        ;;
-    reboot)
-        $logind reboot
-        ;;
-    shutdown)
-        $logind poweroff
-        ;;
-    *)
-        echo "== ! i3exit: missing or invalid argument ! =="
-        echo "Try again with: lock | logout | switch_user | suspend | hibernate | reboot | shutdown"
-        exit 2
-esac
+##
+if test -f $SRC_USER_CONFIG ; then
+    # shellcheck disable=SC1090
+    . $SRC_USER_CONFIG
+else
+
+    ## Change System session method if on openrc instead of systemd
+    [ "$(cat /proc/1/comm)" = "systemd" ] && logind=systemctl || logind=loginctl
+
+    ## Tries locking the xsession with a screensaver:
+    ##  failsover in preferential order.
+    try_lock () {
+        betterlockscreen -l dimblur >/dev/null && return 0  #0
+        i3lock -i "$WALLPAPER" >/dev/null && return 0       #1
+        xscreensaver -lock >/dev/null && return 0           #2
+        return 1 # Give up
+    }
+
+    ## Check passed arguments
+    case "$1" in
+        lock)
+            try_lock
+            ;;
+        logout)
+            i3-msg exit
+            ;;
+        switch_user)
+            dm-tool switch-to-greeter
+            ;;
+        suspend)
+            try_lock && $logind suspend
+            ;;
+        hibernate)
+            try_lock && $logind hibernate
+            ;;
+        reboot)
+            $logind reboot
+            ;;
+        shutdown)
+            $logind poweroff
+            ;;
+        *)
+            echo "== ! i3exit: missing or invalid argument ! =="
+            echo "Try again with: lock | logout | switch_user | suspend | hibernate | reboot | shutdown"
+            exit 2
+    esac
+fi;
 
 exit 0

@@ -16,13 +16,15 @@
 time_lock=450
 time_suspend=1320
 
-
-
 ## Lock wrapper
 exec_lock=~/.config/i3/scripts/sensible-xlock.sh
 
 ## Lock Text
 lock_text="-t 'Entered idle-lock...' "
+
+# Force restart toggle
+force_restart=false
+
 
 #########################
 ### DEFINE_FUNCTIONS: #####################################################
@@ -56,6 +58,7 @@ show_usage() {
     printf "\n"
     printf "\nOptions: "
     printf "\n  -h, --help \n\t\tShow this message and exit."
+    printf "\n  -f, --force \n\t\tForce a restart of the daemon."
 
     #End statement
     printf "\n"
@@ -72,9 +75,10 @@ exec_idlehook() {
 
 ## Backup idle-lock option
 exec_xautolock() {
-	xautolock -time $time_lock -secure -detectsleep -locker $exec_lock -notify 30 -notifier "$warn_lock"	
+	xautolock -time $time_lock -secure -detectsleep -locker $exec_lock -notify 30 -notifier "$warn_lock"
 }
 ####################
+
 
 #######################
 ### EXECUTE_SCRIPT: #######################################################
@@ -83,15 +87,19 @@ exec_xautolock() {
 
 # TODO: add force param so it doesnt always restart
 # Check for additional parameters
-for i in "$@"
-do
-case $i in
-    -h|--help)
-        show_usage; exit 0
-    ;;
-    *)
-    ;;
-esac
+for i in "$@"; do
+    case $i in
+        -h|--help)
+            show_usage; exit 0
+        ;;
+        -f|--force)
+            force_restart=true
+        ;;
+        *[!\ ]*)
+            echo "Warning ${1} not a valid parameter!"
+            shift
+        ;;
+    esac
 done
 
 # Supress command outputs
@@ -104,10 +112,19 @@ then
 	exec_xautolock && exit 0 || exit 1
 fi
 
-check_running && notify_low 'Restarting idlehook...'
-pkill xidlehook >/dev/null
-sleep 0.05
-exec_idlehook
+if check_running ; then
+    if $force_restart ; then    # Force restarting. Killing any already running.
+        notify_low 'Restarting idlehook...'
+        pkill xidlehook >/dev/null
+        sleep 0.05
+        exec_idlehook
+    else
+        exit 1                  # Already running and force isnt set.
+    fi
+else
+    exec_idlehook               # Start new
+fi
+
 
 #######################
 ### SCRIPT_CLEANUP: #######################################################

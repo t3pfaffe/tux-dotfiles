@@ -37,8 +37,14 @@ set $notify_low notify-send      -i "/home/$USER/.config/i3/i3logo.png" -a "i3wm
 
 ## Set Display Configuration
 set $set_wallpaper nitrogen --restore &
-exec $set_wallpaper
+exec --no-startup-id $set_wallpaper
 exec_always --no-startup-id autorandr -c && sleep 0.5 && $set_wallpaper
+
+## Define/Assign Display Positions:
+## TODO: set this dynamically based upon xrandr display conf:
+set $dp0 USB-C-0
+set $dp1 DP-1-1-1
+set $dp2 eDP-1-1
 
 ## Startup Critical WM Daemons
 ###############################
@@ -60,7 +66,7 @@ exec_always --no-startup-id $exec_idlehook &
 ###############################
 
 ## Startup System- Applets:
-exec --no-startup-id nm-apple
+exec --no-startup-id nm-applet
 exec --no-startup-id pa-applet
 exec --no-startup-id blueman-applet
 
@@ -109,9 +115,9 @@ bindsym XF86MonBrightnessDown   exec --no-startup-id light -U 5 && $notify_low -
 ## Screenshot Controls:
 # TODO: screnshot 'mode'
 # Category: Applications
-bindsym --release Print             exec spectacle -c
-bindsym --release $mod+Print        exec spectacle
-bindsym --release $mod+Shift+Print  exec spectacle --region
+bindsym --release Print             exec --no-startup-id spectacle -c
+bindsym --release $mod+Print        exec --no-startup-id spectacle
+bindsym --release $mod+Shift+Print  exec --no-startup-id spectacle --region
 
 # Category: Audio
 #################
@@ -134,17 +140,12 @@ bindsym XF86AudioPlay  exec "playerctl --player=spotify,%any play-pause"
 ##################
 
 ## System Daemon Controls Keybinds:
-#   TODO: move these CMD's to external scripts like xidlehook.
-#bindsym $mod+Ctrl+Shift+n exec --no-startup-id pkill dunst;     sleep 0.5; $notify_low 'Restarting notification-daemon...' & $exec_dunst || $notify_critical 'WARNING! The notification-daemon dunst crashed on start!'
-#bindsym $mod+Ctrl+Shift+l exec --no-startup-id pkill xidlehook; sleep 0.5; $notify_low 'Restarting idlehook...' &            $exec_idlehook || $notify_critical 'WARNING! The autolock xidlehook crashed on start!'
-#bindsym $mod+Ctrl+Shift+t exec --no-startup-id "pkill picom; sleep 0.5; $($notify_low 'Restarting compositor...') & $exec_picom || $($notify_critical 'WARNING! The compositor picom crashed on start!')"
-#   More simple binds until i3wm can be figured out.
 bindsym $mod+Ctrl+Shift+n exec --no-startup-id " pkill dunst; sleep 0.5; $exec_dunst "
 bindsym $mod+Ctrl+Shift+t exec --no-startup-id " pkill picom; sleep 0.5; $exec_picom "
-bindsym $mod+Ctrl+Shift+l exec $exec_xidlehook
+bindsym $mod+Ctrl+Shift+l exec --no-startup-id $exec_idlehook -f &
 ## Reload Config / Restart i3:
-bindsym $mod+Shift+r reload; exec $notify_normal -t 2000 "Reloading i3's config..."
-bindsym $mod+Ctrl+Shift+r restart; exec $notify_normal -t 2000 "Restarting i3wm..."
+bindsym $mod+Shift+r reload; exec --no-startup-id $notify_normal -t 2000 "Reloading i3's config..."
+bindsym $mod+Ctrl+Shift+r restart; exec --no-startup-id $notify_normal -t 2000 "Restarting i3wm..."
 
 ##Logout & Exit Xsession
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
@@ -163,7 +164,7 @@ set $system_state_key 0
 set $system_state (l)ock, (e)xit, switch_(u)ser, (s)uspend, (h)ibernate, (Shift+r)eboot, (Shift+s)hutdown
 mode "$system_state" {
     ## Mode
-    bindsym l       $exec_lock,                 mode "default"
+    bindsym l       $exec_i3exit lock,          mode "default"
     bindsym s       $exec_i3exit suspend,       mode "default"
     bindsym u       $exec_i3exit switch_user,   mode "default"
     bindsym e       $exec_i3exit logout,        mode "default"
@@ -349,6 +350,19 @@ bindsym $mod+Shift+Tab move container to workspace back_and_forth; workspace bac
     set $ws9 "9"
     set $wsM "0 🎝 "
 ##
+
+## Assign workspaces to Displays:
+	workspace $ws1 output $dp0
+	workspace $ws4 output $dp0
+
+	workspace $ws2 output $dp1
+	workspace $ws5 output $dp1
+
+	workspace $ws3 output $dp2
+	workspace $ws6 output $dp2
+	workspace $wsM output $dp2
+##
+
 
 ## Workspace Keybinds:
     set $wsKey1 1
@@ -669,7 +683,6 @@ bindsym $mod+Shift+bar mode "$resize_gap_mode"
 ### Predefined Application Settings: ######################################
 #########################################
 # Note: Find a window's details in xorg with the command "xprop"
-
 
 ## Open applications on specific workspaces
 ###########################################

@@ -83,24 +83,25 @@ find_avail_lock () {
 }
 
 betterlockscreen_lock() {
-    betterlockscreen -l dimblur -t "$lock_text" >/dev/null && return 0 || return 1
+    betterlockscreen -l dimblur -t "$lock_text" >/dev/null
 }
 
 i3lock_lock() {
-    str_empty "$lock_text" || i3lock -i "$WALLPAPER" --locktext="$lock_text" >/dev/null && return 0 || return 1
+    str_empty "$lock_text" && lock_text="locking..."
+    i3lock -i "$WALLPAPER" -C --locktext="$lock_text" >/dev/null
 }
 
 init_try_lock () {
     local avail=""
     avail=$(find_avail_lock) || return 1
-    
+
     case $avail in
         0)
             if file_exists "$WALLPAPER"; then
                 betterlockscreen -u "$WALLPAPER" -b 2 && return 0; fi
                 betterlockscreen -u >/dev/null && return 0 || return 1
         ;;
-    esac 
+    esac
 }
 
 set_lock_text(){
@@ -115,13 +116,12 @@ set_lock_text(){
 
 ## Try prefered lock command & fail-over if failed:
 try_lock () {
-    ## TODO: use $lock_text if possible.
     betterlockscreen_lock && return 0                       #0
     i3lock_lock && return 0                                 #1
     xscreensaver -lock >/dev/null && return 0               #2
     cinnamon-screensaver-command -l >/dev/null && return 0  #3
     # Give up
-    return 1	
+    return 1
 }
 
 
@@ -166,12 +166,13 @@ else
             set_lock_text "$2"
             shift 2
         ;;
-        *)
-            str_empty "$1" || ( echo "Warning ${1} not a valid parameter!" ; exit 1 )
+        *[!\ ]*)
+            echo "Warning ${1} not a valid parameter!"
+            shift
         ;;
     esac
     done
-fi 
+fi
 
 # Run locking cmd
 $lock_requested && ( try_lock && exit 0 || exit 1 )
