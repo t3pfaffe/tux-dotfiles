@@ -12,12 +12,16 @@
 ### INITIALIZE: ###########################################################
 ###################
 
-# Tag self for dependents
+## Tag self as linked for dependents:
+# shellcheck disable=2034
 HAS_BASH_ALIASES_SCRIPTS=true
 
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+## Script sourcing function:
+# shellcheck disable=1090,2086
+if ! command -v link_source &>/dev/null ; then link_source () { [[ -f $1 ]] && source $1 || echo "Failed to link ${1}!!"; } ; fi
 
 #########################
 ### DEFINE_VARIABLES: #####################################################
@@ -37,16 +41,14 @@ PUB_SCRIPTS_DIR=${USER_SCRIPTS_DIR}/Public
 # Generates aliases dynamically for scripts
 #  within a given directory.
 #################################################
-#gen_script_aliases () {
-#    local READ_DIR=$1
-#
-#    # Do nothing if directory doesnt exist
-#    [[ -d $READ_DIR ]] || return
-#
+# gen_script_aliases() {
+
+#    [[ -d $1 ]] && ( local READ_DIR="" ; READ_DIR=$1 ) || ( return 1 ) # Do nothing if directory doesnt exist
+
 #    # TODO: Do the search for all .sh files,
 #    #        write them all into some file,
 #    #        and then link to said file.
-#}
+# }
 #################################################
 
 

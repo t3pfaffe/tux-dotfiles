@@ -1,6 +1,6 @@
 #!/bin/sh
-# <$SCRIPT_NAME> Script:
-#   location: ~/Documents/Scripts/Public/<$SCRIPT_NAME>.sh
+# Bash_utils Unit Testing Script:
+#   location: ~/Documents/Scripts/Public/bash_utils.tests.sh
 #   author: t3@pfaffe.me    🄯2020-01.31.2021
 #   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #   Other notes/references:
@@ -13,7 +13,7 @@
 ## Defining default variable states and other setup configurations.
 
 # Define this script's name
-SCRIPT_NAME="<$SCRIPT_NAME>"
+SCRIPT_NAME="bash_utils.tests"
 
 ## Example Variables:
 START_TIME=$(date +%m/%d/%C-%H:%M)
@@ -28,7 +28,7 @@ TIME_ZONE=$(date +%Z)
 show_usage() {
     printf "Usage: %s [OPTIONS]" "$SCRIPT_NAME"
 
-    printf "\n\nBase template for shell scripts. This is an example script for example purposes."
+    printf "\n\nScript for testing the propper functionality of 'bash_utils.sh'."
 
     #Show options/parameters
     printf "\n"
@@ -68,6 +68,7 @@ fi
 printf 'This is an example script. For demonstration purposes...\n'
 printf '	the current system time is %s \n' "$START_TIME $TIME_ZONE"
 
+## TODO: make this a thing!
 
 #######################
 ### SCRIPT_CLEANUP: #######################################################

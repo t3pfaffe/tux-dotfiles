@@ -1,6 +1,6 @@
 #!/bin/sh
-# $SCRIPT_NAME Script:
-#   location: ~/Documents/Scripts/Public/$SCRIPT_NAME.sh
+# Stow Deployment Script:
+#   location: <.git>/.support-scripts/run_stow.sh
 #   author: t3@pfaffe.me    🄯2020-01.05.2021
 #   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #   Other notes/references:
@@ -12,12 +12,27 @@
 #####################
 ## Defining default variable states and other setup configurations.
 
+# Define this script's name
+SCRIPT_NAME="run_stow"
 
 #########################
 ### DEFINE_FUNCTIONS: #####################################################
 #########################
 ## Common function definitions.
 
+show_usage() {
+    printf "Usage: %s [OPTIONS]" "$SCRIPT_NAME"
+
+    printf "\n\nScript for stow deployment operations from tux-dotfiles repository."
+
+    #Show options/parameters
+    printf "\n"
+    printf "\nOptions: "
+    printf "\n  -h, --help \n\t\tShow this message and exit."
+
+    #End statement
+    printf "\n"
+}
 
 #######################
 ### EXECUTE_SCRIPT: #######################################################

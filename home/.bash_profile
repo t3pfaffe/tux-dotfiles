@@ -5,11 +5,11 @@
 #   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #    - Configuration (variable, alias, & function definitions) for login shells.
 #    - Bash configuration heirachy:
-#      (1) /etc/profile:    System-wide  config for strictly login shells.
-#      (2) /etc/bashrc:     System-wide  config for shells.
+#      (1) //etc/profile:   System-wide  config for strictly login shells.
+#      (2) //etc/bashrc:    System-wide  config for shells.
 #      (3) ~/.bash_profile: Profile-wide config for strictly login shells.
 #      (4) ~/.bashrc:       Profile-wide config for shells.
-#      (5) ~/.bash_logout:  Profile-wide config for shells that is executedon exit.
+#      (5) ~/.bash_logout:  Profile-wide config for shells that is executed on exit.
 #       - Interactive/Login shells are for direct user interaction (e.x. terminals)
 #       - Non-Interactive shells are launched by other programs
 #      [src]( https://www.golinuxcloud.com/bashrc-vs-bash-profile/ )
@@ -20,7 +20,8 @@
 ### INITIALIZE_BASHPROFILE: ###############################################
 ###############################
 
-# Tag self for dependents
+## Tag self as linked for dependents:
+# shellcheck disable=2034
 HAS_BASH_PROFILE=true
 
 # If not running interactively, don't do anything
@@ -29,9 +30,13 @@ HAS_BASH_PROFILE=true
 ## Define Utilized Files:
 SRC_BASHRC=~/.bashrc
 
+## Script sourcing function:
+# shellcheck disable=1090,2086
+if ! command -v link_source &>/dev/null ; then link_source () { [[ -f $1 ]] && source $1 || echo "Failed to link ${1}!!"; } ; fi
+
 ## Link user aliases and functions:
-# shellcheck source=src/.bashrc
-[[ -f $SRC_BASHRC ]] && source $SRC_BASHRC || echo "Failed to link $SRC_BASHRC !!"
+# shellcheck source=./.bashrc
+link_source $SRC_BASHRC
 
 #########################
 ### AUTO-GEN_APPENDS: ######################################################
@@ -52,13 +57,12 @@ SRC_BASHRC=~/.bashrc
 
 ## Perl ENV Setup:
 ##################
-# shellcheck disable=2090
-PATH="/home/t3pfaffe/perl5/bin${PATH:+:${PATH}}"; export PATH;
-PERL5LIB="/home/t3pfaffe/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
-PERL_LOCAL_LIB_ROOT="/home/t3pfaffe/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
-PERL_MB_OPT="--install_base /home/t3pfaffe/perl5"; export PERL_MB_OPT;
-PERL_MM_OPT="INSTALL_BASE=/home/t3pfaffe/perl5"; export PERL_MM_OPT;
+# PATH="/home/t3pfaffe/perl5/bin${PATH:+:${PATH}}"; export PATH;
+# PERL5LIB="/home/t3pfaffe/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
+# PERL_LOCAL_LIB_ROOT="/home/t3pfaffe/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
+# PERL_MB_OPT="--install_base /home/t3pfaffe/perl5"; export PERL_MB_OPT;
+# PERL_MM_OPT="INSTALL_BASE=/home/t3pfaffe/perl5"; export PERL_MM_OPT;
 ##################
 
 ## Rust ENV Setup:
-source "$HOME/.cargo/env"
+# source "$HOME/.cargo/env"
