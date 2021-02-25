@@ -4,3 +4,4 @@
 # Include the config file
 !./config.ini
 !./color.ini
+!./import-themes.sh

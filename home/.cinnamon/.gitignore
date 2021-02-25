@@ -1,3 +1,6 @@
-# Ignore unnecessary configs:
-configs/weather@mockturtl/*
-configs/sound@cinnamon.org/*
+
+# Exclude configs that aren't practical/useful to save:
+/configs/grouped-window-list@cinnamon.org/
+/configs/weather@mockturtl/
+/configs/collapsible-systray@feuerfuchs.eu/
+/configs/sound@cinnamon.org/

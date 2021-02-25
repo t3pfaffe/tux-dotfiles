@@ -1,6 +1,12 @@
-#ignore log/output files
+# ignore log/output files
 *.out
 *.log
 
-#ignore duplicate save files
+# ignore duplicated save files
 *~
+
+# exclude configs that aren't practical/useful to save
+home/.cinnamon/configs/grouped-window-list@cinnamon.org/
+home/.cinnamon/configs/weather@mockturtl/
+home/.cinnamon/configs/collapsible-systray@feuerfuchs.eu/
+home/.cinnamon/configs/sound@cinnamon.org/
