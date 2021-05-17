@@ -24,14 +24,16 @@ xml_escape() {
 
 updateMediaInfo() {
 
+    local STATUS MEDIA_TITLE MEDIA_ARTIST MEDIA_STATE
+
 	#Pull Media Info
-	local STATUS="$(playerctl --player=spotify,%any status || echo "noPlayers")"
-	if [ $STATUS = "noPlayers" ]; then
+	STATUS="$(playerctl --player=spotify,%any status || echo "noPlayers")"
+	if [ "$STATUS" = "noPlayers" ]; then
 		MEDIA_INFO=""; MEDIA_INFO_LONG=""; return 0; fi
 
-	local MEDIA_TITLE="$(playerctl --player=spotify,%any metadata title)"
-        local MEDIA_ARTIST="$(playerctl --player=spotify,%any metadata artist)"
-        local MEDIA_STATE=""
+	MEDIA_TITLE="$(playerctl --player=spotify,%any metadata title)"
+    MEDIA_ARTIST="$(playerctl --player=spotify,%any metadata artist)"
+    MEDIA_STATE=""
 	##
 
 
@@ -43,10 +45,10 @@ updateMediaInfo() {
 		MEDIA_STATE="⏹"
 	fi
 
-	local MEDIA_TITLE=$(xml_escape "$MEDIA_TITLE")
-	local MEDIA_ARTIST=$(xml_escape "$MEDIA_ARTIST")
+	MEDIA_TITLE=$(xml_escape "$MEDIA_TITLE")
+	MEDIA_ARTIST=$(xml_escape "$MEDIA_ARTIST")
 
-	local MEDIA_PREPEND="$MEDIA_NOTE($MEDIA_STATE)"
+	MEDIA_PREPEND="$MEDIA_NOTE($MEDIA_STATE)"
 	MEDIA_INFO="$MEDIA_PREPEND - $MEDIA_TITLE "
 	MEDIA_INFO_LONG="$MEDIA_PREPEND $MEDIA_TITLE - $MEDIA_ARTIST "
 }

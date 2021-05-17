@@ -42,8 +42,8 @@ exec_always --no-startup-id autorandr -c && sleep 0.5 && $set_wallpaper
 
 ## Define/Assign Display Positions:
 ## TODO: set this dynamically based upon xrandr display conf:
-set $dp0 USB-C-0
-set $dp1 DP-1-1-1
+set $dp0 DP-1-1
+set $dp1 HDMI-0
 set $dp2 eDP-1-1
 
 ## Startup Critical WM Daemons
@@ -88,6 +88,9 @@ exec --no-startup-id albert
 
 # Category: Applications
 ########################
+#  The above comment is specific syntax to denote a
+#   new 'category' of keybinds for the purpose of
+#   being parsed by external programs.
 
 ## Application-Launchers:
 bindsym $mod+Return exec termite
@@ -354,12 +357,15 @@ bindsym $mod+Shift+Tab move container to workspace back_and_forth; workspace bac
 ## Assign workspaces to Displays:
 	workspace $ws1 output $dp0
 	workspace $ws4 output $dp0
+	workspace $ws7 output $dp0
 
 	workspace $ws2 output $dp1
 	workspace $ws5 output $dp1
+	workspace $ws8 output $dp1
 
 	workspace $ws3 output $dp2
 	workspace $ws6 output $dp2
+	workspace $ws9 output $dp2
 	workspace $wsM output $dp2
 ##
 
@@ -731,8 +737,8 @@ for_window [class="Plexamp"] move to workspace $wsM
 ### i3 Debugging Settings: ###############################################
 ##############################
 
-# Category: System Debugging
-############################
+# Category: Session Debugging
+#############################
 
 set $exec_debug     debuglog on; shmlog on; reload
 set $exec_debug_off debuglog off; shmlog off

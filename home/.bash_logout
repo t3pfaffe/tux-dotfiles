@@ -6,13 +6,17 @@
 #    - Bash script executed on login-shell's exit.
 
 
-# If not running interactively, don't do anything
-[[ $- != *i* ]] && return
-
 
 ###############################
 ### INITIALIZE_BASH_LOGOUT: ###############################################
 ###############################
+
+## Tag self as linked for dependents:
+# shellcheck disable=2034
+HAS_BASH_PROFILE=true
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
 
 ## Define goodbye message
 print_goodbye_msg () {

@@ -13,6 +13,9 @@
 ### INITIALIZE_BASHRC: ####################################################
 ##########################
 
+## Ignore these error codes globally:
+#shellcheck disable=SC2059
+
 ## Tag self as linked for dependents:
 # shellcheck disable=2034
 HAS_BASHRC=true
@@ -75,10 +78,10 @@ reset_init_msgs() {
 ####################
 ## User specific environment variables.
 
-# Set vars for default terminal:
-export TERMINAL='termite'
-export TERM=$TERMINAL
-export XDG_TERMINAL=$TERMINAL
+## Set vars for default terminal:
+safe_export TERM 'xterm'
+safe_export TERMINAL "${TERM}"
+safe_export XDG_TERMINAL "${TERMINAL}"
 
 ## Set vars for default text-editors:
 export VISUAL='micro'
@@ -154,7 +157,7 @@ FORM_SUBSHELL_LVL=""; [ $SHLVL -gt 1 ] && FORM_SUBSHELL_LVL="(↳ ${SHLVL})"
 
 # Define Title Bar for PS1 and Window Titles
 TITLEBAR="${USER}@${HOSTNAME%%.*}: ${PWD/#$HOME/\~}/"
-PS_TITLEBAR='[\u@\h \w]:$'
+PS_TITLEBAR='[\u@\h \w]:$ '
 
 PS_PROMPT="\[\033[0m\]${FCLR_SEC}${SUBSHELL_LVL}${FCLR_PRI}[\u${FCLR_SEC}@${FCLR_PRI}\h ${FCLR_PRI}\w/]:${FCLR_NC}\$ \[\033[0m\]"
 PS_PROMPT_NC=$PS_TITLEBAR
@@ -231,12 +234,12 @@ PS4="LN ${LINENO} >+ "
 #########################################
 # TODO: fix for ssh.
 case ${TERM} in
-	termite*|xterm*|rxvt*|Eterm*|konsole*|gnome*|aterm|kterm|interix)
+	alacritty*|termite*|xterm*|rxvt*|Eterm*|konsole*|gnome*|aterm|kterm|interix)
 		PROMPT_COMMAND='echo -en "\033]0;${USER}@${HOSTNAME%%.*}:${PWD/#$HOME/\~}\a"'
-		;;
+    ;;
 	screen*)
 		PROMPT_COMMAND='echo -en "\033]0;${USER}@${HOSTNAME%%.*}:${PWD/#$HOME/\~}\033\\"'
-		;;
+    ;;
 esac
 #########################################
 
@@ -341,6 +344,3 @@ motd_long
 ## Usually added by install scripts and appended to this file.
 ##
 
-## Rust ENV Setup:
-# shellcheck disable=SC1090
-source "$HOME/.cargo/env"

@@ -20,6 +20,9 @@
 ### INITIALIZE_BASHPROFILE: ###############################################
 ###############################
 
+## Ignore these error codes globally:
+#shellcheck disable=SC2059
+
 ## Tag self as linked for dependents:
 # shellcheck disable=2034
 HAS_BASH_PROFILE=true
@@ -65,4 +68,4 @@ link_source $SRC_BASHRC
 ##################
 
 ## Rust ENV Setup:
-# source "$HOME/.cargo/env"
+source "$HOME/.cargo/env"

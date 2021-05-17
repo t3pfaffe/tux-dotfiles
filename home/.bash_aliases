@@ -9,7 +9,7 @@
 #      - SC2034 = Variable appears unused.
 #      - SC2059 = Dont use vars in printf format string.
 #      - SC2086 = Double qoute str to prevent globbing/splits.
-#                 (TODO: Probably shouldnt ignore 2086.)
+#                 (Probably shouldnt ignore 2086)
 #      [src]( https://github.com/koalaman/shellcheck/wiki/Checks )
 
 
@@ -19,7 +19,7 @@
 ################################
 
 ## Ignore these error codes globally:
-# shellcheck disable=SC2059
+#shellcheck disable=SC2059
 
 ## Tag self as linked for dependents:
 # shellcheck disable=2034
@@ -30,9 +30,10 @@ HAS_BASH_ALIASES=true
 
 ## Script sourcing function:
 # shellcheck disable=1090,2086
-if ! command -v link_source &>/dev/null ; then link_source () { [[ -f $1 ]] && source $1 || echo "Failed to link ${1}!!"; } ; fi
+if ! command -v link_source &>/dev/null ; then link_source() { [[ -f $1 ]] && source $1 || echo "Failed to link ${1}!!"; } ; fi
 
 [ "$HAS_BASH_UTILS" = false ] && ( echo "ERROR! ~/.bash_aliases is not meant to be run without ~/.bashrc !" )
+
 
 #####################
 ### CMD Wrappers: ########################################################
@@ -69,12 +70,13 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
     ## Visualize directory:
     # shellcheck disable=2086
     show_dir() {
-        local dir_arg=""
+        local dir_arg
+
         if str_empty "$1" || [[ "$1" == -* ]] ; then dir_arg=$(pwd)
         else dir_arg=$1 && shift ; fi
 
         local args="-h ${*}"
-        local fileCnt="null" ; fileCnt=$( /usr/bin/ls "$dir_arg" $args -1 | /usr/bin/wc -l )
+        local fileCnt=" " ; fileCnt=$( /usr/bin/ls "$dir_arg" $args -1 | /usr/bin/wc -l )
         printf "%s/: %s files, \n" "$dir_arg" "$fileCnt"
         ls "$dir_arg" $args
     }
@@ -176,18 +178,14 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
     # Shortcut for micro text-editor
     alias mi='micro'
 
-    # Shortcuts for Ranger
-    alias ra='ranger'
-    #cmd_exists $RANGERCD && unset RANGERCD && ranger_cd
-
-    # Shortcuts for Xorg multiseat
+    # Shortcut CMDs for Xorg multiseat
     alias enable_multi="export DISPLAY=:0 && /usr/bin/sudo xhost +local: "
     alias disable_multi="/usr/bin/sudo xhost -local: "
 
     # Shortcut to restore wallpapers with nitrogen
     alias fixwallpaper="nitrogen --restore"
 
-    ## Shortcuts for i3 configuration
+    ## Shortcuts for i3 configurations:
     alias i3edit="cd ~/.config/i3/ ; edit ~/.config/i3/config && ls"
     alias i3statusedit="cd ~/.config/i3status/ ; edit ~/.config/i3status/config && ls"
     alias x-lock='~/.config/i3/scripts/sensible-xlock.sh'
@@ -199,9 +197,21 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
     ## Shortcut to restart CinnamonDE
     alias reload_cinnamon='cinnamon -replace -d :0.0 > /dev/null 2>&1 &'
 
-    ## Shortcuts for xClip
-    alias setclip="xclip -selection c"
-    alias getclip="xclip -selection c -o"
+    ## Shortcuts for xClip:
+    if cmd_exists 'xclip' ; then
+        alias setclip="xclip -selection c"
+        alias getclip="xclip -selection c -o"
+    fi
+
+    ## Shortcuts for Ranger:
+    if cmd_exists 'ranger' ; then
+        alias ra='ranger'
+        #cmd_exists $RANGERCD && unset RANGERCD && ranger_cd
+    fi
+
+    ## Shortcut to remap bashtop:
+    cmd_exists 'bpytop' && alias bashtop='bpytop'
+
 ######################
 
 
@@ -229,7 +239,7 @@ get_dconf_wallpaper() {
 }
 ####################################
 
-## 'macvendor' - Pull mac vendor information given address:
+## 'macvendor' - Query mac vendor information given address:
 ## usage: macvendor <address-string>
 ############################################
 macvendor() {
@@ -239,22 +249,29 @@ macvendor() {
 }
 ############################################
 
-## 'edit' - Preferential text-editor:
+## 'edit' - Preferential tui text-editor:
 ## usage: edit <file>
-####################################
+#########################################
 edit() {
-
-	# Tries i3s preferential edit
+    # Tries i3s preferential edit
 	i3-sensible-editor "$1"  && return 0
     # Tries $VISUAL, $EDITOR, and finally xdg-open.
     $VISUAL  "$1" && return 0
     $EDITOR  "$1" && return 0
-    xdg-open "$1" && return 0
+    xdg-open "$1" 1> /dev/null && return 0
     return 1 # return fail status
-}
-# Shortcut to edit function
-alias ed='edit'
-#####################################
+} ; alias ed='edit'
+#########################################
+
+## 'gui_edit' - Preferential gui text-editor:
+## usage: gui_edit <file>
+#############################################
+gui_edit() {
+        xdg-open "$1" 1> /dev/null && return 0
+    edit "$1" && return 0
+    return 1 # return fail status
+} ; alias ged='gui_edit'
+#############################################
 
 ## 'mandir' - Preferential file-manager selector with fail-over:
 ## usage: mandir <directory>
@@ -267,8 +284,7 @@ mandir() {
     xdg-open "$args" && return 0
     show_dir "$args"  && return 0
     return 1 # return fail status
-}
-alias md='mandir'
+} ; alias md='mandir'
 ########################################
 
 ## 'extract' - archive extractor:
@@ -354,12 +370,12 @@ show_colors() {
 
 ## Get & Set wallpaper ENV Var:
 ##############################
-define_wallpaper_var() {
+define_wallpaper() {
     # Set Wallpaper location ENV Var
     local cmd_output=""
     cmd_output=$(get_dconf_wallpaper) || cmd_output=$(get_nitrogen_wallpaper) || return 1
     export WALLPAPER=${cmd_output} && return 0 || return 1
-}
+} ; alias define_wallpaper_var='define_wallpaper'
 ##############################
 
 ## Link to user scripts bash_aliases_scripts file:

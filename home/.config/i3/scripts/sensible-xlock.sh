@@ -65,7 +65,7 @@ show_usage() {
     printf "\nOptions: "
     printf "\n  -h, --help \n\t\tShow this message and exit."
     printf "\n  -i --initialize	\n\t\tRuns any chaching/setup reccomened prior to lock at startup."
-       printf "\n  -l --lock \n\t\tExecutes lock cmds."
+    printf "\n  -l --lock \n\t\tExecutes lock cmds."
     printf "\n  -t --text= \n\t\tSets custom text for the lock screen."
 
 

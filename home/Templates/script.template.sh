@@ -1,7 +1,7 @@
 #!/bin/sh
 # <$SCRIPT_NAME> Script:
 #   location: ~/Documents/Scripts/Public/<$SCRIPT_NAME>.sh
-#   author: t3@pfaffe.me    🄯2020-01.31.2021
+#   author: t3@pfaffe.me    🄯2020-05.17.2021
 #   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #   Other notes/references:
 #    [link]( https://github.com/t3pfaffe )
@@ -13,6 +13,7 @@
 ## Defining default variable states and other setup configurations.
 
 # Define this script's name
+# TODO: Refactor <$SCRIPT_NAME> to desired script name (including the <...> endcaps!!)
 SCRIPT_NAME="<$SCRIPT_NAME>"
 
 ## Example Variables:

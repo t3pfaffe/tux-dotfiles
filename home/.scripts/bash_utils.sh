@@ -29,14 +29,6 @@ str_empty() {
 }
 ############################################################
 
-## 'str_exists' - Checks if provided string(s) exist(s):
-## usage: str_exists <string>
-########################################################
-str_exists() {
-    ! str_empty "$@"
-}
-########################################################
-
 ## 'var_exists' - Checks if provided variable(s) exist:
 ## usage: var_exists <variable_name>
 #######################################################
@@ -55,8 +47,8 @@ get_inner_var() {
 }
 #################################################################
 
-## 'str_exists' - Checks if provided string(s) exist(s):
-## usage: str_exists <variable_name>
+## 'str_var_empty' - Checks if provided string(s) exist(s):
+## usage: str_var_empty <variable_name>
 ########################################################
 str_var_empty() {
     [ $# -le 0 ] && return 1
@@ -65,7 +57,7 @@ str_var_empty() {
 ########################################################
 
 ## 'str_var_exists' - Checks if provided string variable(s) exist(s):
-## usage: str_exists <variable_name>
+## usage: str_var_exists <variable_name>
 #####################################################################
 str_var_exists() {
     [ $# -le 0 ] && return 1

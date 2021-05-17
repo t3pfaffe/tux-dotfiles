@@ -1,10 +1,12 @@
 #!/bin/sh
-# Stow Deployment Script:
-#   location: <.git>/.support-scripts/run_stow.sh
-#   author: t3@pfaffe.me    🄯2020-01.05.2021
+# Sensible-MediaCtl Script:
+#   location: ~/.config/i3/scripts/sensible-mediactl.sh
+#   author: t3@pfaffe.me    🄯2020-04.05.2021
 #   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#   Other notes/references:
-#    [link]( https://github.com/t3pfaffe )
+#    - Abstractly controls media(mpris) &
+#       available sound server settings.
+#    - Other notes/references:
+#       - [link]( https://github.com/t3pfaffe )
 
 
 #####################
@@ -13,16 +15,7 @@
 ## Defining default variable states and other setup configurations.
 
 # Define this script's name
-SCRIPT_NAME="run_stow"
-
-# Define default script operation params:
-DRY_RUN=false
-ADOPT_EXISTING=false
-TARGET_DIR="/home/$USER/"
-SOURCE_DIR="$(git rev-parse --show-toplevel 2>/dev/null )/home/" || SOURCE_DIR="$(pwd)"
-
-# Define default stow params:
-STOW_PARAMS="--dir=${SOURCE_DIR}/home --target=${TARGET_DIR}"
+SCRIPT_NAME="Sensible-MediaCtl"
 
 
 #########################
@@ -33,37 +26,15 @@ STOW_PARAMS="--dir=${SOURCE_DIR}/home --target=${TARGET_DIR}"
 show_usage() {
     printf "Usage: %s [OPTIONS]" "$SCRIPT_NAME"
 
-    printf "\n\nScript for stow deployment operations from tux-dotfiles repository."
+    printf "\n\nBase template for shell scripts. This is an example script for example purposes."
 
     #Show options/parameters
     printf "\n"
     printf "\nOptions: "
     printf "\n  -h, --help \n\t\tShow this message and exit."
-    printf "\n  -A --adopt \n\t\tAdopts existing files from target."
-    printf "\n  -D --deploy  \n\t\tRuns any chaching/setup reccomened prior to lock at startup."
-    printf "\n     --dry-run \n\t\tRuns any chaching/setup reccomened prior to lock at startup."
 
     #End statement
     printf "\n"
-}
-
-
-
-stow_deploy() {
-    printf "Checking for local updates and running stow to pull anything new from the git repo... \n"
-
-    execute_stow || printf "It looks like the operation failed. Perhaps try adopting existing files with \'--adopt\'."; exit 1
-}
-
-execute_stow() {
-
-    # Apply adopt param
-    $ADOPT_EXISTING && STOW_PARAMS="--adopt ${STOW_PARAMS}"
-
-    # Apply dry-run param
-    $DRY_RUN && STOW_PARAMS="--simulate ${STOW_PARAMS}"
-
-    /usr/bin/stow "$STOW_PARAMS"
 }
 
 #######################
@@ -82,15 +53,6 @@ else
             -h|--help)
                 show_usage; exit 0
             ;;
-            --dry-run)
-                DRY_RUN=true
-            ;;
-            -A| --adopt)
-                ADOPT_EXISTING=true
-            ;;
-            -D| --deploy)
-                stow_deploy
-            ;;
             *-[!\ ]*)
                 printf "%s: invalid option '%s'\n" "$SCRIPT_NAME" "$1"
                 printf "Try '%s --help' for more information.\n" "$SCRIPT_NAME"
@@ -101,12 +63,11 @@ else
 fi
 
 
+
 #######################
 ### SCRIPT_CLEANUP: #######################################################
 #######################
 ## Cleanup vars and backround proccesss from script execution.
-
-exit 0;
 
 
 #
