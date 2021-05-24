@@ -1,12 +1,30 @@
 #!/bin/bash
 # shell script to prepend i3Status with mediaInfo
 
-MEDIA_NOTE="♪♪"
-MEDIA_PLAY="▶"
-MEDIA_PAUSE="⏸"
+
+#####################
+### SCRIPT_SETUP: #########################################################
+#####################
+## Defining default variable states and other setup configurations.
+
+## Runtime params:
+FOLLOW_PLAYERCTL=false
+
+SYMB_MEDIA_NOTE="♪♪"
+SYMB_MEDIA_PLAY="⏵"
+SYMB_MEDIA_PAUSE="="
+SYMB_MEDIA_STOP="■"
+
+PLAYERCTL_SELECTED "spotify"
 
 MEDIA_INFO=""
-MEDIA_INFO_LONG=""
+MEDIA_INFO_SHORT=""
+
+
+#########################
+### DEFINE_FUNCTIONS: #####################################################
+#########################
+## Common function definitions.
 
 xml_escape() {
 	local JSON_TOPIC_RAW="$1"
@@ -22,44 +40,91 @@ xml_escape() {
 	echo "$JSON_TOPIC_RAW"
 }
 
-updateMediaInfo() {
+pollMediaInfoUpdate() {
+
+    local STATUS MEDIA_ARTIST_TITLE MEDIA_STATE
+
+	#Pull Media Info
+	STATUS="$(playerctl --player=spotify,%any status || echo "null")"
+	if [ "$STATUS" = "null" ]; then
+		MEDIA_INFO=""; MEDIA_INFO_LONG=""; return 0
+    fi
+
+    MEDIA_ARTIST_TITLE="$( playerctl metadata --format '{{ markup_escape(artist) }} - {{ markup_escape(title) }}' )"
+
+    if [ "$STATUS" = "Playing" ]; then
+        MEDIA_STATE="$SYMB_MEDIA_PLAY"
+    elif [ "$STATUS" = "Paused" ]; then
+        MEDIA_STATE="$SYMB_MEDIA_PAUSE"
+    else
+		MEDIA_STATE="$SYMB_MEDIA_STOP"
+	fi
+
+	MEDIA_PREPEND="$SYMB_MEDIA_NOTE($MEDIA_STATE)"
+	MEDIA_INFO="$MEDIA_PREPEND $MEDIA_ARTIST_TITLE "
+
+	#MEDIA_INFO_SHORT="$MEDIA_PREPEND - $MEDIA_TITLE "
+    MEDIA_INFO_SHORT="$MEDIA_INFO"
+}
+
+followMediaInfoUpdate() {
 
     local STATUS MEDIA_TITLE MEDIA_ARTIST MEDIA_STATE
 
 	#Pull Media Info
-	STATUS="$(playerctl --player=spotify,%any status || echo "noPlayers")"
+	STATUS="$(playerctl --player=${PLAYERCTL_SELECTED},%any status || echo "noPlayers")"
 	if [ "$STATUS" = "noPlayers" ]; then
 		MEDIA_INFO=""; MEDIA_INFO_LONG=""; return 0; fi
 
-	MEDIA_TITLE="$(playerctl --player=spotify,%any metadata title)"
-    MEDIA_ARTIST="$(playerctl --player=spotify,%any metadata artist)"
+	MEDIA_TITLE="$(playerctl --player=${PLAYERCTL_SELECTED},%any metadata title)"
+    MEDIA_ARTIST="$(playerctl --player=${PLAYERCTL_SELECTED},%any metadata artist)"
     MEDIA_STATE=""
 	##
 
-
 	if [ "$STATUS" = "Playing" ]; then
-                MEDIA_STATE="$MEDIA_PLAY"
+                MEDIA_STATE="$SYMB_MEDIA_PLAY"
         elif [ "$STATUS" = "Paused" ]; then
-                MEDIA_STATE="$MEDIA_PAUSE"
+                MEDIA_STATE="$SYMB_MEDIA_PAUSE"
 	else
-		MEDIA_STATE="⏹"
+		MEDIA_STATE="$SYMB_MEDIA_STOP"
 	fi
 
 	MEDIA_TITLE=$(xml_escape "$MEDIA_TITLE")
 	MEDIA_ARTIST=$(xml_escape "$MEDIA_ARTIST")
 
-	MEDIA_PREPEND="$MEDIA_NOTE($MEDIA_STATE)"
+	MEDIA_PREPEND="$SYMB_MEDIA_NOTE($MEDIA_STATE)"
 	MEDIA_INFO="$MEDIA_PREPEND - $MEDIA_TITLE "
 	MEDIA_INFO_LONG="$MEDIA_PREPEND $MEDIA_TITLE - $MEDIA_ARTIST "
 }
 
-i3status | (read line && echo "$line" && read line && echo "$line" && read line && echo "$line" && updateMediaInfo && while :
+
+#######################
+### EXECUTE_SCRIPT: #######################################################
+#######################
+## Execute script linearly from this point.
+
+i3status | (read -r line && echo "$line" && read -r line && echo "$line" && read -r line && echo "$line" && pollMediaInfoUpdate && while :
 do
-	read line && updateMediaInfo
+	if $FOLLOW_PLAYERCTL ; then
+        read -r line
+    else
+        read -r line && pollMediaInfoUpdate
+    fi
 
 	#Format MEDIA_INFO for i3Status XML
-	MEDIA_LINE="{\"name\":\"media_info\",\"markup\":\"pango\",\"border_bottom\":3,\"separator_block_width\":3,\"align\":\"right\",\"short_text\":\"${MEDIA_INFO}\",\"full_text\":\"${MEDIA_INFO_LONG}\"}"
+	MEDIA_LINE="{\"name\":\"media_info\",\"markup\":\"pango\",\"border_bottom\":3,\"separator_block_width\":3,\"align\":\"right\",\"short_text\":\"${MEDIA_INFO_SHORT}\",\"full_text\":\"${MEDIA_INFO}\"}"
 
 	echo ",[${MEDIA_LINE},${line#,\[}" || echo "$line" || exit 1
 
 done)
+
+
+#######################
+### SCRIPT_CLEANUP: #######################################################
+#######################
+## Cleanup vars and backround proccesss from script execution.
+
+unset MEDIA_INFO MEDIA_INFO_LONG FOLLOW_PLAYERCTL
+
+#
+# FILE_END

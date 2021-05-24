@@ -15,14 +15,15 @@
 # Define this script's name
 SCRIPT_NAME="run_stow"
 
-# Define default script operation params:
+## Define default script operation params:
 DRY_RUN=false
 ADOPT_EXISTING=false
+UPDATE_LINKS=false
 TARGET_DIR="/home/$USER/"
-SOURCE_DIR="$(git rev-parse --show-toplevel 2>/dev/null )/home/" || SOURCE_DIR="$(pwd)"
+SOURCE_DIR="$(git rev-parse --show-toplevel 2>/dev/null )/home/*" || SOURCE_DIR="$(pwd)"
 
 # Define default stow params:
-STOW_PARAMS="--dir=${SOURCE_DIR}/home --target=${TARGET_DIR}"
+STOW_PARAMS="--dir=${SOURCE_DIR} --target=${TARGET_DIR}"
 
 
 #########################
@@ -40,14 +41,13 @@ show_usage() {
     printf "\nOptions: "
     printf "\n  -h, --help \n\t\tShow this message and exit."
     printf "\n  -A --adopt \n\t\tAdopts existing files from target."
-    printf "\n  -D --deploy  \n\t\tRuns any chaching/setup reccomened prior to lock at startup."
-    printf "\n     --dry-run \n\t\tRuns any chaching/setup reccomened prior to lock at startup."
+    printf "\n  -U --update  \n\t\tRuns stow to add new symlinks or prune removed ones"
+    printf "\n  -D --deploy  \n\t\tRuns stow to deploy symlinks to target directories"
+    printf "\n     --dry-run \n\t\t"
 
     #End statement
     printf "\n"
 }
-
-
 
 stow_deploy() {
     printf "Checking for local updates and running stow to pull anything new from the git repo... \n"
@@ -59,6 +59,9 @@ execute_stow() {
 
     # Apply adopt param
     $ADOPT_EXISTING && STOW_PARAMS="--adopt ${STOW_PARAMS}"
+
+    # Apply update-links param
+    $UPDATE_LINKS && STOW_PARAMS="--restow ${STOW_PARAMS}"
 
     # Apply dry-run param
     $DRY_RUN && STOW_PARAMS="--simulate ${STOW_PARAMS}"
@@ -87,6 +90,9 @@ else
             ;;
             -A| --adopt)
                 ADOPT_EXISTING=true
+            ;;
+            -U| --update)
+                UPDATE_LINKS=true
             ;;
             -D| --deploy)
                 stow_deploy

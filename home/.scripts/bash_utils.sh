@@ -24,7 +24,7 @@ HAS_BASH_UTILS=true
 ## usage: str_empty <string>
 ############################################################
 str_empty() {
-    [ $# -le 0 ] && return 1; local arg
+    [ $# -le 0 ] && return 0; local arg
     for arg in "$@" ; do [[ -z "${arg// }" ]] || return 1 ; done ; return 0
 }
 ############################################################
@@ -61,7 +61,7 @@ str_var_empty() {
 #####################################################################
 str_var_exists() {
     [ $# -le 0 ] && return 1
-    if var_exists "$1" && str_exists "$( get_inner_var "$1" )" ; then return 0 ; else return 1 ; fi
+    if var_exists "$1" ; then return 0 ; else return 1 ; fi
 }
 #####################################################################
 
