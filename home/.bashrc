@@ -79,7 +79,7 @@ reset_init_msgs() {
 ## User specific environment variables.
 
 ## Set vars for default terminal:
-safe_export TERM 'xterm'
+safe_export TERM 'alacritty'
 safe_export TERMINAL "${TERM}"
 safe_export XDG_TERMINAL "${TERMINAL}"
 

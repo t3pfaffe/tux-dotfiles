@@ -41,7 +41,7 @@ exec --no-startup-id $set_wallpaper
 exec_always --no-startup-id autorandr -c && sleep 0.5 && $set_wallpaper
 
 ## Define/Assign Display Positions:
-## TODO: set this dynamically based upon xrandr display conf:
+# TODO: set this dynamically based upon xrandr display conf:
 set $dp0 DP-1-1
 set $dp1 HDMI-0
 set $dp2 eDP-1-1
@@ -88,12 +88,12 @@ exec --no-startup-id albert
 
 # Category: Applications
 ########################
-#  The above comment is specific syntax to denote a
+#  Note: The above comment is specific syntax to denote a
 #   new 'category' of keybinds for the purpose of
 #   being parsed by external programs.
 
 ## Application-Launchers:
-bindsym $mod+Return exec termite
+bindsym $mod+Return exec alacritty
 bindsym $mod+Shift+Return exec io.elementary.terminal -n
 bindsym $mod+F2 exec firefox
 bindsym $mod+Shift+F2 exec brave
@@ -591,7 +591,7 @@ bar {
 
 	position top
 
-    status_command ~/.config/i3/scripts/getMediaInfo.sh
+    status_command ~/.config/i3/scripts/i3status-wrapper.sh
 }
 
 
