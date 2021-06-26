@@ -48,7 +48,7 @@ show_usage() {
 ## Check for parameters/options:
 if [ $# -eq 0 ] ; then ## Default behaviour with no args:
     printf ""
-    ## Un-comment if script requires an argument
+    ## Un-comment below if script requires an argument to function
     #show_usage; exit 0
 else
     for i in "$@" ; do

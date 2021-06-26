@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Sensible-MediaCtl Script:
 #   location: ~/.config/i3/scripts/sensible-mediactl.sh
 #   author: t3@pfaffe.me    🄯2020-04.05.2021
@@ -132,7 +132,7 @@ show_usage() {
 ## Check for parameters/options:
 if [ $# -eq 0 ] ; then ## Default behaviour with no args:
     printf ""
-    ## Un-comment if script requires an argument
+    ## Un-comment below if script requires an argument to function
     #show_usage; exit 0
 else
     for i in "$@" ; do

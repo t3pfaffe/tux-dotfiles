@@ -195,7 +195,7 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
     alias reload_i3="i3-msg 'restart'"
 
     ## Shortcut to restart CinnamonDE
-    alias reload_cinnamon='cinnamon -replace -d :0.0 > /dev/null 2>&1 &'
+    alias reload_cinnamon='cinnamon --replace -d :0.0 > /dev/null 2>&1 &'
 
     ## Shortcuts for xClip:
     if cmd_exists 'xclip' ; then
@@ -220,34 +220,23 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
 ##################
 ## Static and dynamically linked functions, scripts, & utilities.
 
-## Pull wallpaper location from nitrogen's config:
-####################################
-get_nitrogen_wallpaper() {
-    local nitrogen_conf=~/.config/nitrogen/bg-saved.cfg
-    cmd_exists nitrogen && ( file_exists $nitrogen_conf || return 1 ) || return 1
-    local nitrogen_wall=""; nitrogen_wall=$( sed -n 's/^file=//p' $nitrogen_conf | head -n 1 )
-    ! str_empty "$nitrogen_wall" && ( echo "$nitrogen_wall" && return 0) ; return 1
+## 'get_pub_ip' - Query for this device's public ip:
+## usage: get_pub_ip
+####################################################
+get_pub_ip() {
+    wget -qO - http://wtfismyip.com/text
 }
-####################################
-
-## Pull wallpaper location from cinnamon's dconf config:
-####################################
-get_dconf_wallpaper() {
-    cmd_exists gsettings || return 1
-    local cinnamon_wall=""; cinnamon_wall=$( gsettings get org.cinnamon.desktop.background picture-uri | sed 's/\x27//g ; s/file\:\/\///g' )
-    ! str_empty "$cinnamon_wall" && file_exists "$cinnamon_wall" && echo "$cinnamon_wall" && return 0 ; return 1
-}
-####################################
+####################################################
 
 ## 'macvendor' - Query mac vendor information given address:
 ## usage: macvendor <address-string>
-############################################
+############################################################
 macvendor() {
     str_empty "$1" return 1 ; local arg=${1//\:/-}
     local lookup_src='https://api.macvendors.com'
     printf "%s\n" "$(curl $lookup_src'/'"$arg" 2>/dev/null )"
 }
-############################################
+############################################################
 
 ## 'edit' - Preferential tui text-editor:
 ## usage: edit <file>
@@ -267,7 +256,8 @@ edit() {
 ## usage: gui_edit <file>
 #############################################
 gui_edit() {
-        xdg-open "$1" 1> /dev/null && return 0
+    xdg-open "$1" 2> /dev/null && return 0
+
     edit "$1" && return 0
     return 1 # return fail status
 } ; alias ged='gui_edit'
@@ -368,15 +358,37 @@ show_colors() {
 }
 ###########################################
 
-## Get & Set wallpaper ENV Var:
-##############################
-define_wallpaper() {
+## Pull wallpaper location from nitrogen's config:
+## usage: 'get_nitrogen_wallpaper'
+##################################################
+get_nitrogen_wallpaper() {
+    local nitrogen_conf=~/.config/nitrogen/bg-saved.cfg
+    cmd_exists nitrogen && ( file_exists $nitrogen_conf || return 1 ) || return 1
+    local nitrogen_wall=""; nitrogen_wall=$( sed -n 's/^file=//p' $nitrogen_conf | head -n 1 )
+    ! str_empty "$nitrogen_wall" && ( echo "$nitrogen_wall" && return 0) ; return 1
+}
+##################################################
+
+## Pull wallpaper location from cinnamon's dconf config:
+## usage: 'get_dconf_wallpaper'
+########################################################
+get_dconf_wallpaper() {
+    cmd_exists gsettings || return 1
+    local cinnamon_wall=""; cinnamon_wall=$( gsettings get org.cinnamon.desktop.background picture-uri | sed 's/\x27//g ; s/file\:\/\///g' )
+    ! str_empty "$cinnamon_wall" && file_exists "$cinnamon_wall" && echo "$cinnamon_wall" && return 0 ; return 1
+}
+########################################################
+
+## Get & Set wallpaper ENV var from other sources:
+## usage: 'define_wallpaper_var'
+##################################################
+define_wallpaper_var() {
     # Set Wallpaper location ENV Var
     local cmd_output=""
     cmd_output=$(get_dconf_wallpaper) || cmd_output=$(get_nitrogen_wallpaper) || return 1
     export WALLPAPER=${cmd_output} && return 0 || return 1
-} ; alias define_wallpaper_var='define_wallpaper'
-##############################
+} ; alias define_wallpaper='define_wallpaper_var'
+##################################################
 
 ## Link to user scripts bash_aliases_scripts file:
 # shellcheck source=src/Documents/Scripts/.bash_aliases_scripts

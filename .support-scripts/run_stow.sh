@@ -17,8 +17,8 @@ SCRIPT_NAME="run_stow"
 
 ## Define default script operation params:
 DRY_RUN=false
-ADOPT_EXISTING=false
 UPDATE_LINKS=false
+ADOPT_EXISTING=false
 TARGET_DIR="/home/$USER/"
 SOURCE_DIR="$(git rev-parse --show-toplevel 2>/dev/null )/home/*" || SOURCE_DIR="$(pwd)"
 
@@ -77,7 +77,7 @@ execute_stow() {
 ## Check for parameters/options:
 if [ $# -eq 0 ] ; then ## Default behaviour with no args:
     printf ""
-    ## Un-comment if script requires an argument
+    ## Un-comment if script requires an argument to function
     #show_usage; exit 0
 else
     for i in "$@" ; do
