@@ -164,10 +164,11 @@ PS_PROMPT_NC=$PS_TITLEBAR
 PS_PROMPT_ROOT="\[\033[0m\]${FCLR_SEC}${SUBSHELL_LVL}${FCLR_PRI}[\u${FCLR_SEC}@${FCLR_ALRT}\h ${FCLR_ALRT}\w]:${FCLR_NC}\$ \[\033[0m\]"
 PS_PROMPT_ROOT_NC=$PS_TITLEBAR
 
-## TODO: filter out color escapes when usecolor is false
-# Use RegEx: /\\\[\\(e|[0-9]{3})\[(.{1,5}m)\\\]/ig ; Which results in: [\u@\h \w]:$
-# [ref]( https://regex101.com/r/ncLX6R/1 )
+## Changes PS_PROMPT to not use color escapes:
 rm_prompt_clrs() {
+    ## TODO: filter out color escapes when usecolor is false
+    # Use RegEx: ' /\\\[\\(e|[0-9]{3})\[(.{1,5}m)\\\]/ig ; Which results in: [\u@\h \w]:$ '
+    # [ref]( https://regex101.com/r/ncLX6R/1 )
     PS_PROMPT=$PS_PROMPT_NC ; PS_PROMPT_ROOT=$PS_PROMPT_ROOT_NC
 }
 

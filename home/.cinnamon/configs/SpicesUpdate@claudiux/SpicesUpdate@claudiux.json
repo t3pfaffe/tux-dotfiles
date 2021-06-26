@@ -172,7 +172,7 @@
         "dependency": "check_applets",
         "description": "Check regularly whether new applets are available",
         "tooltip": "If new applets do not concern you, uncheck this box.",
-        "value": true
+        "value": false
     },
     "exp_applets": {
         "type": "textview",
@@ -212,7 +212,7 @@
         "show-buttons": false,
         "value": [
             {
-                "name": "cinnamon-timer@jake1164",
+                "name": "betterlock",
                 "isunprotected": true,
                 "requestnewdownload": false
             },
@@ -227,42 +227,12 @@
                 "requestnewdownload": false
             },
             {
-                "name": "cryptocoin@guantanamoe",
-                "isunprotected": true,
-                "requestnewdownload": false
-            },
-            {
-                "name": "gpaste-reloaded@feuerfuchs.eu",
-                "isunprotected": true,
-                "requestnewdownload": false
-            },
-            {
-                "name": "kdeccc@Severga",
-                "isunprotected": true,
-                "requestnewdownload": false
-            },
-            {
                 "name": "mem-monitor-text@datanom.net",
                 "isunprotected": true,
                 "requestnewdownload": false
             },
             {
-                "name": "notification-mute@jgillula",
-                "isunprotected": true,
-                "requestnewdownload": false
-            },
-            {
                 "name": "placesCenter@scollins",
-                "isunprotected": true,
-                "requestnewdownload": false
-            },
-            {
-                "name": "qredshift@quintao",
-                "isunprotected": true,
-                "requestnewdownload": false
-            },
-            {
-                "name": "ratecurrency@magner",
                 "isunprotected": true,
                 "requestnewdownload": false
             },
@@ -277,12 +247,17 @@
                 "requestnewdownload": false
             },
             {
-                "name": "timeshift-spy@nicog60",
+                "name": "temperature@fevimu",
                 "isunprotected": true,
                 "requestnewdownload": false
             },
             {
                 "name": "weather@mockturtl",
+                "isunprotected": true,
+                "requestnewdownload": false
+            },
+            {
+                "name": "workspace-name@willurd",
                 "isunprotected": true,
                 "requestnewdownload": false
             }
@@ -303,7 +278,7 @@
         "default": false,
         "description": "Check regularly whether your desklets are up to date",
         "tooltip": "If desklets updates do not concern you, uncheck this box.",
-        "value": true
+        "value": false
     },
     "check_new_desklets": {
         "type": "switch",
@@ -311,7 +286,7 @@
         "dependency": "check_desklets",
         "description": "Check regularly whether new desklets are available",
         "tooltip": "If new desklets do not concern you, uncheck this box.",
-        "value": true
+        "value": false
     },
     "exp_desklets": {
         "type": "textview",
@@ -349,23 +324,7 @@
         ],
         "default": [],
         "show-buttons": false,
-        "value": [
-            {
-                "name": "hostcheck@schorschii",
-                "isunprotected": true,
-                "requestnewdownload": false
-            },
-            {
-                "name": "kdecdesklet@joejoetv",
-                "isunprotected": true,
-                "requestnewdownload": false
-            },
-            {
-                "name": "notes@schorschii",
-                "isunprotected": true,
-                "requestnewdownload": false
-            }
-        ]
+        "value": []
     },
     "btn_cs_desklets": {
         "type": "button",
@@ -374,7 +333,7 @@
     },
     "was_empty_desklets": {
         "type": "generic",
-        "value": false,
+        "value": true,
         "default": false
     },
     "check_extensions": {
@@ -382,7 +341,7 @@
         "default": false,
         "description": "Check regularly whether your extensions are up to date",
         "tooltip": "If extensions updates do not concern you, uncheck this box.",
-        "value": true
+        "value": false
     },
     "check_new_extensions": {
         "type": "switch",
@@ -390,7 +349,7 @@
         "dependency": "check_extensions",
         "description": "Check regularly whether new extensions are available",
         "tooltip": "If new extensions do not concern you, uncheck this box.",
-        "value": true
+        "value": false
     },
     "exp_extensions": {
         "type": "textview",
@@ -428,13 +387,7 @@
         ],
         "default": [],
         "show-buttons": false,
-        "value": [
-            {
-                "name": "gTile@shuairan",
-                "isunprotected": true,
-                "requestnewdownload": false
-            }
-        ]
+        "value": []
     },
     "btn_cs_extensions": {
         "type": "button",
@@ -443,7 +396,7 @@
     },
     "was_empty_extensions": {
         "type": "generic",
-        "value": false,
+        "value": true,
         "default": false
     },
     "check_themes": {
@@ -451,7 +404,7 @@
         "default": false,
         "description": "Check regularly whether your themes are up to date",
         "tooltip": "If themes updates do not concern you, uncheck this box.",
-        "value": true
+        "value": false
     },
     "check_new_themes": {
         "type": "switch",
@@ -497,38 +450,7 @@
         ],
         "default": [],
         "show-buttons": false,
-        "value": [
-            {
-                "name": "Adapta",
-                "isunprotected": true,
-                "requestnewdownload": false
-            },
-            {
-                "name": "Adapta-Nokto",
-                "isunprotected": true,
-                "requestnewdownload": false
-            },
-            {
-                "name": "CBlack",
-                "isunprotected": true,
-                "requestnewdownload": false
-            },
-            {
-                "name": "Graphite-One",
-                "isunprotected": true,
-                "requestnewdownload": false
-            },
-            {
-                "name": "Mint-X-Dark",
-                "isunprotected": true,
-                "requestnewdownload": false
-            },
-            {
-                "name": "qob",
-                "isunprotected": true,
-                "requestnewdownload": false
-            }
-        ]
+        "value": []
     },
     "btn_cs_themes": {
         "type": "button",
@@ -537,7 +459,7 @@
     },
     "was_empty_themes": {
         "type": "generic",
-        "value": false,
+        "value": true,
         "default": false
     },
     "general_frequency": {
@@ -549,7 +471,7 @@
         "units": "hours",
         "description": "Time interval between two checks",
         "tooltip": "Min value: 1 hour. Max value: 720 hours (30 days).",
-        "value": 36
+        "value": 110
     },
     "general_first_check": {
         "type": "switch",
@@ -576,7 +498,7 @@
         "dependency": "general_warning",
         "description": "The icon color when Spices need an update",
         "tooltip": "Click the button to select another color.",
-        "value": "rgb(239,41,41)"
+        "value": "rgb(255,120,0)"
     },
     "general_notifications": {
         "type": "switch",
