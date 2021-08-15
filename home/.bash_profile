@@ -23,12 +23,12 @@
 ## Ignore these error codes globally:
 #shellcheck disable=SC2059
 
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
 ## Tag self as linked for dependents:
 # shellcheck disable=2034
 HAS_BASH_PROFILE=true
-
-# If not running interactively, don't do anything
-[[ $- != *i* ]] && return
 
 ## Define Utilized Files:
 SRC_BASHRC=~/.bashrc
@@ -41,31 +41,18 @@ if ! command -v link_source &>/dev/null ; then link_source () { [[ -f $1 ]] && s
 # shellcheck source=./.bashrc
 link_source $SRC_BASHRC
 
-#########################
-### AUTO-GEN_APPENDS: ######################################################
-#########################
+#####################
+### LINK_APPENDS: ##########################################################
+#####################
 ## Usually added by install scripts and appended to this file.
 ##
 
-## ROS ENV Setup:
-#################
-# ROS_Noetic:
-#source /opt/ros/noetic/setup.bash
-#source /home/t3pfaffe/Projects/ROS-Learning/catkin_ws/devel/setup.bash
-
-# ROS_ALL:
-#export ROS_IP='127.0.0.1'
-#export PATH="/home/t3pfaffe/.local/bin:/opt/ros/noetic/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/var/lib/flatpak/exports/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl"
-#################
-
-## Perl ENV Setup:
-##################
-# PATH="/home/t3pfaffe/perl5/bin${PATH:+:${PATH}}"; export PATH;
-# PERL5LIB="/home/t3pfaffe/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
-# PERL_LOCAL_LIB_ROOT="/home/t3pfaffe/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
-# PERL_MB_OPT="--install_base /home/t3pfaffe/perl5"; export PERL_MB_OPT;
-# PERL_MM_OPT="INSTALL_BASE=/home/t3pfaffe/perl5"; export PERL_MM_OPT;
-##################
+## Disable bash_lint from following sources
+# shellcheck disable=SC1091
 
 ## Rust ENV Setup:
-source "$HOME/.cargo/env"
+link_source "$HOME/.cargo/env" && export CARGO_HOME="$HOME/.cargo/"
+
+## Ruby ENV Setup:
+GEM_HOME="$(ruby -e 'puts Gem.user_dir')"; export GEM_HOME
+export PATH="$PATH:$GEM_HOME/bin"

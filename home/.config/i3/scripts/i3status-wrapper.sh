@@ -9,14 +9,15 @@
 
 ## Runtime params:
 FOLLOW_PLAYERCTL=false
+PLAYERCTL_SELECTED "spotify"
 
+## Symbolic glyphs used:
 SYMB_MEDIA_NOTE="♪♪"
 SYMB_MEDIA_PLAY="⏵"
 SYMB_MEDIA_PAUSE="="
 SYMB_MEDIA_STOP="■"
 
-PLAYERCTL_SELECTED "spotify"
-
+## Parsed info buffer vars:
 MEDIA_INFO=""
 MEDIA_INFO_SHORT=""
 

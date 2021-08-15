@@ -40,9 +40,9 @@ safe_export USE_BASH_DEBUG_LVL_WARNINGS false # Noncritical WARNINGS that *may* 
 safe_export USE_BASH_DEBUG_LVL_INFO true      # Noncritical INFO on the bash configuration that *wont* impact functionality.
 
 ## Define & initialize bash debug log:
-var_exists DEBUG_ERROR_BASH_LOG   || declare -a DEBUG_ERROR_BASH_LOG
-var_exists DEBUG_WARNING_BASH_LOG || declare -a DEBUG_WARNING_BASH_LOG
-var_exists DEBUG_INFO_BASH_LOG    || declare -a DEBUG_INFO_BASH_LOG
+var_exists DEBUG_ERROR_BASH_LOG || declare -a DEBUG_ERROR_BASH_LOG
+var_exists DEBUG_WARN_BASH_LOG  || declare -a DEBUG_WARN_BASH_LOG
+var_exists DEBUG_INFO_BASH_LOG  || declare -a DEBUG_INFO_BASH_LOG
 
 ## Default debug text colors:
 export COLOR_ALRT='\e[1;31m'
@@ -80,7 +80,7 @@ debug_append_err() {
 
 ## Append argument to log
 debug_append_warn() {
-    local args="$*" ; str_empty "$args" && return 1
+local args="$*" ; str_empty "$args" && return 1
     DEBUG_WARN_BASH_LOG+=("$args")
 }
 
@@ -97,29 +97,29 @@ debug_notify_syntax_err() {
 
 ## Notify of an error while linking another bash configuration file:
 debug_notify_link_err() {
-    debug_append_err "$(printf "[${COLOR_ALRT}Warning${COLOR_NC}]: Bash config file %s was not linked!" "$1")"
+    debug_append_err "$(printf "[${COLOR_ALRT}Error${COLOR_NC}]:   Bash config file %s was not linked!" "$1")"
 }
 
 ## Notify of an error while linking another non-vital bash configuration file:
 debug_notify_link_warn() {
-    debug_append_warn "$(printf "[${COLOR_WARN}Warning${COLOR_NC}]: Bash config file %s was not linked!" "$1")"
+    debug_append_warn "$(printf "[${COLOR_ALRT}Warning${COLOR_NC}]: Bash config file %s was not linked!" "$1")"
 }
 
 ## Notify of some info that should be brought to attention:
 debug_notify_info() {
-    debug_append_info  "$(printf "[${COLOR_PRI}Notice${COLOR_NC}]: %s " "$1")"
+    debug_append_info  "$(printf "[${COLOR_PRI}Notice${COLOR_NC}]:  %s " "$1")"
 }
 
 ## Notify of an change in the bash configuration:
 notify_reload() {
     local args='' ; str_empty "$1" || local args="from file ${1}"
-    debug_append_info "$(printf "[${COLOR_PRI}Notice${COLOR_NC}]: Reloaded bash configuration from %s." "$args")"
+    debug_append_info "$(printf "[${COLOR_PRI}Notice${COLOR_NC}]:  Reloaded bash configuration from %s." "$args")"
 }
 
 ## Clears all debugging logs:
 reset_debug_logs() {
     unset DEBUG_ERROR_BASH_LOG ; declare -ag DEBUG_ERROR_BASH_LOG
-    unset DEBUG_WARNING_BASH_LOG ; declare -ag DEBUG_WARNING_BASH_LOG
+    unset DEBUG_WARN_BASH_LOG ; declare -ag DEBUG_WARN_BASH_LOG
     unset DEBUG_INFO_BASH_LOG ; declare -ag DEBUG_INFO_BASH_LOG
 }
 

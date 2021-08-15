@@ -24,6 +24,7 @@
 ## Execute script linearly from this point.
 
 ## TODO: migrate display brightness cmds here
+
 ## Monitor Brightness Controls:
 # bindsym XF86MonBrightnessUp     exec --no-startup-id light -A 5 && $notify_low -h string:x-dunst-stack-tag:XF86brightness -a "light" -t 750 "Brightness: $(light -G)"
 # bindsym XF86MonBrightnessDown   exec --no-startup-id light -U 5 && $notify_low -h string:x-dunst-stack-tag:XF86brightness -a "light" -t 750 "Brightness: $(light -G)"

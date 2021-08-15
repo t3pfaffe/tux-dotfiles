@@ -23,7 +23,7 @@
 
 ## Tag self as linked for dependents:
 # shellcheck disable=2034
-HAS_BASH_ALIASES=true
+declare HAS_BASH_ALIASES=true
 
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
@@ -48,7 +48,7 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
     # Shortcut to fully clear screen.
     alias clear-full='printf "\033c"'
     # Shortcut clear-full screen
-    alias clsfull='clear-full ; motd'
+    alias clsf='clear-full ; motd'
     # Shortcut clear screen
     alias cls='clear'
 
@@ -56,7 +56,7 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
     alias cp="cp -i"            # confirm before overwriting something
     alias df='df -h'            # human-readable sizes
     alias free='free -m'        # show sizes in MB
-    alias lsall="pwd ; ls -a"
+    alias lsa="pwd ; ls -a"
 
     ## Return directory sizes:
     function dir_size() {
@@ -78,7 +78,7 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
         local args="-h ${*}"
         local fileCnt=" " ; fileCnt=$( /usr/bin/ls "$dir_arg" $args -1 | /usr/bin/wc -l )
         printf "%s/: %s files, \n" "$dir_arg" "$fileCnt"
-        ls "$dir_arg" $args
+        /usr/bin/exa "$dir_arg" --icons --header --git --long $args
     }
     alias sd='show_dir'
 
@@ -94,10 +94,9 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
     alias cdir="change_dir"
 
     ## Shortcut for common directories to cd to:
-    alias cdhome='cdir ~'
-    alias cddownloads='cdir ~/Downloads'
-    alias cdd='cddownloads'
-    alias cdprojects='cdir ~/Projects'
+    alias cdhome='cdir ~' ; alias cdh='cdhome'
+    alias cddownloads='cdir ~/Downloads'; alias cdd='cddownloads'
+    alias cdprojects='cdir ~/Projects';
     alias cdscripts='cdir ~/Documents/Scripts'
     alias cdconfig='cd ~/.config/'
 
@@ -107,9 +106,15 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
 
 ## Bash operations & shortcuts:
 ###############################
+
     ## Shortcuts to reload ~/.bashrc:
-    alias reload_bash='clear-full ; reset_debug_logs ; reset_init_msgs ; notify_reload "~/.bashrc" ; source ~/.bashrc'
-    # Shortcut reload_bash
+    reload_bash() {
+        reset_debug_logs ; reset_init_msgs
+        clear-full
+        notify_reload "${HOME}/.bashrc" ;
+        # shellcheck disable=1090
+        source ~/.bashrc ;
+    }
     alias rld='reload_bash'
 
     ## Shortcuts to clear bash_history:
@@ -123,21 +128,34 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
 
 ## Native ArchLinux operations/shortcuts:
 #########################################
-    ## Set default native pkg wrapper:
+    ## Default native pacman shortcuts:
     alias pacm='/usr/bin/sudo /usr/bin/pacman'
     alias pacmup='pacm --noconfirm -Syu'
 
     ## Set preferred pkg wrapper:
-    if cmd_exists paru  ; then alias pac='/usr/bin/paru'
-    elif cmd_exists yay ; then alias pac='/usr/bin/yay'
+    if cmd_exists /usr/bin/paru  ; then
+        alias pac='/usr/bin/paru'
+        alias pacre='/usr/bin/paru --noconfirm -S --redownload --rebuild '
+    elif cmd_exists /usr/bin/yay ; then alias pac='/usr/bin/yay'
     else alias pac='pacm' ; fi
 
     ## Pacman wrapper shortcuts:
-    alias pacup='pac --noconfirm -Syu'
     alias pacin='pac --noconfirm -S'
     alias paclist='pac -Qet'
     alias pacclear='pac -Sc'
     alias pacclear-full='pac -Scc'
+
+    ## Comprehensive non-interactive system update shortcut:
+    pacman_update() {
+        pacup_cmd='pac --noconfirm -Syu ; '
+        ## Add cmd hooks to update non-pacman packages as well:
+        cmd_exists /usr/bin/flatpak  && pacup_cmd+='flatpak update --noninteractive ; '
+        cmd_exists /usr/bin/tldr     && pacup_cmd+='tldr -u -q ; '
+
+        # Run the update
+        eval "$pacup_cmd"
+    } ; alias pacup='pacman_update'
+
 
     ## Displays Reference for various pacman cmds:
     pachelp() {
@@ -164,7 +182,8 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
     # [reference]( https://wiki.archlinux.org/index.php/Mirrors )
     get_fastest_mirrors() {
         printf "Pulling from archlinux.org/mirrorlist and ranking those servers by speed...\n\n"
-        curl -s "https://archlinux.org/mirrorlist/?country=US&country=CA&country=CH&protocol=https&use_mirror_status=on" | sed -e 's/^#Server/Server/' -e '/^#/d' | rankmirrors -n 6 -
+        curl -s "https://archlinux.org/mirrorlist/?country=US&country=CA&country=CH&protocol=https&use_mirror_status=on" \
+        | sed -e 's/^#Server/Server/' -e '/^#/d' | rankmirrors -n 6 -
         printf "\n done.\n"
     }
 #########################################
@@ -176,7 +195,12 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
     alias please='sudo'
 
     # Shortcut for micro text-editor
-    alias mi='micro'
+    cmd_exists 'micro' && alias mi='/usr/bin/micro'
+
+    # Shortcuts to remap ls to exa
+	if cmd_exists 'exa' ; then
+    	alias ls='/usr/bin/exa'
+	fi
 
     # Shortcut CMDs for Xorg multiseat
     alias enable_multi="export DISPLAY=:0 && /usr/bin/sudo xhost +local: "
@@ -191,11 +215,17 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
     alias x-lock='~/.config/i3/scripts/sensible-xlock.sh'
     alias xidle-lock='~/.config/i3/scripts/sensible-xidlelock.sh'
 
+    ## Shortcut to logout & kill the current session
+    alias end_session='/usr/bin/loginctl terminate-session ${XDG_SESSION_ID}'
+
+    ## Shortcut to logout & kill the current Cinnamon Session
+    alias end_cinnamon='/usr/bin/cinnamon-session-quit || end_session '
+
     ## Shortcut to restart i3WM
-    alias reload_i3="i3-msg 'restart'"
+    alias reload_i3="/usr/bin/i3-msg 'restart'"
 
     ## Shortcut to restart CinnamonDE
-    alias reload_cinnamon='cinnamon -replace -d :0.0 > /dev/null 2>&1 &'
+    alias reload_cinnamon='/usr/bin/cinnamon --replace -d :0.0 > /dev/null 2>&1 &'
 
     ## Shortcuts for xClip:
     if cmd_exists 'xclip' ; then
@@ -210,7 +240,7 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
     fi
 
     ## Shortcut to remap bashtop:
-    cmd_exists 'bpytop' && alias bashtop='bpytop'
+    cmd_exists 'bpytop' && alias bashtop='/usr/bin/bpytop'
 
 ######################
 
@@ -220,34 +250,23 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
 ##################
 ## Static and dynamically linked functions, scripts, & utilities.
 
-## Pull wallpaper location from nitrogen's config:
-####################################
-get_nitrogen_wallpaper() {
-    local nitrogen_conf=~/.config/nitrogen/bg-saved.cfg
-    cmd_exists nitrogen && ( file_exists $nitrogen_conf || return 1 ) || return 1
-    local nitrogen_wall=""; nitrogen_wall=$( sed -n 's/^file=//p' $nitrogen_conf | head -n 1 )
-    ! str_empty "$nitrogen_wall" && ( echo "$nitrogen_wall" && return 0) ; return 1
+## 'get_pub_ip' - Query for this device's public ip:
+## usage: get_pub_ip
+####################################################
+get_pub_ip() {
+    wget -qO - http://wtfismyip.com/text
 }
-####################################
-
-## Pull wallpaper location from cinnamon's dconf config:
-####################################
-get_dconf_wallpaper() {
-    cmd_exists gsettings || return 1
-    local cinnamon_wall=""; cinnamon_wall=$( gsettings get org.cinnamon.desktop.background picture-uri | sed 's/\x27//g ; s/file\:\/\///g' )
-    ! str_empty "$cinnamon_wall" && file_exists "$cinnamon_wall" && echo "$cinnamon_wall" && return 0 ; return 1
-}
-####################################
+####################################################
 
 ## 'macvendor' - Query mac vendor information given address:
 ## usage: macvendor <address-string>
-############################################
+############################################################
 macvendor() {
     str_empty "$1" return 1 ; local arg=${1//\:/-}
     local lookup_src='https://api.macvendors.com'
     printf "%s\n" "$(curl $lookup_src'/'"$arg" 2>/dev/null )"
 }
-############################################
+############################################################
 
 ## 'edit' - Preferential tui text-editor:
 ## usage: edit <file>
@@ -267,7 +286,8 @@ edit() {
 ## usage: gui_edit <file>
 #############################################
 gui_edit() {
-        xdg-open "$1" 1> /dev/null && return 0
+    xdg-open "$1" 2> /dev/null && return 0
+
     edit "$1" && return 0
     return 1 # return fail status
 } ; alias ged='gui_edit'
@@ -326,7 +346,7 @@ pacman_audit() {
     fi
 
     printf "\n * Checking for all installed packages with known vulnerabilities... \n"
-    arch-audit | grep -i '\(High\|Critical\) risk!' | awk '//{printf "\tPkg %s \t has a vulnerability which is\t %s %s\n", $2, $(NF-1), $NF}'
+    arch-audit | grep -i '\(High\|Critical\) risk!' | awk '//{printf "\tPkg %s \t has a vulnerability which is\t %s %s\n", $1, $(NF-1), $NF}'
 
     printf "\nPerforming PKG Build Check: "
     printf "\n * Checking for PKGs that need to be rebuilt...\n" ;
@@ -368,15 +388,36 @@ show_colors() {
 }
 ###########################################
 
-## Get & Set wallpaper ENV Var:
-##############################
-define_wallpaper() {
-    # Set Wallpaper location ENV Var
-    local cmd_output=""
+## Pull wallpaper location from nitrogen's config:
+## usage: 'get_nitrogen_wallpaper'
+##################################################
+get_nitrogen_wallpaper() {
+    local nitrogen_conf=~/.config/nitrogen/bg-saved.cfg
+    cmd_exists nitrogen && ( file_exists $nitrogen_conf || return 1 ) || return 1
+    local nitrogen_wall=""; nitrogen_wall=$( sed -n 's/^file=//p' $nitrogen_conf | head -n 1 )
+    ! str_empty "$nitrogen_wall" && ( echo "$nitrogen_wall" && return 0) ; return 1
+}
+##################################################
+
+## Pull wallpaper location from cinnamon's dconf config:
+## usage: 'get_dconf_wallpaper'
+########################################################
+get_dconf_wallpaper() {
+    cmd_exists gsettings || return 1
+    local cinnamon_wall=""; cinnamon_wall=$( gsettings get org.cinnamon.desktop.background picture-uri | sed 's/\x27//g ; s/file\:\/\///g' )
+    ! str_empty "$cinnamon_wall" && file_exists "$cinnamon_wall" && echo "$cinnamon_wall" && return 0 ; return 1
+}
+########################################################
+
+## Get & Set wallpaper ENV var from other sources:
+## usage: 'define_wallpaper_var'
+##################################################
+define_wallpaper_var() {
+    local cmd_output
     cmd_output=$(get_dconf_wallpaper) || cmd_output=$(get_nitrogen_wallpaper) || return 1
     export WALLPAPER=${cmd_output} && return 0 || return 1
-} ; alias define_wallpaper_var='define_wallpaper'
-##############################
+} ; alias define_wallpaper='define_wallpaper_var'
+##################################################
 
 ## Link to user scripts bash_aliases_scripts file:
 # shellcheck source=src/Documents/Scripts/.bash_aliases_scripts
