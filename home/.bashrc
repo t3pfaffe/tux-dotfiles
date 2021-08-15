@@ -42,16 +42,27 @@ link_source $SRC_BASH_DEBUG_UTILS
 ### MASTER_TOGGLES: #######################################################
 #######################
 
-## Enable/Disable color options:
-export USE_BASH_COLOR=true
+## Enable/Disable printing a motd on new terminal session:
+safe_declare BASH_DO_SHOW_MOTD '=true'
+
+## Enable/Disable colorizing of terminal output:
+safe_declare BASH_DO_SHOW_COLOR '=true'
+
+## Enable/Disable clearing vars after init:
+safe_declare BASH_DEBUG_DO_CLEANUP_VARS '=true'
+## Enable/Disable clearing logs after init:
+safe_declare BASH_DEBUG_DO_CLEANUP_LOGS '=true'
+## Enable/Disable Performing lint check and initialization:
+safe_declare BASH_DEBUG_DO_LINT '=true'
 
 ## Enable/Disable what debug levels are displayed:
-safe_export USE_BASH_DEBUG_LVL_ERRORS true   # Critical ERRORS that *will* impact necessary functionality.
-safe_export USE_BASH_DEBUG_LVL_WARNINGS true # Noncritical WARNINGS that *may* impact desired functionality.
-safe_export USE_BASH_DEBUG_LVL_INFO true     # Noncritical INFO on the bash configuration that *wont* impact functionality.
+safe_declare USE_BASH_DEBUG_LVL_ERRORS '=true'   # Critical ERRORS that *will* impact necessary functionality.
+safe_declare USE_BASH_DEBUG_LVL_WARNINGS '=true' # Non-critical WARNINGS that *may* impact desired functionality.
+safe_declare USE_BASH_DEBUG_LVL_INFO '=true'     # Non-critical INFO on the bash configuration that *wont* impact functionality.
 
-## Enable/Disable clearing logs after init:
-export BASH_DEBUG_CLR_INIT=true
+try_unset() {
+    $BASH_DEBUG_DO_CLEANUP_VARS && unset "$@"
+}
 
 ##########################
 ### SETUP_MSGS_BUFFER: ####################################################
@@ -69,7 +80,7 @@ append_init_msgs() {
 }
 
 reset_init_msgs() {
-    unset INIT_MSGS_BASH_LOG ; declare -ag INIT_MSGS_BASH_LOG
+    $BASH_DEBUG_DO_CLEANUP_VARS && unset INIT_MSGS_BASH_LOG ; declare -ag INIT_MSGS_BASH_LOG
 }
 
 
@@ -79,7 +90,7 @@ reset_init_msgs() {
 ## User specific environment variables.
 
 ## Set vars for default terminal:
-safe_export TERM 'alacritty'
+safe_export TERM 'xterm-256color'
 safe_export TERMINAL "${TERM}"
 safe_export XDG_TERMINAL "${TERMINAL}"
 
@@ -96,7 +107,17 @@ export EDITOR='nano'
 ######################################
 ## Set Default 'No-Color'
 export COLOR_NC='\e[0m'
-alias  COLOR_RESET='tput sgr0'
+
+## Term Modifiers
+alias reset_color='tput sgr0'
+
+## Type Modifiers:
+declare TXT_BOLD='\e[1m'     # Start bold
+declare TXT_BLNK='\e[5m'     # Start blinking
+declare TXT_SMUL='\e[4m'     # Start underline
+declare TXT_RMUL='\e[24m'    # End underline
+declare TXT_SMSO='\e[3m'     # Start 'standout'
+declare TXT_RMSO='\e[23m'    # End 'standout'
 
 ## Set Basic Colors
 export COLOR_BLACK='\e[0;30m'
@@ -109,39 +130,32 @@ export COLOR_CYAN='\e[0;36m'
 export COLOR_WHITE='\e[0;0m'
 
 ## Set Bold Modified Basic Colors
-export COLOR_BLD_RED='\e[1;31m'
-export COLOR_BLD_GREEN='\e[1;32m'
-export COLOR_BLD_YELLOW='\e[1;33m'
-export COLOR_BLD_BLUE='\e[1;34m'
-export COLOR_BLD_PURPLE='\e[1;35m'
-export COLOR_BLD_CYAN='\e[1;36m'
-export COLOR_BLD_WHITE='\e[1m'
+declare COLOR_BLD_BLACK='\e[1;30m'
+declare COLOR_BLD_RED='\e[1;31m'
+declare COLOR_BLD_GREEN='\e[1;32m'
+declare COLOR_BLD_YELLOW='\e[1;33m'
+declare COLOR_BLD_BLUE='\e[1;34m'
+declare COLOR_BLD_PURPLE='\e[1;35m'
+declare COLOR_BLD_CYAN='\e[1;36m'
+declare COLOR_BLD_WHITE='\e[1m'
 
 ## TODO: figure out what to do w/ these
-export COLOR_LIGHT_GRAY='\e[0;37m'
-export COLOR_LIGHT_RED='\e[1;31m'
-export COLOR_LIGHT_GREEN='\e[1;32m'
-export COLOR_LIGHT_BLUE='\e[1;34m'
-export COLOR_LIGHT_PURPLE='\e[1;35m'
-export COLOR_LIGHT_CYAN='\e[1;36m'
-export COLOR_GRAY='\e[1;30m'
+#declare COLOR_LIGHT_GRAY='\e[0;37m'
+#declare COLOR_LIGHT_RED='\e[1;31m'
+#declare COLOR_LIGHT_GREEN='\e[1;32m'
+#declare COLOR_LIGHT_BLUE='\e[1;34m'
+#declare COLOR_LIGHT_PURPLE='\e[1;35m'
+#declare COLOR_LIGHT_CYAN='\e[1;36m'
+#declare COLOR_GRAY='\e[1;30m'
 
 ## Set Main Theme Colors:
-export COLOR_PRI='\033[38;5;71m'
-export COLOR_SEC='\e[32m'
+safe_export COLOR_PRI '\033[38;5;71m'
+safe_export COLOR_SEC '\e[32m'
 
 ## Debug Colors:
-export COLOR_ALRT='\e[1;31m'
-export COLOR_WARN='\e[1;33m'
-
-## Modifiers:
-export TXT_BOLD='\e[1m'
-
-## Reformat of common colors for use in bash PS* prompts:
-FCLR_NC='\['"${COLOR_NC}"'\]'
-FCLR_PRI='\['"${COLOR_PRI}"'\]'
-FCLR_SEC='\['"${COLOR_NC}"'\]'
-FCLR_ALRT='\['"${COLOR_ALRT}"'\]'
+safe_export COLOR_ALRT '\e[1;31m'
+safe_export COLOR_WARN '\e[1;33m'
+##
 ######################################
 
 
@@ -159,34 +173,30 @@ FORM_SUBSHELL_LVL=""; [ $SHLVL -gt 1 ] && FORM_SUBSHELL_LVL="(↳ ${SHLVL})"
 TITLEBAR="${USER}@${HOSTNAME%%.*}: ${PWD/#$HOME/\~}/"
 PS_TITLEBAR='[\u@\h \w]:$ '
 
-PS_PROMPT="\[\033[0m\]${FCLR_SEC}${SUBSHELL_LVL}${FCLR_PRI}[\u${FCLR_SEC}@${FCLR_PRI}\h ${FCLR_PRI}\w/]:${FCLR_NC}\$ \[\033[0m\]"
-PS_PROMPT_NC=$PS_TITLEBAR
-PS_PROMPT_ROOT="\[\033[0m\]${FCLR_SEC}${SUBSHELL_LVL}${FCLR_PRI}[\u${FCLR_SEC}@${FCLR_ALRT}\h ${FCLR_ALRT}\w]:${FCLR_NC}\$ \[\033[0m\]"
-PS_PROMPT_ROOT_NC=$PS_TITLEBAR
+## Reformat of common colors for use in bash PS* prompts:
+FCLR_NC='\['"${COLOR_NC}"'\]'
+FCLR_PRI='\['"${COLOR_PRI}"'\]'
+FCLR_SEC='\['"${COLOR_NC}"'\]'
+FCLR_ALRT='\['"${COLOR_ALRT}"'\]'
 
-## TODO: filter out color escapes when usecolor is false
-# Use RegEx: /\\\[\\(e|[0-9]{3})\[(.{1,5}m)\\\]/ig ; Which results in: [\u@\h \w]:$
-# [ref]( https://regex101.com/r/ncLX6R/1 )
-rm_prompt_clrs() {
-    PS_PROMPT=$PS_PROMPT_NC ; PS_PROMPT_ROOT=$PS_PROMPT_ROOT_NC
-}
+## TODO: Filter out color escapes when color is disabled instead of keeping two different vars.
+PS_PROMPT=$PS_TITLEBAR
+PS_PROMPT_COLOR="\[\033[0m\]${FCLR_SEC}${SUBSHELL_LVL}${FCLR_PRI}[\u${FCLR_SEC}@${FCLR_PRI}\h ${FCLR_PRI}\w/]:${FCLR_NC}\$ \[\033[0m\]"
+PS_PROMPT_ROOT=$PS_TITLEBAR
+PS_PROMPT_ROOT_COLOR="\[\033[0m\]${FCLR_SEC}${SUBSHELL_LVL}${FCLR_PRI}[\u${FCLR_SEC}@${FCLR_ALRT}\h ${FCLR_ALRT}\w]:${FCLR_NC}\$ \[\033[0m\]"
 
-if ${USE_BASH_COLOR} ; then
+if ${BASH_DO_SHOW_COLOR} ; then
 
     ## Find dircolors database:
-    get_dircolors () {
+    get_dircolors() {
         file_exists  ~/.dir_colors   && cat ~/.dir_colors   && return 0
         file_exists  /etc/DIR_COLORS && cat /etc/DIR_COLORS && return 0
         cmd_exists   dircolors       && dircolors --print-database   && return 0
         return 1 # return fail state
     }
 
-    # Get output of dircolors database
-    dircolors_out=$(get_dircolors)
-
-	## Define colors for cmds like ls & etc:
-	##  Prefers ~/.dir_colors config file.
-    set_dircolors () {
+	## Create new ~/.dir_colors if not present:
+    create_dircolors_conf() {
 	    if cmd_exists dircolors ; then
 		    if file_exists ~/.dir_colors ; then
 			    eval "$(dircolors -b ~/.dir_colors)"
@@ -197,25 +207,28 @@ if ${USE_BASH_COLOR} ; then
 	}
 
     # Set dircolors from config
-    set_dircolors
+    create_dircolors_conf
+    # Get output of dircolors database
+    dircolors_out=$(get_dircolors)
 
-    ## Alias cmds so that they show dircolors:
-	alias ls='ls --color=auto'
-	alias grep='grep --colour=auto'
-	alias egrep='egrep --colour=auto'
-	alias fgrep='fgrep --colour=auto'
-	alias dmesg='dmesg --color'
-	alias less='less -r'
 
 	#Set colorful PS1 only on colorful terminals:
-	if ! [[ $'\n'${dircolors_out} == *$'\n'"TERM "${TERM//[^[:alnum:]]/?}* ]] ; then
-		rm_prompt_clrs
+	if [[ $'\n'${dircolors_out} == *$'\n'"TERM "${TERM//[^[:alnum:]]/?}* ]] ; then
+        PS_PROMPT=$PS_PROMPT_COLOR ; PS_PROMPT_ROOT=$PS_PROMPT_ROOT_COLOR
+
+        ## Alias cmds so that they show dircolors:
+	    alias ls='ls --color=auto'
+	    alias grep='grep --colour=auto'
+	    alias egrep='egrep --colour=auto'
+	    alias fgrep='fgrep --colour=auto'
+	    alias dmesg='dmesg --color'
+	    alias less='less -r'
+
     fi
 
 	# Cleanup variables used
-	unset dircolors_out
-else
-    rm_prompt_clrs
+    try_unset get_dircolors create_dircolors_conf dircolors_out
+
 fi
 
 ## Set the PS1 Prompt:
@@ -231,7 +244,8 @@ PS3="LN ${LINENO} >  "
 PS4="LN ${LINENO} >+ "
 
 ## Change the window title of X terminals:
-#########################################
+##########################################
+
 # TODO: fix for ssh.
 case ${TERM} in
 	alacritty*|termite*|xterm*|rxvt*|Eterm*|konsole*|gnome*|aterm|kterm|interix)
@@ -241,30 +255,37 @@ case ${TERM} in
 		PROMPT_COMMAND='echo -en "\033]0;${USER}@${HOSTNAME%%.*}:${PWD/#$HOME/\~}\033\\"'
     ;;
 esac
-#########################################
 
-##Define & print Interactive Shell's MOTD
-####################################
+## Cleanup variables used:
+try_unset PS_PROMPT PS_PROMPT_ROOT PS_PROMPT_COLOR PS_PROMPT_ROOT_COLOR PS_TITLEBAR TITLEBAR SUBSHELL_LVL FORM_SUBSHELL_LVL
+try_unset FCLR_NC FCLR_PRI FCLR_SEC FCLR_ALRT
+##########################################
+
+## Define & print Interactive Shell's MOTD:
+##########################################
 motd_notices() {
-    local ln=
+
 
     ## Check and append log entries to msg buffer.
-    if $USE_BASH_DEBUG_LVL_INFO     ; then INIT_MSGS_BASH_LOG+=( "${DEBUG_INFO_BASH_LOG[@]}" )    ; fi
-    if $USE_BASH_DEBUG_LVL_WARNINGS ; then INIT_MSGS_BASH_LOG+=( "${DEBUG_WARNING_BASH_LOG[@]}" ) ; fi
-    if $USE_BASH_DEBUG_LVL_ERRORS   ; then INIT_MSGS_BASH_LOG+=( "${DEBUG_ERROR_BASH_LOG[@]}" )  ; fi
+    $USE_BASH_DEBUG_LVL_INFO     && INIT_MSGS_BASH_LOG+=( "${DEBUG_INFO_BASH_LOG[@]}" )
+    $USE_BASH_DEBUG_LVL_WARNINGS && INIT_MSGS_BASH_LOG+=( "${DEBUG_WARN_BASH_LOG[@]}" )
+    $USE_BASH_DEBUG_LVL_ERRORS   && INIT_MSGS_BASH_LOG+=( "${DEBUG_ERROR_BASH_LOG[@]}" )
 
-    # Exit if there is no messages in the buffer:
-    if [ ${#INIT_MSGS_BASH_LOG[@]} -eq 0 ] ; then return 1 ; fi
+    ## Check if there is no messages in the buffer:
+    if [ ${#INIT_MSGS_BASH_LOG[@]} -ne 0 ] ; then
+        local ln
 
-    ## Print out messages in buffer
-    for ln in "${INIT_MSGS_BASH_LOG[@]}" ; do
-      str_empty "$ln" || printf "\n%s" "$ln"
-    done ; printf "\n- - - - - - - - \n"
+        # Print out messages in buffer
+        for ln in "${INIT_MSGS_BASH_LOG[@]}" ; do
+          str_empty "$ln" || printf "\n%s" "$ln"
+        done ; printf "\n- - - - - - - - \n"
 
-    # Clear message buffer after printing ;
-    reset_init_msgs
-    $BASH_DEBUG_CLR_INIT && reset_debug_logs
+    else
+        $BASH_DEBUG_DO_CLEANUP_LOGS && reset_debug_logs
+        return 1
+    fi
 
+    $BASH_DEBUG_DO_CLEANUP_LOGS && reset_debug_logs
 }
 motd_short() {
 
@@ -281,7 +302,11 @@ motd_short() {
 motd_long() {
 
     # Print any errors/notices ahead of the MOTD
-    motd_notices
+    if ( motd_notices ) ; then
+        # Clear message buffer after printing ;
+        $BASH_DEBUG_DO_CLEANUP_LOGS && reset_init_msgs
+    fi
+
     ## Print motd header and prepend the bash_version:
     printf "(Bash_%s) " "${BASH_VERSION%(*}"
     motd_short
@@ -297,24 +322,24 @@ alias motd='motd_short'
 ## Configure bash options & run whatever necessary
 #   prior to terminal user input.
 
-# Enable (-s) or Disable (-u) bash aliases
+## Note: shopt < -s (Enable) | -u (Disable)>
+
+# Enable bash aliases
 shopt -s expand_aliases
 
-# Enable (-s) or Disable (-u) history appending
-#  instead of overwriting.
+# Enable history append instead of overwriting
 shopt -s histappend
 
-# Enable (-s) or Disable (-u) checking terminal
-#  size on refocus.
+# Enable checking terminal size on refocus
 shopt -s checkwinsize
 
-# Prevent Ctrl+S Freezing Terminal
+# Disable XOFF (aka Ctrl+S freeze)
 stty -ixon
 
-# Check for errors in config before linking
-bash_lint >/dev/null || debug_notify_syntax_err "$SRC_BASHRC"
+## Check for errors in config before linking:
+$BASH_DEBUG_DO_LINT && ( bash_lint >/dev/null || debug_notify_syntax_err "$SRC_BASHRC" )
 
-# Link bash_alias file:
+## Link bash_alias file:
 #  shellcheck source=./.bash_aliases
 link_source $SRC_BASH_ALIASES
 
@@ -330,17 +355,16 @@ cmd_exists define_wallpaper_var && define_wallpaper_var
 cmd_exists reload_bash || ( ( alias reload_bash=' cls ; source $(SRC_BASHRC) ' && alias rld='reload_bash' ) ; debug_notify_link_err $SRC_BASHRC )
 
 ## Debug Functionality Test:
-#debug_notify_info "testing  notify_info !"
-# debug_notify_warn "testing  notify_warn !"
-# debug_notify_err  "testing notify_error !"
+#debug_notify_info "TEST_INFO!"
+#debug_notify_link_warn "TEST_WARN!"
+#debug_notify_link_err  "TEST_ERR!"
 
 ##Print MOTD
-motd_long
+$BASH_DO_SHOW_MOTD && motd_long
 
 
-#########################
-### AUTO-GEN_APPENDS: ######################################################
-#########################
+#####################
+### LINK_APPENDS: ##########################################################
+#####################
 ## Usually added by install scripts and appended to this file.
 ##
-

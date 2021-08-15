@@ -100,19 +100,41 @@ cmd_exists link_source && ( unset link_source ) ; link_source() {
     # shellcheck disable=1090,2086,2015
     if cmd_exists file_exists ; then
         if cmd_exists debug_notify_link_err >/dev/null ; then file_exists $src && source ${src} || ( debug_notify_link_err "$src" ; return 1 )   # if bash_debug_utils is linked
-        else file_exists ${src} && source ${src} || ( echo "Failed to link $src !!" ; return 1 ) fi;        # if only bash_utils is linked
+        else file_exists ${src} && source ${src} || ( echo "Failed to link $src !!" ; return 1 ) ; fi   # if only bash_utils is linked
     else [[ -f $src ]] && source $src || ( echo "Failed to link $src !!" ; return 1 ) ; fi ; return 0   # if no utils are linked
 }
 ####################################################
 
 ## 'safe_export' - Only exports variable if doesnt already exist:
 ## usage: safe_export <variable_name> <new_value>
-################################################################
+#################################################################
 safe_export () {
     if var_exists "$1" ; then return 1
     else export "${1}=""${2}" ; fi
 }
-################################################################
+#################################################################
+
+## 'safe_declare' - Only declares variable if doesnt already exist:
+## usage: safe_export <variable_name> '=<new_value>'
+###################################################################
+safe_declare () {
+    if var_exists "$1" ; then return 1
+    else
+        declare -g "${1}${2}"
+    fi
+}
+###################################################################
+
+## 'safe_declare_ro' - Only declares variable as readonly if doesnt already exist:
+## usage: safe_declare_ro <variable_name> '=<new_value>'
+##################################################################################
+safe_declare_ro () {
+    if var_exists "$1" ; then return 1
+    else
+        declare -g -r "${1}${2}" 2>&1 | grep -v 'readonly'
+    fi
+}
+##################################################################################
 
 ## 'esc_str' - Performs proper string escapes for bash:
 ## usage: esc_str <strings>
