@@ -129,13 +129,13 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
 ## Native ArchLinux operations/shortcuts:
 #########################################
     ## Default native pacman shortcuts:
-    alias pacm='/usr/bin/sudo /usr/bin/pacman'
-    alias pacmup='pacm --noconfirm -Syu'
+    alias pacn='/usr/bin/sudo /usr/bin/pacman'
+    alias pacnup='pacm --noconfirm -Syu'
 
     ## Set preferred pkg wrapper:
     if cmd_exists /usr/bin/paru  ; then
         alias pac='/usr/bin/paru'
-        alias pacre='/usr/bin/paru --noconfirm -S --redownload --rebuild '
+        alias pacinre='/usr/bin/paru --noconfirm -S --redownload --rebuild '
     elif cmd_exists /usr/bin/yay ; then alias pac='/usr/bin/yay'
     else alias pac='pacm' ; fi
 

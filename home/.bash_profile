@@ -51,8 +51,7 @@ link_source $SRC_BASHRC
 # shellcheck disable=SC1091
 
 ## Rust ENV Setup:
-link_source "$HOME/.cargo/env" && export CARGO_HOME="$HOME/.cargo/"
+cmd_exists cargo && link_source "$HOME/.cargo/env" && export CARGO_HOME="$HOME/.cargo/"
 
 ## Ruby ENV Setup:
-GEM_HOME="$(ruby -e 'puts Gem.user_dir')"; export GEM_HOME
-export PATH="$PATH:$GEM_HOME/bin"
+cmd_exists ruby && GEM_HOME="$(ruby -e 'puts Gem.user_dir')" && export GEM_HOME && export PATH="$PATH:$GEM_HOME/bin"
