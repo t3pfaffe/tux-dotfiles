@@ -15,7 +15,7 @@
         "units": "",
         "description": "Warning Level:",
         "tooltip": "Percentage at which the text starts blinking to warn the user. Set at 100 to deactivate.",
-        "value": 100
+        "value": 90.0
     },
     "__md5__": "f14e8816b95d12705e2b31fe1bbe75f3"
 }

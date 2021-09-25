@@ -2,12 +2,12 @@
     "lastGridCols": {
         "type": "generic",
         "default": 4,
-        "value": 2
+        "value": 4
     },
     "lastGridRows": {
         "type": "generic",
         "default": 4,
-        "value": 2
+        "value": 4
     },
     "headerKeys": {
         "type": "header",

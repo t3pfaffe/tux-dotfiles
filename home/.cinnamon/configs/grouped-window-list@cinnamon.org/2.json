@@ -198,15 +198,15 @@
     },
     "cycleMenusHotkey": {
         "type": "keybinding",
-        "default": "<Super>space",
+        "default": "",
         "description": "Global hotkey for cycling through thumbnail menus",
-        "value": "<Super>space"
+        "value": "::"
     },
     "show-apps-order-hotkey": {
         "type": "keybinding",
         "default": "<Super>grave",
         "description": "Global hotkey to show the order of apps",
-        "value": "<Super>grave"
+        "value": "::"
     },
     "show-apps-order-timeout": {
         "type": "spinbutton",
@@ -234,7 +234,7 @@
             "250 ms": 250,
             "500 ms": 500
         },
-        "value": 250
+        "value": 500
     },
     "thumbnail-size": {
         "type": "combobox",
@@ -264,7 +264,7 @@
         "type": "checkbox",
         "default": false,
         "description": "Animate thumbnails",
-        "value": false
+        "value": true
     },
     "vertical-thumbnails": {
         "type": "checkbox",
@@ -276,7 +276,7 @@
         "type": "checkbox",
         "default": false,
         "description": "Sort thumbnails according to the last focused windows",
-        "value": false
+        "value": true
     },
     "highlight-last-focused-thumbnail": {
         "type": "checkbox",
@@ -358,5 +358,5 @@
         "description": "Window opacity",
         "value": 100
     },
-    "__md5__": "a8bd266f01474817e50162d841192d67"
+    "__md5__": "66a0d0d0a20d5fc5d31531d7129d7df2"
 }
