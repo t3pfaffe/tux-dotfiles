@@ -35,22 +35,33 @@ export SCRIPTS_DIR=${USER_SCRIPTS_DIR}
 # Define DIR for user public scripts
 PUB_SCRIPTS_DIR=${USER_SCRIPTS_DIR}/Public
 
-
-## 'gen_script_aliases' - dynamic alias generator:
+## '' - :
 ##  usage: gen_script_aliases <directory>
 # Generates aliases dynamically for scripts
 #  within a given directory.
-#################################################
-# gen_script_aliases() {
 
-#    [[ -d $1 ]] && ( local READ_DIR="" ; READ_DIR=$1 ) || ( return 1 ) # Do nothing if directory doesnt exist
+#### #------
+#### 'gen_script_aliases' - Dynamically generates alias for scripts in dir:
+#&emsp; **usage:** `gen_script_aliases <directory_path>`
+#<!--#####################################################################
+gen_script_aliases() {
+    local READ_DIR file file_path file_name
 
-#    # TODO: Do the search for all .sh files,
-#    #        write them all into some file,
-#    #        and then link to said file.
-# }
-#################################################
+    [[ -d $1 ]] || return 1 # Do nothing if directory doesnt exist
+    READ_DIR=$1
 
+    for file_path in "${PUB_SCRIPTS_DIR}"/*.sh; do
+    if [ -f "$file_path" ]; then
+        file="${file_path##*/}"
+        file_name="${file%.*}"
+
+        #shellcheck disable=SC2139,SC2086
+        #echo "${file_path} -> ${file_name}"
+        alias $file_name="$file_path"
+    fi
+    done ; unset file
+}
+#<!--#####################################################################
 
 ###############################
 ### USER_SCRIPTS_SHORTCUTS: ###############################################

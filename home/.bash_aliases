@@ -126,31 +126,44 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
     alias bashedit="cd ~/ && micro .bashrc .bash_aliases .bash_profile ; show_dir "
 ###############################
 
-## Native ArchLinux operations/shortcuts:
-#########################################
+## Wrapping Arch Linux pkg management cmds:
+##########################################
     ## Default native pacman shortcuts:
-    alias pacm='/usr/bin/sudo /usr/bin/pacman'
-    alias pacmup='pacm --noconfirm -Syu'
+    alias pacn='/usr/bin/sudo /usr/bin/pacman'
+    alias pacnup='pacn --noconfirm -Syu'
+
+    ## Detect installed pacman wrappers/pkg managers:
+    cmd_exists /usr/bin/paru && declare -g -r PKG_HAS_paru=true &> /dev/null
+    cmd_exists /usr/bin/yay  && declare -g -r PKG_HAS_yay=true  &> /dev/null
+    cmd_exists /usr/bin/tldr && declare -g -r PKG_HAS_tldr=true &> /dev/null
+    cmd_exists /usr/bin/flatpak && declare -g -r PKG_HAS_flatpak=true &> /dev/null
 
     ## Set preferred pkg wrapper:
-    if cmd_exists /usr/bin/paru  ; then
+    if $PKG_HAS_paru ; then
         alias pac='/usr/bin/paru'
-        alias pacre='/usr/bin/paru --noconfirm -S --redownload --rebuild '
-    elif cmd_exists /usr/bin/yay ; then alias pac='/usr/bin/yay'
-    else alias pac='pacm' ; fi
+        alias pacinre='/usr/bin/paru --noconfirm -S --redownload --rebuild'
+    elif $PKG_HAS_yay ; then alias pac='/usr/bin/yay'
+    else alias pac='pacn' ; fi
 
-    ## Pacman wrapper shortcuts:
+    ## Pacman shortcuts:
     alias pacin='pac --noconfirm -S'
+    alias pacrm='pac -Rcns'
     alias paclist='pac -Qet'
     alias pacclear='pac -Sc'
     alias pacclear-full='pac -Scc'
 
+	if $PKG_HAS_flatpak ; then
+        alias flat='/usr/bin/flatpak'
+	    alias flatup='/usr/bin/flatpak update --noninteractive '
+    fi
+
     ## Comprehensive non-interactive system update shortcut:
     pacman_update() {
         pacup_cmd='pac --noconfirm -Syu ; '
+
         ## Add cmd hooks to update non-pacman packages as well:
-        cmd_exists /usr/bin/flatpak  && pacup_cmd+='flatpak update --noninteractive ; '
-        cmd_exists /usr/bin/tldr     && pacup_cmd+='tldr -u -q ; '
+        $PKG_HAS_flatpak && pacup_cmd+='flatup ; '
+        $PKG_HAS_tldr    && pacup_cmd+='tldr -u -q '
 
         # Run the update
         eval "$pacup_cmd"
@@ -186,7 +199,7 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
         | sed -e 's/^#Server/Server/' -e '/^#/d' | rankmirrors -n 6 -
         printf "\n done.\n"
     }
-#########################################
+##########################################
 
 ## Non-native cmd wrappers:
 ######################
