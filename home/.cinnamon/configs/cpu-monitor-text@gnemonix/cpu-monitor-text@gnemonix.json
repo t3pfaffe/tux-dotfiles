@@ -15,7 +15,7 @@
         "units": "",
         "description": "Max Percentage:",
         "tooltip": "Change the max percentage.\n\nIf not 100% than typically a multiple corresponding to the number of cores.\n\nExample: 4 cores (100 x 4) = 400%",
-        "value": 100
+        "value": 100.0
     },
     "update-interval": {
         "type": "spinbutton",

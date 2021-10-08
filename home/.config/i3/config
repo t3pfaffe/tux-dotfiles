@@ -67,7 +67,7 @@ exec_always --no-startup-id $exec_idlehook &
 
 ## Startup System- Applets:
 exec --no-startup-id nm-applet
-exec --no-startup-id pa-applet
+exec --no-startup-id volctl
 exec --no-startup-id blueman-applet
 
 ## Startup Non-Crit System Daemons:
