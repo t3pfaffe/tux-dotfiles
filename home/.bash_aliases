@@ -169,6 +169,7 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
         eval "$pacup_cmd"
     } ; alias pacup='pacman_update'
 
+    alias pacup_reboot='pacman_update && /usr/bin/shutdown -r now'
 
     ## Displays Reference for various pacman cmds:
     pachelp() {
