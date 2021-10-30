@@ -51,8 +51,7 @@ export COLOR_NC='\e[0m'
 
 ## Append argument to log
 debug_append_log() {
-    local arg
-    [ $# -le 1 ] && return 1;
+    [ $# -lt 1 ] && return 1; local arg
     arg="$1"; str_empty "$arg" && return 1 ; shift
 
     case $arg in
@@ -154,7 +153,8 @@ bash_lint_full() {
 ## usage: debug_bool_out <bash_cmd>
 ##########################################
 debug_bool_out() {
-    local args=${*}
+    [ $# -lt 1 ] && return 1; local args=${*}
+
     if ( $args ) ; then
         printf "RETURNED=${COLOR_GREEN}%s${COLOR_NC}\n" "TRUE" ; return 0
     else

@@ -19,7 +19,7 @@
 ################################
 
 ## Ignore these error codes globally:
-#shellcheck disable=SC2059
+# shellcheck disable=SC2015,SC2059
 
 ## Tag self as linked for dependents:
 # shellcheck disable=2034
@@ -30,7 +30,7 @@ declare HAS_BASH_ALIASES=true
 
 ## Script sourcing function:
 # shellcheck disable=1090,2086
-if ! command -v link_source &>/dev/null ; then link_source() { [[ -f $1 ]] && source $1 || echo "Failed to link ${1}!!"; } ; fi
+if ! command -v link_source &>/dev/null; then link_source() { [[ -f $1 ]] && source $1 || echo "Failed to link ${1}!!"; }; fi
 
 [ "$HAS_BASH_UTILS" = false ] && ( echo "ERROR! ~/.bash_aliases is not meant to be run without ~/.bashrc !" )
 
@@ -48,7 +48,7 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
     # Shortcut to fully clear screen.
     alias clear-full='printf "\033c"'
     # Shortcut clear-full screen
-    alias clsf='clear-full ; motd'
+    alias clsf='clear-full; motd'
     # Shortcut clear screen
     alias cls='clear'
 
@@ -56,7 +56,7 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
     alias cp="cp -i"            # confirm before overwriting something
     alias df='df -h'            # human-readable sizes
     alias free='free -m'        # show sizes in MB
-    alias lsa="pwd ; ls -a"
+    alias lsa="pwd; ls -a"
 
     ## Return directory sizes:
     function dir_size() {
@@ -67,16 +67,17 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
     }
     alias dsize="dir_size"
 
-    ## Visualize directory:
-    # shellcheck disable=2086
+    ## Visualize a given directory:
+    # shellcheck disable=2086  ## Not double-qouting is intentional here.
     show_dir() {
-        local dir_arg
+        local dir_arg args fileCnt
 
-        if str_empty "$1" || [[ "$1" == -* ]] ; then dir_arg=$(pwd)
-        else dir_arg=$1 && shift ; fi
+        ## Defaults target dir to current if no other is specified in $1:
+        if str_empty "$1" || [[ "$1" == -* ]]; then dir_arg=$(pwd)
+        else dir_arg=$1 && shift; fi
 
-        local args="-h ${*}"
-        local fileCnt=" " ; fileCnt=$( /usr/bin/ls "$dir_arg" $args -1 | /usr/bin/wc -l )
+        args="-h ${*}";
+        fileCnt=$( /usr/bin/ls "$dir_arg" $args -1 | /usr/bin/wc -l || printf " " )
         printf "%s/: %s files, \n" "$dir_arg" "$fileCnt"
         /usr/bin/exa "$dir_arg" --icons --header --git --long $args
     }
@@ -85,16 +86,17 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
     ## Directory change but more visual:
     change_dir() {
         str_empty "$1" && return 1
-        local dir_arg="$1" ; shift
+        local dir_arg="$1"; shift
         local args="$*"
 
         cd "$dir_arg" || return 1
-        show_dir "$dir_arg" "$args" ; return 0
+        show_dir "$dir_arg" "$args"; return 0
     }
     alias cdir="change_dir"
 
     ## Shortcut for common directories to cd to:
-    alias cdhome='cdir ~' ; alias cdh='cdhome'
+    alias cdlast='cd -'
+    alias cdhome='cdir ~'; alias cdh='cdhome'
     alias cddownloads='cdir ~/Downloads'; alias cdd='cddownloads'
     alias cdprojects='cdir ~/Projects';
     alias cdscripts='cdir ~/Documents/Scripts'
@@ -109,7 +111,7 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
 
     ## Shortcuts to reload ~/.bashrc:
     reload_bash() {
-        reset_debug_logs ; reset_init_msgs
+        reset_debug_logs; reset_init_msgs
         clear-full
         notify_reload "${HOME}/.bashrc" ;
         # shellcheck disable=1090
@@ -118,19 +120,19 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
     alias rld='reload_bash'
 
     ## Shortcuts to clear bash_history:
-    alias clear_bash_history='rm ~/.bash_history* ; history -c && reload_bash'
+    alias clear_bash_history='rm ~/.bash_history*; history -c && reload_bash'
     # Shortcut clear_bash_history
     alias clshistory='clear_bash_history'
 
     ## Shortcuts for editing bash config files:
-    alias bashedit="cd ~/ && micro .bashrc .bash_aliases .bash_profile ; show_dir "
+    alias bashedit="cd ~/ && micro .bashrc .bash_aliases .bash_profile; show_dir "
 ###############################
 
 ## Wrapping Arch Linux pkg management cmds:
 ##########################################
     ## Default native pacman shortcuts:
     alias pacn='/usr/bin/sudo /usr/bin/pacman'
-    alias pacnup='pacn --noconfirm -Syu'
+    alias pacnup='pacman_update --noaur --noflat'
 
     ## Detect installed pacman wrappers/pkg managers:
     cmd_exists /usr/bin/paru && declare -g -r PKG_HAS_paru=true &> /dev/null
@@ -139,11 +141,11 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
     cmd_exists /usr/bin/flatpak && declare -g -r PKG_HAS_flatpak=true &> /dev/null
 
     ## Set preferred pkg wrapper:
-    if $PKG_HAS_paru ; then
+    if $PKG_HAS_paru; then
         alias pac='/usr/bin/paru'
         alias pacinre='/usr/bin/paru --noconfirm -S --redownload --rebuild'
-    elif $PKG_HAS_yay ; then alias pac='/usr/bin/yay'
-    else alias pac='pacn' ; fi
+    elif $PKG_HAS_yay; then alias pac='/usr/bin/yay'
+    else alias pac='pacn'; fi
 
     ## Pacman shortcuts:
     alias pacin='pac --noconfirm -S'
@@ -152,41 +154,76 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
     alias pacclear='pac -Sc'
     alias pacclear-full='pac -Scc'
 
-	if $PKG_HAS_flatpak ; then
+	if $PKG_HAS_flatpak; then
         alias flat='/usr/bin/flatpak'
 	    alias flatup='/usr/bin/flatpak update --noninteractive '
     fi
 
     ## Comprehensive non-interactive system update shortcut:
     pacman_update() {
-        pacup_cmd='pac --noconfirm -Syu ; '
+        local pacup_cmd pac_cmd; local do_noint=true; local do_quiet=false; local do_noaur=false; local do_noflat=false; local do_notldr=false
+
+        if [ $# -ge 1 ]; then for i in "$@"; do case $i in
+            -i|--interactive) do_noint=false; do_quiet=false; shift;;
+            -q|--quiet)  do_quiet=true; do_noint=true; shift;;
+            -A|--noaur)  do_noaur=true;  shift;;
+            -F|--noflat) do_noflat=true; shift;;
+            -T|--notldr) do_notldr=true; shift;;
+            *-[!\ ]*)   printf "Error: '%s' is not a valid parameter!" "${1}"; shift;;
+        esac; done; fi
+
+        pac_cmd='sudo /usr/bin/pacman -Syu '
+        $do_noaur || pac_cmd='pac -Syu --sudoloop --cleanafter --skipreview '
+        $do_noint && pac_cmd+=' --noconfirm '
+        $do_quiet && pac_cmd+=' 1>/dev/null '
+        pacup_cmd="${pac_cmd}; "
 
         ## Add cmd hooks to update non-pacman packages as well:
-        $PKG_HAS_flatpak && pacup_cmd+='flatup ; '
-        $PKG_HAS_tldr    && pacup_cmd+='tldr -u -q '
+        $PKG_HAS_flatpak && $do_noflat || pacup_cmd+='flatup; '
+        $PKG_HAS_tldr    && $do_notldr || pacup_cmd+='tldr -u -q; '
 
-        # Run the update
-        eval "$pacup_cmd"
-    } ; alias pacup='pacman_update'
+        ## Run the update:
+        if $do_quiet; then eval "$pacup_cmd" 1>/dev/null && return 0
+        else eval "$pacup_cmd" && return 0; fi
 
-    alias pacup_reboot='pacman_update && /usr/bin/shutdown -r now'
+        return 1 # Return fail condiiton
+    }; alias pacup='pacman_update'
+
+    pacman_update_reboot() {
+        local do_forceboot=false; local args
+
+        if [ $# -ge 1 ] && [[ "$1" == -* ]]; then
+            case "$1" in
+            -F|--force-reboot) do_forceboot=true; shift;;
+            *);;
+        esac; fi
+
+        args="${*}"
+
+        # shellcheck disable=2086  ## Not double-qouting is intentional here.
+        pacman_update $args && { shutdown --reboot now || { $do_forceboot && systemctl reboot --check-inhibitors=no --force; }; }
+        #true && { echo "norm reboot fail"; { $do_forceboot && echo "hard reboot try"; }; }
+    }; alias pacup_reboot='pacman_update_reboot'
 
     ## Displays Reference for various pacman cmds:
     pachelp() {
-        local CLR=$COLOR_GRAY
-        local TAB="   "
+        local CLR='\e[48;5;8m'
+        local TAB="    "
 
         printf "${COLOR_BLD_WHITE}Pacman Help Quick Reference:${COLOR_NC}\n"
 
-        printf "\nGenerate Lists of Installed Pkgs:\n"
-        printf " - List all explicitly installed pkgs\n${TAB}\$ ${CLR}pacman -Qet${COLOR_NC}\n"
-        printf " - List all native installed pkgs    \n${TAB}\$ ${CLR}pacman -Qnet${COLOR_NC}\n"
-        printf " - List all foreign installed pkgs   \n${TAB}\$ ${CLR}pacman -Qmet${COLOR_NC}\n"
+		printf "\nRequest information on specific Pkgs:\n"
+        printf " - List files owned by a pkg   \n${TAB}${CLR}\$ pacman -Qlq <\$pkg>${COLOR_NC}\n"
 
         printf "\nGenerate Lists of Installed Pkgs:\n"
-        printf " - Clears tarballs/builds of no longer installed pkgs. \n${TAB}\$ ${CLR}pacman -Sc${COLOR_NC}\n"
-        printf " - Clears tarballs/builds of *ALL* installed pkgs.     \n${TAB}\$ ${CLR}pacman -Scc${COLOR_NC}\n"
+        printf " - List all explicitly installed pkgs\n${TAB}${CLR}\$ pacman -Qet  ${COLOR_NC}\n"
+        printf " - List all native installed pkgs    \n${TAB}${CLR}\$ pacman -Qnet ${COLOR_NC}\n"
+        printf " - List all foreign installed pkgs   \n${TAB}${CLR}\$ pacman -Qmet ${COLOR_NC}\n"
+        printf " - Interactively list all installed pkgs   \n${TAB}${CLR}\$ pacman -Qq | fzf --preview 'pacman -Si {}' --layout=reverse ${COLOR_NC}\n"
 
+        printf "\nClear excess files from pkg cache's:\n"
+        printf " - Clears tarballs/builds of no longer installed pkgs. \n${TAB}${CLR}\$ pacman -Sc${COLOR_NC}\n"
+        printf " - Clears tarballs/builds of *ALL* installed pkgs.     \n${TAB}${CLR}\$ pacman -Scc${COLOR_NC}\n"
 
         #End statement
         printf "\n"
@@ -212,7 +249,7 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
     cmd_exists 'micro' && alias mi='/usr/bin/micro'
 
     # Shortcuts to remap ls to exa
-	if cmd_exists 'exa' ; then
+	if cmd_exists 'exa'; then
     	alias ls='/usr/bin/exa'
 	fi
 
@@ -224,8 +261,8 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
     alias fixwallpaper="nitrogen --restore"
 
     ## Shortcuts for i3 configurations:
-    alias i3edit="cd ~/.config/i3/ ; edit ~/.config/i3/config && ls"
-    alias i3statusedit="cd ~/.config/i3status/ ; edit ~/.config/i3status/config && ls"
+    alias i3edit="cd ~/.config/i3/; edit ~/.config/i3/config && ls"
+    alias i3statusedit="cd ~/.config/i3status/; edit ~/.config/i3status/config && ls"
     alias x-lock='~/.config/i3/scripts/sensible-xlock.sh'
     alias xidle-lock='~/.config/i3/scripts/sensible-xidlelock.sh'
 
@@ -242,13 +279,13 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
     alias reload_cinnamon='/usr/bin/cinnamon --replace -d :0.0 > /dev/null 2>&1 &'
 
     ## Shortcuts for xClip:
-    if cmd_exists 'xclip' ; then
+    if cmd_exists 'xclip'; then
         alias setclip="xclip -selection c"
         alias getclip="xclip -selection c -o"
     fi
 
     ## Shortcuts for Ranger:
-    if cmd_exists 'ranger' ; then
+    if cmd_exists 'ranger'; then
         alias ra='ranger'
         #cmd_exists $RANGERCD && unset RANGERCD && ranger_cd
     fi
@@ -264,22 +301,56 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
 ##################
 ## Static and dynamically linked functions, scripts, & utilities.
 
+## 'check_git_updates' - Query remote repository to check if local is up to date.
+## usage: check_git_updates
+check_git_updates() {
+    git status &>/dev/null || { printf "Error: Current directory is not a git repository!\n"; return 1; }
+
+    [ "$(git log --pretty=%H ...refs/heads/master^ | head -n 1)" = "$(git ls-remote origin -h refs/heads/master |cut -f1)" ]\
+      && { printf "No pending changes on remote, repository is up to date.\n"; return 0; } || { printf "Notice: Repository is NOT up to date!\n"; return 1; }
+
+}; alias check_git='check_git_updates'
+
 ## 'get_pub_ip' - Query for this device's public ip:
 ## usage: get_pub_ip
 ####################################################
-get_pub_ip() {
-    wget -qO - http://wtfismyip.com/text
-}
+get_public_ip() {
+    local request_uri='https://wtfismyip.com/text'
+    local err_msg="Error: Failed to pull IP info from API web service."
+    local cmd_output
+
+    if ( cmd_exists /usr/bin/curl ); then
+        cmd_output=$( /usr/bin/curl $request_uri 2>/dev/null ) || { printf "%s\n" "$err_msg"; return 1; }
+    elif ( cmd_exists /usr/bin/wget ); then
+        cmd_output=$( /usr/bin/wget -qO - $request_uri 2>/dev/null ) || { printf "%s\n" "$err_msg"; return 1; }
+    else { printf "%s\n" "${err_msg} (No valid cmd methods!)"; return 1; }
+    fi
+
+    ! str_empty "$cmd_output" && { echo "$cmd_output"; return 0; } ## return succesful cmd output
+    return 1 ## return fail status
+}; alias get_ip='get_public_ip'
 ####################################################
 
-## 'macvendor' - Query mac vendor information given address:
-## usage: macvendor <address-string>
+## 'find_mac_vendor' - Query mac vendor information given address:
+## usage: find_mac_vendor <address-string>
 ############################################################
-macvendor() {
-    str_empty "$1" return 1 ; local arg=${1//\:/-}
-    local lookup_src='https://api.macvendors.com'
-    printf "%s\n" "$(curl $lookup_src'/'"$arg" 2>/dev/null )"
-}
+find_mac_vendor() {
+    str_empty "$1" && return 1; local arg=${1//\:/-}
+    local service_uri='https://api.macvendors.com'
+    local request_uri=$service_uri'/'"$arg"
+    local err_msg="Error: Failed to pull mac vendor info from API web service."
+    local cmd_output
+
+    if ( ! cmd_exists /usr/bin/curl ); then
+        cmd_output=$( /usr/bin/curl "$request_uri" 2>/dev/null ) || { printf "%s\n" "$err_msg"; return 1; }
+    elif ( cmd_exists /usr/bin/wget ); then
+        cmd_output=$( /usr/bin/wget -qO - "$request_uri" 2>/dev/null ) || { printf "%s\n" "$err_msg"; return 1; }
+    else { printf "%s\n" "${err_msg} (No valid cmd methods!)"; return 1; }
+    fi
+
+    ! str_empty "$cmd_output" && { echo "$cmd_output"; return 0; } ## return succesful cmd output
+    return 1 ## return fail status
+}; alias find_vendor='find_mac_vendor'
 ############################################################
 
 ## 'edit' - Preferential tui text-editor:
@@ -293,7 +364,7 @@ edit() {
     $EDITOR  "$1" && return 0
     xdg-open "$1" 1> /dev/null && return 0
     return 1 # return fail status
-} ; alias ed='edit'
+}; alias ed='edit'
 #########################################
 
 ## 'gui_edit' - Preferential gui text-editor:
@@ -304,28 +375,28 @@ gui_edit() {
 
     edit "$1" && return 0
     return 1 # return fail status
-} ; alias ged='gui_edit'
+}; alias ged='gui_edit'
 #############################################
 
 ## 'mandir' - Preferential file-manager selector with fail-over:
 ## usage: mandir <directory>
 ########################################
 mandir() {
-    local args="" ; if str_empty "$1" ; then args=$(pwd) ; else args="$1" ; fi
+    local args=""; if str_empty "$1"; then args=$(pwd); else args="$1"; fi
 
     # Tries $VISUAL, $EDITOR, and finally xdg-open.
     ranger "$args"  && return 0
     xdg-open "$args" && return 0
     show_dir "$args"  && return 0
     return 1 # return fail status
-} ; alias md='mandir'
+}; alias md='mandir'
 ########################################
 
 ## 'extract' - archive extractor:
 ## usage: extract <file>
 #################################
 extract() {
-  if [ -f "$1"  ] ; then
+  if [ -f "$1"  ]; then
     case "$1"  in
       *.tar.bz2)   tar xjf "$1"     ;;
       *.tar.gz)    tar xzf "$1"     ;;
@@ -343,7 +414,7 @@ extract() {
   else
     echo "'$1' is not a valid file"
   fi
-} ; alias ex='extract'
+}; alias ex='extract'
 #################################
 
 ## 'pacman_audit' - audit security & pkg health:
@@ -353,8 +424,8 @@ pacman_audit() {
     printf "Performing Security Check: "
 
     printf "\n * Checking for upgradeable packages with known vulnerabilities...."
-    local upgradeable_pkgs="" ; upgradeable_pkgs="$(arch-audit -uf '    Package %n has a %s CVE. UPGRADE to version %v!')"
-    if [[ -n "${upgradeable_pkgs// }" ]] ; then
+    local upgradeable_pkgs=""; upgradeable_pkgs="$(arch-audit -uf '    Package %n has a %s CVE. UPGRADE to version %v!')"
+    if [[ -n "${upgradeable_pkgs// }" ]]; then
         printf "\n"
         echo "$upgradeable_pkgs"
     fi
@@ -367,7 +438,7 @@ pacman_audit() {
     checkrebuild | awk '//{printf "\t From [%s]: pkg %s needs to be rebuilt.\n", $1, $2}'
 
     printf "\n done.\n"
-} ; alias pac_audit='pacman_audit'
+}; alias pac_audit='pacman_audit'
 ################################################
 
 ## 'show_colors' - display terminal colors:
@@ -376,9 +447,11 @@ pacman_audit() {
 show_colors() {
 	local fgc bgc vals seq0
 
+
     printf "\e[1mANSI Color Escapes:\e[m\n"
-    # shellcheck disable=2016   ## The expression not expanding is intentional.
-	printf "  Color escapes are %s\n" '\e[${value} ;... ;${value}m'
+    ## The expression not expanding is intentional.
+    # shellcheck disable=2016 # The expression not expanding is intentional.
+	printf "  Color escapes are %s\n" '\e[${value};... ;${value}m'
 	printf "  Values 30..37 are \e[33mforeground colors\e[m\n"
 	printf "  Values 40..47 are \e[43mbackground colors\e[m\n"
 	printf "  Value  1 gives a  \e[1mbold-faced look\e[m\n"
@@ -397,7 +470,7 @@ show_colors() {
 			printf "  %-9s" "${seq0:-(default)}"
 			printf " ${seq0}TEXT\e[m"
 			printf " \e[${vals:+${vals+$vals;}}1mBOLD\e[m"
-		done ; echo; echo
+		done; echo; echo
 	done
 }
 ###########################################
@@ -409,7 +482,7 @@ get_nitrogen_wallpaper() {
     local nitrogen_conf=~/.config/nitrogen/bg-saved.cfg
     cmd_exists nitrogen && ( file_exists $nitrogen_conf || return 1 ) || return 1
     local nitrogen_wall=""; nitrogen_wall=$( sed -n 's/^file=//p' $nitrogen_conf | head -n 1 )
-    ! str_empty "$nitrogen_wall" && ( echo "$nitrogen_wall" && return 0) ; return 1
+    ! str_empty "$nitrogen_wall" && ( echo "$nitrogen_wall" && return 0); return 1
 }
 ##################################################
 
@@ -418,8 +491,8 @@ get_nitrogen_wallpaper() {
 ########################################################
 get_dconf_wallpaper() {
     cmd_exists gsettings || return 1
-    local cinnamon_wall=""; cinnamon_wall=$( gsettings get org.cinnamon.desktop.background picture-uri | sed 's/\x27//g ; s/file\:\/\///g' )
-    ! str_empty "$cinnamon_wall" && file_exists "$cinnamon_wall" && echo "$cinnamon_wall" && return 0 ; return 1
+    local cinnamon_wall=""; cinnamon_wall=$( gsettings get org.cinnamon.desktop.background picture-uri | sed 's/\x27//g; s/file\:\/\///g' )
+    ! str_empty "$cinnamon_wall" && file_exists "$cinnamon_wall" && echo "$cinnamon_wall" && return 0; return 1
 }
 ########################################################
 
@@ -430,7 +503,7 @@ define_wallpaper_var() {
     local cmd_output
     cmd_output=$(get_dconf_wallpaper) || cmd_output=$(get_nitrogen_wallpaper) || return 1
     export WALLPAPER=${cmd_output} && return 0 || return 1
-} ; alias define_wallpaper='define_wallpaper_var'
+}; alias define_wallpaper='define_wallpaper_var'
 ##################################################
 
 ## Link to user scripts bash_aliases_scripts file:
