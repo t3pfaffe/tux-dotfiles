@@ -30,6 +30,6 @@ Repository containing the collection of various Linux scripts and dotfiles (i.e.
 ------
 
 #### Installation Steps:
-1. Clone to `/home/$USER/`.
+1. Clone this repository to `/home/$USER/`, and move ./tux-dotfiles/ to ./.tux-dotfiles
 2. Run `cd /home/$USER/.tux-dotfiles`
-3. Run `stow home/*`. This will symlink everything in the repo's `tux-dotfiles/home/`to the user's `/home/$USER/`.
+3. Run `stow --adopt --target=/home/$USER home/ `. This will symlink everything in the repo's `tux-dotfiles/home/`to the user's `/home/$USER/`.
