@@ -164,12 +164,13 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
         local pacup_cmd pac_cmd; local do_noint=true; local do_quiet=false; local do_noaur=false; local do_noflat=false; local do_notldr=false
 
         if [ $# -ge 1 ]; then for i in "$@"; do case $i in
+        	-h|--help) printf "Comprehensive Arch pkg update wrapper:\n\t -h|--help\n\t-i|--interactive\n\t-q-|-quiet\n\t--no<aur,flat,tldr>\n"; return 0;;
             -i|--interactive) do_noint=false; do_quiet=false; shift;;
-            -q|--quiet)  do_quiet=true; do_noint=true; shift;;
-            -A|--noaur)  do_noaur=true;  shift;;
-            -F|--noflat) do_noflat=true; shift;;
-            -T|--notldr) do_notldr=true; shift;;
-            *-[!\ ]*)   printf "Error: '%s' is not a valid parameter!" "${1}"; shift;;
+            -q|--quiet) do_quiet=true; do_noint=true; shift;;
+            --noaur)  do_noaur=true;  shift;;
+            --noflat) do_noflat=true; shift;;
+            --notldr) do_notldr=true; shift;;
+            *-[!\ ]*) printf "Error: '%s' is not a valid parameter!" "${1}"; return 1;;
         esac; done; fi
 
         pac_cmd='sudo /usr/bin/pacman -Syu '
@@ -201,7 +202,7 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
         args="${*}"
 
         # shellcheck disable=2086  ## Not double-qouting is intentional here.
-        pacman_update $args && { shutdown --reboot now || { $do_forceboot && systemctl reboot --check-inhibitors=no --force; }; }
+        pacman_update $args && { shutdown --reboot now || { $do_forceboot && sudo systemctl reboot --check-inhibitors=no --force; }; }
         #true && { echo "norm reboot fail"; { $do_forceboot && echo "hard reboot try"; }; }
     }; alias pacup_reboot='pacman_update_reboot'
 
