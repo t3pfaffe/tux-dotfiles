@@ -32,7 +32,7 @@ declare HAS_BASH_ALIASES=true
 # shellcheck disable=1090,2086
 if ! command -v link_source &>/dev/null; then link_source() { [[ -f $1 ]] && source $1 || echo "Failed to link ${1}!!"; }; fi
 
-[ "$HAS_BASH_UTILS" = false ] && ( echo "ERROR! ~/.bash_aliases is not meant to be run without ~/.bashrc !" )
+"$HAS_BASH_UTILS" || ( echo "ERROR! ~/.bash_aliases is not meant to be run without ~/.bashrc !" )
 
 
 #####################
@@ -111,11 +111,28 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
 
     ## Shortcuts to reload ~/.bashrc:
     reload_bash() {
-        reset_debug_logs; reset_init_msgs
-        clear-full
-        notify_reload "${HOME}/.bashrc" ;
-        # shellcheck disable=1090
-        source ~/.bashrc ;
+        local do_notif=true; local do_clr=true; local do_logreset=true; local do_quiet=false; local prev_do_motd=$BASH_DO_SHOW_MOTD
+
+        if [ $# -ge 1 ]; then for i in "$@"; do case $i in
+            -h|--help) printf "Reload current bash session with latest config:\n\t-h|--help \n\t-n|--no-notice \n\t-c|--no-clear \n\t-q|--quiet \n"; return 0;;
+            -n|--no-notice)    do_notif=false;  shift;;
+            -c|--no-clear)     do_clr=false;    shift;;
+            -l|--no-log-reset) do_logset=false; shift;;
+            -q|--quiet) do_quiet=true; do_notif=false; shift;;
+            *-[!\ ]*) printf "Error: '%s' is not a valid parameter!\n" "${1}"; return 1;;
+        esac; done; fi
+        ## Follow argument toggles provided:
+        $do_logreset && reset_debug_logs; reset_init_msgs
+        $do_clr      && clear-full
+        $do_notif    && notify_reload "${HOME}/.bashrc" ;
+        $do_quiet    && BASH_DO_SHOW_MOTD=false
+
+        ## Reloading of latest bash conf:
+        # shellcheck disable=1091
+        source "$HOME"/.bashrc;
+
+        ## Set state's back to previous on return:
+        $do_quiet && BASH_DO_SHOW_MOTD=$prev_do_motd
     }
     alias rld='reload_bash'
 
@@ -164,13 +181,13 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
         local pacup_cmd pac_cmd; local do_noint=true; local do_quiet=false; local do_noaur=false; local do_noflat=false; local do_notldr=false
 
         if [ $# -ge 1 ]; then for i in "$@"; do case $i in
-        	-h|--help) printf "Comprehensive Arch pkg update wrapper:\n\t -h|--help\n\t-i|--interactive\n\t-q-|-quiet\n\t--no<aur,flat,tldr>\n"; return 0;;
+        	-h|--help) printf "Comprehensive Arch pkg update wrapper:\n\t-h|--help \n\t-i|--interactive \n\t-q|--quiet \n\t<>|--no-<aur,flat,tldr> \n"; return 0;;
             -i|--interactive) do_noint=false; do_quiet=false; shift;;
             -q|--quiet) do_quiet=true; do_noint=true; shift;;
-            --noaur)  do_noaur=true;  shift;;
-            --noflat) do_noflat=true; shift;;
-            --notldr) do_notldr=true; shift;;
-            *-[!\ ]*) printf "Error: '%s' is not a valid parameter!" "${1}"; return 1;;
+            --no-aur)  do_noaur=true;  shift;;
+            --no-flat) do_noflat=true; shift;;
+            --no-tldr) do_notldr=true; shift;;
+            *-[!\ ]*) printf "Error: '%s' is not a valid parameter!\n" "${1}"; return 1;;
         esac; done; fi
 
         pac_cmd='sudo /usr/bin/pacman -Syu '
@@ -195,7 +212,8 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
 
         if [ $# -ge 1 ] && [[ "$1" == -* ]]; then
             case "$1" in
-            -F|--force-reboot) do_forceboot=true; shift;;
+            -F|--force-reboot) shift;;
+            -h|--help) pacman_update --help; printf "\t-F|--force\n\t-i"; return 0;;
             *);;
         esac; fi
 
@@ -346,7 +364,7 @@ find_mac_vendor() {
         cmd_output=$( /usr/bin/curl "$request_uri" 2>/dev/null ) || { printf "%s\n" "$err_msg"; return 1; }
     elif ( cmd_exists /usr/bin/wget ); then
         cmd_output=$( /usr/bin/wget -qO - "$request_uri" 2>/dev/null ) || { printf "%s\n" "$err_msg"; return 1; }
-    else { printf "%s\n" "${err_msg} (No valid cmd methods!)"; return 1; }
+    else { printf "%s\n" "${err_msg} (No valid cmd methods to pull vendor!)"; return 1; }
     fi
 
     ! str_empty "$cmd_output" && { echo "$cmd_output"; return 0; } ## return succesful cmd output

@@ -4,8 +4,8 @@
 #   author: t3@pfaffe.me  🄯2020-01/26/2021
 #   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #    - Configuration (variable, alias, & function definitions) for all bash shells.
-#    - Heavy modification from Manjaro's default .bashrc:
-#      [bashrc]( https://gitlab.manjaro.org/packages/core/bash/-/blob/master/dot.bashrc ).
+#    - Heavy modification from Manjaro's default ~/.bashrc:
+#      [~/.bashrc](https://gitlab.manjaro.org/packages/core/bash/-/blob/master/dot.bashrc).
 
 
 
@@ -45,6 +45,9 @@ link_source $SRC_BASH_DEBUG_UTILS
 ## Enable/Disable printing a motd on new terminal session:
 safe_declare BASH_DO_SHOW_MOTD '=true'
 
+## Enable/Disable logging to msg buffer during init:
+safe_declare BASH_DO_ILOG '=true'
+
 ## Enable/Disable colorizing of terminal output:
 safe_declare BASH_DO_SHOW_COLOR '=true'
 
@@ -53,13 +56,20 @@ safe_declare BASH_DEBUG_DO_CLEANUP_VARS '=true'
 ## Enable/Disable clearing logs after init:
 safe_declare BASH_DEBUG_DO_CLEANUP_LOGS '=true'
 ## Enable/Disable Performing lint check and initialization:
-safe_declare BASH_DEBUG_DO_LINT '=true'
+safe_declare BASH_DEBUG_DO_LINT '=false'
 
 ## Enable/Disable what debug levels are displayed:
-safe_declare USE_BASH_DEBUG_LVL_ERRORS '=true'   # Critical ERRORS that *will* impact necessary functionality.
-safe_declare USE_BASH_DEBUG_LVL_WARNINGS '=true' # Non-critical WARNINGS that *may* impact desired functionality.
-safe_declare USE_BASH_DEBUG_LVL_INFO '=true'     # Non-critical INFO on the bash configuration that *wont* impact functionality.
+if [ "$BASH_DO_ILOG" ]; then
+    declare -r USE_BASH_DEBUG_LVL_ERRORS=true    2>/dev/null    # Critical ERRORS that *will* impact necessary functionality.
+    declare -r USE_BASH_DEBUG_LVL_WARNINGS=false 2>/dev/null    # Non-critical WARNINGS that *may* impact desired functionality.
+    declare -r USE_BASH_DEBUG_LVL_INFO=true      2>/dev/null    # Non-critical INFO on the bash configuration that *wont* impact functionality.
+else
+    declare -r USE_BASH_DEBUG_LVL_ERRORS=false   2>/dev/null
+    declare -r USE_BASH_DEBUG_LVL_WARNINGS=false 2>/dev/null
+    declare -r USE_BASH_DEBUG_LVL_INFO=false     2>/dev/null
+fi;
 
+## Attempt unset of provided variable names:
 try_unset() {
     $BASH_DEBUG_DO_CLEANUP_VARS && unset "$@"
 }
@@ -67,16 +77,17 @@ try_unset() {
 ##########################
 ### SETUP_MSGS_BUFFER: ####################################################
 ##########################
-
 ## Log messages in buffer for MOTD:
+
 
 ## Define bash initialization messages buffer:
 declare -a INIT_MSGS_BASH_LOG
 
 ## Append arguments to init-msgs buffer
 append_init_msgs() {
-    local args="$*" ; str_empty "$args" && return 1
-    INIT_MSGS_BASH_LOG=("${INIT_MSGS_BASH_LOG[@]}" "$args")
+    $BASH_DO_ILOG || return 0; str_empty "$*" && return 1
+
+    INIT_MSGS_BASH_LOG=("${INIT_MSGS_BASH_LOG[@]}" "$*")
 }
 
 reset_init_msgs() {
@@ -264,7 +275,7 @@ try_unset FCLR_NC FCLR_PRI FCLR_SEC FCLR_ALRT
 ## Define & print Interactive Shell's MOTD:
 ##########################################
 motd_notices() {
-
+    "$BASH_DO_ILOG" || return 1
 
     ## Check and append log entries to msg buffer.
     $USE_BASH_DEBUG_LVL_INFO     && INIT_MSGS_BASH_LOG+=( "${DEBUG_INFO_BASH_LOG[@]}" )
@@ -272,10 +283,10 @@ motd_notices() {
     $USE_BASH_DEBUG_LVL_ERRORS   && INIT_MSGS_BASH_LOG+=( "${DEBUG_ERROR_BASH_LOG[@]}" )
 
     ## Check if there is no messages in the buffer:
-    if [ ${#INIT_MSGS_BASH_LOG[@]} -ne 0 ] ; then
+    if [ ${#INIT_MSGS_BASH_LOG[@]} -ne 0 ]; then
         local ln
 
-        # Print out messages in buffer
+        ## Print out messages in buffer:
         for ln in "${INIT_MSGS_BASH_LOG[@]}" ; do
           str_empty "$ln" || printf "\n%s" "$ln"
         done ; printf "\n- - - - - - - - \n"

@@ -35,9 +35,9 @@ if ! command -v link_source &>/dev/null ; then link_source () { [[ -f $1 ]] && s
 ###########################
 
 ## Default options for log level:
-safe_export USE_BASH_DEBUG_LVL_ERRORS true    # Critical ERRORS that *will* impact necessary functionality.
-safe_export USE_BASH_DEBUG_LVL_WARNINGS false # Noncritical WARNINGS that *may* impact desired functionality.
-safe_export USE_BASH_DEBUG_LVL_INFO true      # Noncritical INFO on the bash configuration that *wont* impact functionality.
+safe_declare USE_BASH_DEBUG_LVL_ERRORS '=true'      # Critical ERRORS that *will* impact necessary functionality.
+safe_declare USE_BASH_DEBUG_LVL_WARNINGS '=false'   # Non-critical WARNINGS that *may* impact desired functionality.
+safe_declare USE_BASH_DEBUG_LVL_INFO '=true '       # Non-critical INFO on the bash configuration that *wont* impact functionality.
 
 ## Define & initialize bash debug log:
 var_exists DEBUG_ERROR_BASH_LOG || declare -a DEBUG_ERROR_BASH_LOG
@@ -49,44 +49,38 @@ export COLOR_ALRT='\e[1;31m'
 export COLOR_WARN='\e[1;33m'
 export COLOR_NC='\e[0m'
 
-## Append argument to log
+## Append argument to log:s
 debug_append_log() {
     [ $# -lt 1 ] && return 1; local arg
     arg="$1"; str_empty "$arg" && return 1 ; shift
 
     case $arg in
-        -i|--info)
-            DEBUG_INFO_BASH_LOG+=("$@")
-        ;;
-        -w|--warn)
-            DEBUG_WARN_BASH_LOG+=("$@")
-        ;;
-        -e|--error)
-            DEBUG_ERROR_BASH_LOG+=("$@")
-        ;;
-        *)
-            echo "Warning ${arg} not a valid parameter!"
-            return 1
-        ;;
+        -i|--info)  $USE_BASH_DEBUG_LVL_INFO     &&  DEBUG_INFO_BASH_LOG+=("$@");;
+        -w|--warn)  $USE_BASH_DEBUG_LVL_WARNINGS &&  DEBUG_WARN_BASH_LOG+=("$@");;
+        -e|--error) $USE_BASH_DEBUG_LVL_ERRORS   &&  DEBUG_ERROR_BASH_LOG+=("$@");;
+        *) printf "Warning %s not a valid parameter!\n" "${arg}"; return 1;;
     esac ; return 0
 }
 
-## Append argument to log
-debug_append_err() {
-    local args="$*" ; str_empty "$args" && return 1
-    DEBUG_ERROR_BASH_LOG+=("$args")
-}
-
-## Append argument to log
-debug_append_warn() {
-local args="$*" ; str_empty "$args" && return 1
-    DEBUG_WARN_BASH_LOG+=("$args")
-}
-
-## Append arguments to log
+## Append arguments to log:
 debug_append_info() {
-    local args="$*" ; str_empty "$args" && return 1
-    DEBUG_INFO_BASH_LOG+=("$args")
+    $USE_BASH_DEBUG_LVL_INFO || return 0
+    str_empty "$*" && return 1
+    DEBUG_INFO_BASH_LOG+=("$*")
+}
+
+## Append argument to log:
+debug_append_err() {
+    $USE_BASH_DEBUG_LVL_ERRORS || return 0
+    str_empty "$*" && return 1
+    DEBUG_ERROR_BASH_LOG+=("$*")
+}
+
+## Append argument to log:
+debug_append_warn() {
+    $USE_BASH_DEBUG_LVL_WARNINGS || return 0;
+    str_empty "$*" && return 1
+    DEBUG_WARN_BASH_LOG+=("$*")
 }
 
 ## Notify of an error in the bash configuration:
@@ -133,7 +127,7 @@ reset_debug_logs() {
 bash_lint() {
     cmd_exists shellcheck || return 1
     if str_empty "$1" ; then local args='error' ; else local args="$1" ; fi
-    shellcheck -S "$args" ~/.bash{rc,_!(*history)} && return 0 || return 1
+    shellcheck -S "$1" ~/.bash{rc,_!(*history)} && return 0 || return 1
 }
 ##############################################################
 
@@ -142,8 +136,8 @@ bash_lint() {
 #####################################################################
 bash_lint_full() {
     if str_empty "$1" ; then local args='warning' ; else local args="$1" ; fi
-    printf "Checking bash config files for issues up to severity \'%s\'...\n" "$args"
-    bash_lint "$args" && printf "\t<no issues found>"
+    printf "Checking bash config files for issues up to severity \'%s\'...\n" "$1"
+    bash_lint "$1" && printf "\t<no issues found>"
     printf "\n done.\n"
     return 0
 }
