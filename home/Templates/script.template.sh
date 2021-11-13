@@ -1,6 +1,6 @@
 #!/bin/sh
 # <$SCRIPT_NAME> Script:
-#   location: ~/Documents/Scripts/Public/<$SCRIPT_NAME>.sh
+#   location: ~/Documents/Scripts/<$SCRIPT_NAME>.sh
 #   author: t3@pfaffe.me    🄯2020-05.17.2021
 #   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #   Other notes/references:
@@ -13,10 +13,13 @@
 ## Defining default variable states and other setup configurations.
 
 # Define this script's name
-# TODO: Refactor <$SCRIPT_NAME> to desired script name (including the <...> endcaps!!)
-SCRIPT_NAME="<$SCRIPT_NAME>"
+# TODO: Refactor <$SCRIPT_NAME> to desired script name (Including the <...> endcaps!)
+# SCRIPT_NAME="<$SCRIPT_NAME>"
 
-## Example Variables:
+## Example Parameter Toggles:
+DO_QUIET=false      # Suppress cmd outputs.
+
+## Example Initial Variables:
 START_TIME=$(date +%m/%d/%C-%H:%M)
 TIME_ZONE=$(date +%Z)
 
@@ -27,18 +30,25 @@ TIME_ZONE=$(date +%Z)
 ## Common function definitions.
 
 show_usage() {
-    printf "Usage: %s [OPTIONS]" "$SCRIPT_NAME"
+    printf "Usage:\t%s [OPTIONS]" "$SCRIPT_NAME"
 
-    printf "\n\nBase template for shell scripts. This is an example script for example purposes."
+    printf "\n\nDescription:\tBase template for shell scripts. This is an example script for example purposes."
 
     #Show options/parameters
     printf "\n"
     printf "\nOptions: "
-    printf "\n  -h, --help \n\t\tShow this message and exit."
+    printf "\n  -h, --help  \n\t\tShow this message and exit."
+    printf "\n  -q, --quiet \n\t\tSuppresses command outputs."
 
     #End statement
     printf "\n"
 }
+
+try_printf() {
+    # shellcheck disable=2059
+    "$DO_QUIET" || printf "$@";
+}
+
 
 #######################
 ### EXECUTE_SCRIPT: #######################################################
@@ -46,29 +56,20 @@ show_usage() {
 ## Execute script linearly from this point.
 
 ## Check for parameters/options:
-if [ $# -eq 0 ] ; then ## Default behaviour with no args:
-    printf ""
-    ## Un-comment below if script requires an argument to function
-    #show_usage; exit 0
-else
-    for i in "$@" ; do
-        case $i in
-            -h|--help)
-                show_usage; exit 0
-            ;;
-            *-[!\ ]*)
-                printf "%s: invalid option '%s'\n" "$SCRIPT_NAME" "$1"
-                printf "Try '%s --help' for more information.\n" "$SCRIPT_NAME"
-                shift; exit 1
-            ;;
-        esac
-    done
+if [ $# -ge 1 ]; then   ## Check for valid parameters & set vars accordingly:
+    for i in "$@"; do case $i in
+        -q|--quiet) DO_QUIET=true;  shift;;
+        -h|--help)  show_usage;    exit 0;;
+        *-[!\ ]*|*--[!\ ]*) printf "Error: '%s' is not a valid parameter!\n" "${1}"; return 1;;
+    esac; done;
+else                    ## Perform default no-args behaviour:
+    printf ""               # Empty-block 'blank' cmd to satisfy if/else syntax.
+    #show_usage; exit 0     # TODO: Un-comment line if at least one arg is required.
 fi
 
 ## Example execution cmds:
-printf 'This is an example script. For demonstration purposes...\n'
-printf '	the current system time is %s \n' "$START_TIME $TIME_ZONE"
-
+try_printf "This is an example script. For demonstration purposes...\n\t"
+try_printf "the current system time is %s \n" "${START_TIME} ${TIME_ZONE}"
 
 #######################
 ### SCRIPT_CLEANUP: #######################################################
