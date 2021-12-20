@@ -78,7 +78,7 @@ exec --no-startup-id albert
 
 ## Startup User Applets
 exec --no-startup-id kdeconnect-indicator
-exec --no-startup-id nextcloud --background
+# exec --no-startup-id nextcloud --background
 exec --no-startup-id albert
 
 
@@ -132,9 +132,9 @@ bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ to
 bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
 
 ## Media Controls:
-bindsym Prior   exec "playerctl --player=spotify,%any previous"
-bindsym Next    exec "playerctl --player=spotify,%any next"
-bindsym End     exec "playerctl --player=spotify,%any play-pause"
+bindsym $mod+Home      exec "playerctl --player=spotify,%any previous"
+bindsym $mod+Insert    exec "playerctl --player=spotify,%any next"
+bindsym $mod+End       exec "playerctl --player=spotify,%any play-pause"
 bindsym XF86AudioPrev  exec "playerctl --player=spotify,%any previous"
 bindsym XF86AudioNext  exec "playerctl --player=spotify,%any next"
 bindsym XF86AudioPlay  exec "playerctl --player=spotify,%any play-pause"

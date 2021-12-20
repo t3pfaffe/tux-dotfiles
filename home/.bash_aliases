@@ -43,7 +43,7 @@ if ! command -v link_source &>/dev/null; then link_source() { [[ -f $1 ]] && sou
 SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
 
 ## Wrapping native POSIX in-terminal cmds:
-##########################################
+#########################################
     ## Shortcuts to clear screen:
     # Shortcut to fully clear screen.
     alias clear-full='printf "\033c"'
@@ -104,28 +104,29 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
 
     # Shortcut to set writable script permissions
     alias mkscript='chmod +x '
-##########################################
+#########################################
 
 ## Bash operations & shortcuts:
-###############################
+##############################
 
     ## Shortcuts to reload ~/.bashrc:
     reload_bash() {
-        local do_notif=true; local do_clr=true; local do_logreset=true; local do_quiet=false; local prev_do_motd=$BASH_DO_SHOW_MOTD
+        local do_notif=true; local do_clr=true; local do_logreset=false; local do_quiet=false; local prev_do_motd=$BASH_DO_SHOW_MOTD
 
         if [ $# -ge 1 ]; then for i in "$@"; do case $i in
-            -h|--help) printf "Reload current bash session with latest config:\n\t-h|--help \n\t-n|--no-notice \n\t-c|--no-clear \n\t-q|--quiet \n"; return 0;;
-            -n|--no-notice)    do_notif=false;  shift;;
-            -c|--no-clear)     do_clr=false;    shift;;
-            -l|--no-log-reset) do_logset=false; shift;;
+            -h|--help) printf "Reload current bash session with latest config:\n\t-h|--help \n\t-n|--no-notice \n\t-c|--no-clear \n\t-l|--log-reset \n\t-q|--quiet \n"; return 0;;
+            -n|--no-notice)    do_notif=false; shift;;
+            -c|--no-clear)     do_clr=false;   shift;;
+            -l|--log-reset)  do_logreset=true; shift;;
             -q|--quiet) do_quiet=true; do_notif=false; shift;;
             *-[!\ ]*) printf "Error: '%s' is not a valid parameter!\n" "${1}"; return 1;;
         esac; done; fi
+
         ## Follow argument toggles provided:
-        $do_logreset && reset_debug_logs; reset_init_msgs
         $do_clr      && clear-full
-        $do_notif    && notify_reload "${HOME}/.bashrc" ;
-        $do_quiet    && BASH_DO_SHOW_MOTD=false
+        $do_quiet    && BASH_DO_SHOW_MOTD=false;
+        $do_logreset && reset_debug_logs; reset_init_msgs
+        $do_notif    && notify_info_reload "$HOME/.bashrc"
 
         ## Reloading of latest bash conf:
         # shellcheck disable=1091
@@ -133,17 +134,48 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
 
         ## Set state's back to previous on return:
         $do_quiet && BASH_DO_SHOW_MOTD=$prev_do_motd
-    }
-    alias rld='reload_bash'
+    }; alias rld='reload_bash'
+
+    ## Shorthand for common reload_bash params:
+    alias rldn='reload_bash -n'
+    alias rldq='reload_bash -q'
 
     ## Shortcuts to clear bash_history:
-    alias clear_bash_history='rm ~/.bash_history*; history -c && reload_bash'
-    # Shortcut clear_bash_history
-    alias clshistory='clear_bash_history'
+    clear_bash_history() {
+        local do_notif=true; local do_clr=true; local do_quiet=false;
+        local dlt_session=true; local dlt_files=true; local do_rld=true; local do_dryrun=false;
+
+        if [ $# -ge 1 ]; then for i in "$@"; do case $i in
+            -h|--help) printf "Clear the current bash session's history/persistant(files) bash history:\n\t-h|--help \n\t-f|--no-files-clr \n\t-s|--no-session-clr \n\t-q|--quiet \n\t-r|--no-rld \n\t-n|--no-notice \n\t-c|--no-clear \n\t-d|--dry-run \n"; return 0;;
+            -f|--no-files-clr)      dlt_files=false;   shift;;
+            -s|--no-session-clr)    dlt_session=false; shift;;
+            -q|--quiet) do_quiet=true; do_notif=false; shift;;
+            -r|--no-rld)            do_rld=false;   shift;;
+            -n|--no-notice)         do_notif=false; shift;;
+            -c|--no-clear)          do_clr=false;   shift;;
+            -d|--dry-run) do_dryrun=true; dlt_session=false; dlt_files=false; shift;;
+            --[!\ ]*) printf "Error: '%s' is not a valid parameter!\n" "${1}"; return 1;;
+        esac; done; fi
+
+        if ( ! $do_dryrun ) && ( ! $dlt_session && ! $dlt_files ); then rld_params=false; fi
+
+        ## Perform history clear operations:
+        "$dlt_session" && history -c; "$do_notif" && debug_notify_info "Cleared bash session's history.";
+        "$dlt_files" && /usr/bin/rm ~/.bash_history* 2>/dev/null; "$do_notif" && debug_notify_info "Removed persistent bash_history files in user directory.";
+
+        ## Bash reload params:
+        if $rld_params; then
+            local rld_params=''
+            "$do_quiet" && rld_params="${rld_params} "--quiet
+            "$do_clr"   || rld_params="${rld_params} "--no-clear
+            reload_bash --no-clear
+        fi
+    }
+    # alias cls_history='clear_bash_history'
 
     ## Shortcuts for editing bash config files:
-    alias bashedit="cd ~/ && micro .bashrc .bash_aliases .bash_profile; show_dir "
-###############################
+    alias bashedit='cd ~/ && ${VISUAL} $HOME/.bashrc $HOME/.bash_aliases $HOME/.bash_profile; show_dir $HOME/.bash*'
+##############################
 
 ## Wrapping Arch Linux pkg management cmds:
 ##########################################
@@ -177,6 +209,7 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
     fi
 
     ## Comprehensive non-interactive system update shortcut:
+    #######################################################
     pacman_update() {
         local pacup_cmd pac_cmd; local do_noint=true; local do_quiet=false; local do_noaur=false; local do_noflat=false; local do_notldr=false
 
@@ -206,6 +239,7 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
 
         return 1 # Return fail condiiton
     }; alias pacup='pacman_update'
+    #######################################################
 
     pacman_update_reboot() {
         local do_forceboot=false; local args
@@ -223,6 +257,7 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
         pacman_update $args && { shutdown --reboot now || { $do_forceboot && sudo systemctl reboot --check-inhibitors=no --force; }; }
         #true && { echo "norm reboot fail"; { $do_forceboot && echo "hard reboot try"; }; }
     }; alias pacup_reboot='pacman_update_reboot'
+
 
     ## Displays Reference for various pacman cmds:
     pachelp() {
@@ -259,7 +294,7 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
 ##########################################
 
 ## Non-native cmd wrappers:
-######################
+##########################
 
     # Use sudo, but politely
     alias please='sudo'
@@ -268,9 +303,7 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
     cmd_exists 'micro' && alias mi='/usr/bin/micro'
 
     # Shortcuts to remap ls to exa
-	if cmd_exists 'exa'; then
-    	alias ls='/usr/bin/exa'
-	fi
+	cmd_exists 'exa' && alias ls='/usr/bin/exa'
 
     # Shortcut CMDs for Xorg multiseat
     alias enable_multi="export DISPLAY=:0 && /usr/bin/sudo xhost +local: "
@@ -309,10 +342,7 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
         #cmd_exists $RANGERCD && unset RANGERCD && ranger_cd
     fi
 
-    ## Shortcut to remap bashtop:
-    cmd_exists 'bpytop' && alias bashtop='/usr/bin/bpytop'
-
-######################
+##########################
 
 
 ##################
@@ -332,7 +362,7 @@ check_git_updates() {
 
 ## 'get_pub_ip' - Query for this device's public ip:
 ## usage: get_pub_ip
-####################################################
+###################################################
 get_public_ip() {
     local request_uri='https://wtfismyip.com/text'
     local err_msg="Error: Failed to pull IP info from API web service."
@@ -348,11 +378,11 @@ get_public_ip() {
     ! str_empty "$cmd_output" && { echo "$cmd_output"; return 0; } ## return succesful cmd output
     return 1 ## return fail status
 }; alias get_ip='get_public_ip'
-####################################################
+###################################################
 
 ## 'find_mac_vendor' - Query mac vendor information given address:
 ## usage: find_mac_vendor <address-string>
-############################################################
+#################################################################
 find_mac_vendor() {
     str_empty "$1" && return 1; local arg=${1//\:/-}
     local service_uri='https://api.macvendors.com'
@@ -370,7 +400,7 @@ find_mac_vendor() {
     ! str_empty "$cmd_output" && { echo "$cmd_output"; return 0; } ## return succesful cmd output
     return 1 ## return fail status
 }; alias find_vendor='find_mac_vendor'
-############################################################
+#################################################################
 
 ## 'edit' - Preferential tui text-editor:
 ## usage: edit <file>
@@ -494,36 +524,39 @@ show_colors() {
 }
 ###########################################
 
-## Pull wallpaper location from nitrogen's config:
-## usage: 'get_nitrogen_wallpaper'
-##################################################
-get_nitrogen_wallpaper() {
-    local nitrogen_conf=~/.config/nitrogen/bg-saved.cfg
-    cmd_exists nitrogen && ( file_exists $nitrogen_conf || return 1 ) || return 1
-    local nitrogen_wall=""; nitrogen_wall=$( sed -n 's/^file=//p' $nitrogen_conf | head -n 1 )
-    ! str_empty "$nitrogen_wall" && ( echo "$nitrogen_wall" && return 0); return 1
-}
-##################################################
+## Wrapping Display-Environment data/cmds:
+##########################################
+    ## Pull wallpaper location from nitrogen's config:
+    ## usage: 'get_nitrogen_wallpaper'
+    ##################################################
+    get_nitrogen_wallpaper() {
+        local nitrogen_conf=~/.config/nitrogen/bg-saved.cfg
+        cmd_exists nitrogen && ( file_exists $nitrogen_conf || return 1 ) || return 1
+        local nitrogen_wall=""; nitrogen_wall=$( sed -n 's/^file=//p' $nitrogen_conf | head -n 1 )
+        ! str_empty "$nitrogen_wall" && ( echo "$nitrogen_wall" && return 0); return 1
+    }
+    ##################################################
 
-## Pull wallpaper location from cinnamon's dconf config:
-## usage: 'get_dconf_wallpaper'
-########################################################
-get_dconf_wallpaper() {
-    cmd_exists gsettings || return 1
-    local cinnamon_wall=""; cinnamon_wall=$( gsettings get org.cinnamon.desktop.background picture-uri | sed 's/\x27//g; s/file\:\/\///g' )
-    ! str_empty "$cinnamon_wall" && file_exists "$cinnamon_wall" && echo "$cinnamon_wall" && return 0; return 1
-}
-########################################################
+    ## Pull wallpaper location from cinnamon's dconf config:
+    ## usage: 'get_dconf_wallpaper'
+    ########################################################
+    get_dconf_wallpaper() {
+        cmd_exists gsettings || return 1
+        local cinnamon_wall=""; cinnamon_wall=$( gsettings get org.cinnamon.desktop.background picture-uri | sed 's/\x27//g; s/file\:\/\///g' )
+        ! str_empty "$cinnamon_wall" && file_exists "$cinnamon_wall" && echo "$cinnamon_wall" && return 0; return 1
+    }
+    ########################################################
 
-## Get & Set wallpaper ENV var from other sources:
-## usage: 'define_wallpaper_var'
-##################################################
-define_wallpaper_var() {
-    local cmd_output
-    cmd_output=$(get_dconf_wallpaper) || cmd_output=$(get_nitrogen_wallpaper) || return 1
-    export WALLPAPER=${cmd_output} && return 0 || return 1
-}; alias define_wallpaper='define_wallpaper_var'
-##################################################
+    ## Get & Set wallpaper ENV var from other sources:
+    ## usage: 'define_wallpaper_var'
+    ##################################################
+    define_wallpaper_var() {
+        local cmd_output
+        cmd_output=$(get_dconf_wallpaper) || cmd_output=$(get_nitrogen_wallpaper) || return 1
+        export WALLPAPER=${cmd_output} && return 0 || return 1
+    }; alias define_wallpaper='define_wallpaper_var'
+    ##################################################
+##########################################
 
 ## Link to user scripts bash_aliases_scripts file:
 # shellcheck source=src/Documents/Scripts/.bash_aliases_scripts
