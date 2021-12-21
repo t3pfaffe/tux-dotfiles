@@ -200,7 +200,7 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
         | sed -e 's/^#Server/Server/' -e '/^#/d' | rankmirrors -n 6 -
         printf "\n done.\n"
     }
-##########################################
+#<!--#####################################
 
 ## Non-native cmd wrappers:
 ######################
@@ -265,26 +265,26 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
 ## Static and dynamically linked functions, scripts, & utilities.
 
 ## 'get_pub_ip' - Query for this device's public ip:
-## usage: get_pub_ip
-####################################################
+#&emsp; **usage:** get_pub_ip
+#<!--###############################################
 get_pub_ip() {
     wget -qO - http://wtfismyip.com/text
 }
-####################################################
+#<!--###############################################
 
 ## 'macvendor' - Query mac vendor information given address:
-## usage: macvendor <address-string>
-############################################################
+#&emsp; **usage:** macvendor <address-string>
+#<!--#######################################################
 macvendor() {
     str_empty "$1" return 1 ; local arg=${1//\:/-}
     local lookup_src='https://api.macvendors.com'
     printf "%s\n" "$(curl $lookup_src'/'"$arg" 2>/dev/null )"
 }
-############################################################
+#<!--#######################################################
 
 ## 'edit' - Preferential tui text-editor:
-## usage: edit <file>
-#########################################
+#&emsp; **usage:** edit <file>
+#<!--####################################
 edit() {
     # Tries i3s preferential edit
 	i3-sensible-editor "$1"  && return 0
@@ -294,22 +294,22 @@ edit() {
     xdg-open "$1" 1> /dev/null && return 0
     return 1 # return fail status
 } ; alias ed='edit'
-#########################################
+#<!--####################################
 
 ## 'gui_edit' - Preferential gui text-editor:
-## usage: gui_edit <file>
-#############################################
+#&emsp; **usage:** gui_edit <file>
+#<!--########################################
 gui_edit() {
     xdg-open "$1" 2> /dev/null && return 0
 
     edit "$1" && return 0
     return 1 # return fail status
 } ; alias ged='gui_edit'
-#############################################
+#<!--########################################
 
 ## 'mandir' - Preferential file-manager selector with fail-over:
-## usage: mandir <directory>
-########################################
+#&emsp; **usage:** mandir <directory>
+#<!--###################################
 mandir() {
     local args="" ; if str_empty "$1" ; then args=$(pwd) ; else args="$1" ; fi
 
@@ -319,11 +319,12 @@ mandir() {
     show_dir "$args"  && return 0
     return 1 # return fail status
 } ; alias md='mandir'
-########################################
+#<!--###################################
 
 ## 'extract' - archive extractor:
-## usage: extract <file>
-#################################
+#&emsp; **usage:** extract <file>
+#######
+#<!--############################
 extract() {
   if [ -f "$1"  ] ; then
     case "$1"  in
@@ -344,11 +345,11 @@ extract() {
     echo "'$1' is not a valid file"
   fi
 } ; alias ex='extract'
-#################################
+#<!--############################
 
 ## 'pacman_audit' - audit security & pkg health:
-## usage: pacman_audit
-################################################
+#&emsp; **usage:** pacman_audit
+#<!--###########################################
 pacman_audit() {
     printf "Performing Security Check: "
 
@@ -368,11 +369,11 @@ pacman_audit() {
 
     printf "\n done.\n"
 } ; alias pac_audit='pacman_audit'
-################################################
+#<!--###########################################
 
 ## 'show_colors' - display terminal colors:
-## usage: 'show_colors'
-###########################################
+#&emsp; **usage:** 'show_colors'
+#<!--######################################
 show_colors() {
 	local fgc bgc vals seq0
 
@@ -400,38 +401,38 @@ show_colors() {
 		done ; echo; echo
 	done
 }
-###########################################
+#<!--######################################
 
 ## Pull wallpaper location from nitrogen's config:
-## usage: 'get_nitrogen_wallpaper'
-##################################################
+#&emsp; **usage:** 'get_nitrogen_wallpaper'
+#<!--#############################################
 get_nitrogen_wallpaper() {
     local nitrogen_conf=~/.config/nitrogen/bg-saved.cfg
     cmd_exists nitrogen && ( file_exists $nitrogen_conf || return 1 ) || return 1
     local nitrogen_wall=""; nitrogen_wall=$( sed -n 's/^file=//p' $nitrogen_conf | head -n 1 )
     ! str_empty "$nitrogen_wall" && ( echo "$nitrogen_wall" && return 0) ; return 1
 }
-##################################################
+#<!--#############################################
 
 ## Pull wallpaper location from cinnamon's dconf config:
-## usage: 'get_dconf_wallpaper'
-########################################################
+#&emsp; **usage:** 'get_dconf_wallpaper'
+#<!--###################################################
 get_dconf_wallpaper() {
     cmd_exists gsettings || return 1
     local cinnamon_wall=""; cinnamon_wall=$( gsettings get org.cinnamon.desktop.background picture-uri | sed 's/\x27//g ; s/file\:\/\///g' )
     ! str_empty "$cinnamon_wall" && file_exists "$cinnamon_wall" && echo "$cinnamon_wall" && return 0 ; return 1
 }
-########################################################
+#<!--###################################################
 
 ## Get & Set wallpaper ENV var from other sources:
-## usage: 'define_wallpaper_var'
-##################################################
+#&emsp; **usage:** 'define_wallpaper_var'
+#<!--#############################################
 define_wallpaper_var() {
     local cmd_output
     cmd_output=$(get_dconf_wallpaper) || cmd_output=$(get_nitrogen_wallpaper) || return 1
     export WALLPAPER=${cmd_output} && return 0 || return 1
 } ; alias define_wallpaper='define_wallpaper_var'
-##################################################
+#<!--#############################################
 
 ## Link to user scripts bash_aliases_scripts file:
 # shellcheck source=src/Documents/Scripts/.bash_aliases_scripts

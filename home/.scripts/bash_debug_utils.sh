@@ -90,33 +90,39 @@ debug_append_info() {
     DEBUG_INFO_BASH_LOG+=("$args")
 }
 
-## Notify of an error in the bash configuration:
+#------
+#### 'bash_lint' - Notify of an error in the bash configuration:
 debug_notify_syntax_err() {
     debug_append_err "$(printf "[${COLOR_ALRT}Warning${COLOR_NC}]: Bash config file %s has errors!" "$1")"
 }
 
-## Notify of an error while linking another bash configuration file:
+#------
+#### 'bash_lint' - Notify of an error while linking another bash configuration file:
 debug_notify_link_err() {
     debug_append_err "$(printf "[${COLOR_ALRT}Error${COLOR_NC}]:   Bash config file %s was not linked!" "$1")"
 }
 
-## Notify of an error while linking another non-vital bash configuration file:
+#------
+#### 'bash_lint' - Notify of an error while linking another non-vital bash configuration file:
 debug_notify_link_warn() {
     debug_append_warn "$(printf "[${COLOR_ALRT}Warning${COLOR_NC}]: Bash config file %s was not linked!" "$1")"
 }
 
-## Notify of some info that should be brought to attention:
+#------
+#### 'bash_lint' - Notify of some info that should be brought to attention:
 debug_notify_info() {
     debug_append_info  "$(printf "[${COLOR_PRI}Notice${COLOR_NC}]:  %s " "$1")"
 }
 
-## Notify of an change in the bash configuration:
+#------
+#### 'bash_lint' - Notify of an change in the bash configuration:
 notify_reload() {
     local args='' ; str_empty "$1" || local args="from file ${1}"
     debug_append_info "$(printf "[${COLOR_PRI}Notice${COLOR_NC}]:  Reloaded bash configuration from %s." "$args")"
 }
 
-## Clears all debugging logs:
+#------
+#### 'bash_lint' - Clears all debugging logs:
 reset_debug_logs() {
     unset DEBUG_ERROR_BASH_LOG ; declare -ag DEBUG_ERROR_BASH_LOG
     unset DEBUG_WARN_BASH_LOG ; declare -ag DEBUG_WARN_BASH_LOG
@@ -128,19 +134,21 @@ reset_debug_logs() {
 ### BASH_DEBUG_TOOLS: #####################################################
 #########################
 
-## 'bash_lint' - Check syntax of bash config:
-## usage: bash_lint <error(default) | warning | info | style>
-##############################################################
+#------
+#### 'bash_lint' - Check syntax of bash config:
+#&emsp; **usage:** bash_lint <error(default) | warning | info | style>
+#<!--#########################################################
 bash_lint() {
     cmd_exists shellcheck || return 1
     if str_empty "$1" ; then local args='error' ; else local args="$1" ; fi
     shellcheck -S "$args" ~/.bash{rc,_!(*history)} && return 0 || return 1
 }
-##############################################################
+#<!--#########################################################
 
-## 'bash_lint_full' - Check syntax of bash config with more feedback:
-## usage: bash_lint_full <error | warning(default) | info | style>
-#####################################################################
+#------
+#### 'bash_lint_full' - Check syntax of bash config with more feedback:
+#&emsp; **usage:** bash_lint_full <error | warning(default) | info | style>
+#<!--################################################################
 bash_lint_full() {
     if str_empty "$1" ; then local args='warning' ; else local args="$1" ; fi
     printf "Checking bash config files for issues up to severity \'%s\'...\n" "$args"
@@ -148,11 +156,12 @@ bash_lint_full() {
     printf "\n done.\n"
     return 0
 }
-#####################################################################
+#<!--################################################################
 
-## 'debug_bool_out' - inline boolean test:
-## usage: debug_bool_out <bash_cmd>
-##########################################
+#------
+#### 'debug_bool_out' - inline boolean test:
+#&emsp; **usage:** debug_bool_out <bash_cmd>
+#<!--#####################################
 debug_bool_out() {
     local args=${*}
     if ( $args ) ; then
@@ -161,7 +170,5 @@ debug_bool_out() {
         printf "RETURNED=${COLOR_RED}%s${COLOR_NC}\n" "FAlSE" ; return 0
     fi
 	echo "Failed to run command!" ; return 1
-}
-# Shortcut to boolean debug tool
-alias debool="debug_bool_out"
-##########################################
+} ; alias debool="debug_bool_out"
+#<!--#####################################
