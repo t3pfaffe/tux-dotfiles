@@ -1,4 +1,107 @@
 {
+    "layout": {
+        "type": "layout",
+        "pages": [
+            "hotkeys-tab",
+            "behaviour-tab",
+            "layout-tab"
+        ],
+        "hotkeys-tab": {
+            "type": "page",
+            "title": "Hotkeys",
+            "sections": [
+                "hotkey-section",
+                "keybindings-legend-section"
+            ]
+        },
+        "behaviour-tab": {
+            "type": "page",
+            "title": "Behavior",
+            "sections": [
+                "behaviour-section"
+            ]
+        },
+        "layout-tab": {
+            "type": "page",
+            "title": "Layout",
+            "sections": [
+                "grid1-section",
+                "grid2-section",
+                "grid3-section",
+                "grid4-section"
+            ]
+        },
+        "help": {
+            "type": "page",
+            "title": "Help",
+            "sections": [
+                "help-section"
+            ]
+        },
+        "hotkey-section": {
+            "type": "section",
+            "title": "Global Hotkey",
+            "keys": [
+                "hotkey"
+            ]
+        },
+        "keybindings-legend-section": {
+            "type": "section",
+            "title": "Keybindings Legend (when open)",
+            "keys": [
+                "hotkeys-legend"
+            ]
+        },
+        "behaviour-section": {
+            "type": "section",
+            "title": "Behavior",
+            "keys": [
+                "animation",
+                "autoclose"
+            ]
+        },
+        "grid1-section": {
+            "type": "section",
+            "title": "Layout For Button 1",
+            "keys": [
+                "gridbutton1x",
+                "gridbutton1y"
+            ]
+        },
+        "grid2-section": {
+            "type": "section",
+            "title": "Layout For Button 2",
+            "keys": [
+                "gridbutton2x",
+                "gridbutton2y"
+            ]
+        },
+        "grid3-section": {
+            "type": "section",
+            "title": "Layout For Button 3",
+            "keys": [
+                "gridbutton3x",
+                "gridbutton3y"
+            ]
+        },
+        "grid4-section": {
+            "type": "section",
+            "title": "Layout For Button 4",
+            "keys": [
+                "gridbutton4x",
+                "gridbutton4y"
+            ]
+        },
+        "help-section": {
+            "type": "section",
+            "title": "More Info",
+            "keys": []
+        }
+    },
+    "hotkeys-legend": {
+        "type": "label",
+        "description": "Escape:\t\t\tHide gTile\nEnter or Space:\tCommit current selection\nLeft:\t\t\tMove Left inside Grid\nRight:\t\t\tMove Right inside Grid\nUp:\t\t\t\tMove Up inside Grid\nDown:\t\t\tMove Down inside Grid\n<Shift>Left:\t\tInclude column to the Left in selection\n<Shift>Right:\t\tInclude column to the Right in selection\n<Shift>Up:\t\tInclude row Above in selection\n<Shift>Down:\tInclude row Below in selection\n<Alt>Left:\t\tMove to the monitor on the Left\n<Alt>Right:\t\tMove to the monitor on the Right\n<Alt>Up:\t\t\tMove to the monitor Above\n<Alt>Down:\t\tMove to the monitor Below\n1:\t\t\t\tSelect the first grid layout\n2:\t\t\t\tSelect the second grid layout\n3:\t\t\t\tSelect the third grid layout\n4:\t\t\t\tSelect the fourth grid layout"
+    },
     "lastGridCols": {
         "type": "generic",
         "default": 4,
@@ -9,22 +112,11 @@
         "default": 4,
         "value": 4
     },
-    "headerKeys": {
-        "type": "header",
-        "description": "Hotkeys:"
-    },
     "hotkey": {
         "type": "keybinding",
         "default": "<Super>g",
         "description": "Global Hotkey for gTile",
         "value": "<Super>g"
-    },
-    "seperator0": {
-        "type": "separator"
-    },
-    "headerBehavior": {
-        "type": "header",
-        "description": "Behavior:"
     },
     "animation": {
         "type": "checkbox",
@@ -37,13 +129,6 @@
         "default": "true",
         "description": "Auto-Close",
         "value": "true"
-    },
-    "seperator1": {
-        "type": "separator"
-    },
-    "header1": {
-        "type": "header",
-        "description": "Layout for Button 1:"
     },
     "gridbutton1x": {
         "type": "spinbutton",
@@ -67,13 +152,6 @@
         "description": "Rows",
         "value": 2
     },
-    "seperator2": {
-        "type": "separator"
-    },
-    "header2": {
-        "type": "header",
-        "description": "Layout for Button 2:"
-    },
     "gridbutton2x": {
         "type": "spinbutton",
         "indent": "true",
@@ -95,13 +173,6 @@
         "step": 1,
         "description": "Rows",
         "value": 2
-    },
-    "seperator3": {
-        "type": "separator"
-    },
-    "header3": {
-        "type": "header",
-        "description": "Layout for Button 3:"
     },
     "gridbutton3x": {
         "type": "spinbutton",
@@ -125,13 +196,6 @@
         "description": "Rows",
         "value": 4
     },
-    "seperator4": {
-        "type": "separator"
-    },
-    "header4": {
-        "type": "header",
-        "description": "Layout for Button 4:"
-    },
     "gridbutton4x": {
         "type": "spinbutton",
         "indent": "true",
@@ -154,5 +218,5 @@
         "description": "Rows",
         "value": 6
     },
-    "__md5__": "17b8249719c5fc9d2d6c04b108415c21"
+    "__md5__": "83eaef8e837a47784aad04aa7104908b"
 }

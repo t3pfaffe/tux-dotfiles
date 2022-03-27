@@ -3,6 +3,13 @@
         "type": "section",
         "description": "Display"
     },
+    "show-events": {
+        "type": "switch",
+        "default": true,
+        "description": "Show calendar events",
+        "tooltip": "Check this to display events in the calendar.",
+        "value": true
+    },
     "show-week-numbers": {
         "type": "switch",
         "default": false,
@@ -43,5 +50,5 @@
         "tooltip": "Set keybinding(s) to show the calendar.",
         "value": "<Super>c"
     },
-    "__md5__": "b301227cc4181fa2780d4a88a4d550a0"
+    "__md5__": "5ea063337a9b776b6c19825f31b2a320"
 }
