@@ -39,9 +39,9 @@ try_permissions() {
 
 try_symlink() {
 	printf 'Attempting to symlink root themes dir to local user directory...'
-	report ln -s /usr/share/spicetify-cli/Themes/* ~/.config/spicetify/
+	report ln -s /usr/share/spicetify-cli/Themes/* ~/.config/spicetify/Themes
 	printf 'Attempting to symlink root extensions dir to local user directory...'
-	report ln -s /usr/share/spicetify-cli/Extensions/* ~/.config/spicetify/
+	report ln -s /usr/share/spicetify-cli/Extensions/* ~/.config/spicetify/Extensions
 }
 
 try_copy() {

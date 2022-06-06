@@ -136,9 +136,8 @@ safe_declare () {
 }
 #<!--###############################################################
 
-#------
-#### 'safe_declare_ro' - Only declares variable as readonly if doesnt already exist:
-#&emsp; **usage:** `safe_declare_ro <variable_name> '=<new_value>'`
+## 'safe_declare_ro' - Only declares variable as readonly if doesnt already exist:
+## usage: safe_declare_ro <variable_name> '=<new_value>'
 #<!--#############################################################################
 safe_declare_ro () {
     if var_exists "$1" ; then return 1
@@ -148,11 +147,25 @@ safe_declare_ro () {
 }
 #<!--#############################################################################
 
-#------
-#### 'esc_str' - Performs proper string escapes for bash:
-#&emsp; **usage:** `esc_str <strings>`
-#<!--###################################################
-esc_str() {
+## 'get_confirm' - Prompts the input for a [y/n] confirmation:
+## usage: get_confirm <prompt_msg>
+#<!--#########################################################
+get_confirm () {
+    local REPLY
+    while true; do read -r -n 1 -p "${1:-Continue?} [y/n]: " REPLY
+        case $REPLY in
+        [yY]) echo ; return 0 ;;
+        [nN]) echo ; return 1 ;;
+        *) printf " \033[31m %s \n\033[0m" "invalid input"; return 1 ;;
+        esac
+    done
+}
+#<!--#########################################################
+
+## 'esc_str' - Performs proper string escapes for bash:
+## usage: esc_str <strings>
+#<!--##################################################
+esc_str () {
   local arg="$*"
   local escapedvar=""
 
@@ -165,4 +178,4 @@ esc_str() {
   echo "${escapedvar}"
 }
 #<!--[reference]( https://github.com/bitrise-io/steps-utils-bash-string-escaper/blob/master/bash_string_escape.sh )
-#<!--######################################################################################################
+#<!--##################################################

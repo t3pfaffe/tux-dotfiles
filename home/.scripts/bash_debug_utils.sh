@@ -35,100 +35,114 @@ if ! command -v link_source &>/dev/null ; then link_source () { [[ -f $1 ]] && s
 ###########################
 
 ## Default options for log level:
-safe_export USE_BASH_DEBUG_LVL_ERRORS true    # Critical ERRORS that *will* impact necessary functionality.
-safe_export USE_BASH_DEBUG_LVL_WARNINGS false # Noncritical WARNINGS that *may* impact desired functionality.
-safe_export USE_BASH_DEBUG_LVL_INFO true      # Noncritical INFO on the bash configuration that *wont* impact functionality.
+safe_declare USE_BASH_DEBUG_LVL_ERRORS '=true'      # Critical ERRORS that *will* impact necessary functionality.
+safe_declare USE_BASH_DEBUG_LVL_WARNINGS '=false'   # Non-critical WARNINGS that *may* impact desired functionality.
+safe_declare USE_BASH_DEBUG_LVL_INFO '=true '       # Non-critical INFO on the bash configuration that *wont* impact functionality.
 
 ## Define & initialize bash debug log:
-var_exists DEBUG_ERROR_BASH_LOG || declare -a DEBUG_ERROR_BASH_LOG
-var_exists DEBUG_WARN_BASH_LOG  || declare -a DEBUG_WARN_BASH_LOG
-var_exists DEBUG_INFO_BASH_LOG  || declare -a DEBUG_INFO_BASH_LOG
+var_exists DEBUG_ERR_BASH_LOG || declare -a DEBUG_ERR_BASH_LOG
+var_exists DEBUG_WRN_BASH_LOG || declare -a DEBUG_WRN_BASH_LOG
+var_exists DEBUG_INF_BASH_LOG || declare -a DEBUG_INF_BASH_LOG
 
 ## Default debug text colors:
-export COLOR_ALRT='\e[1;31m'
-export COLOR_WARN='\e[1;33m'
-export COLOR_NC='\e[0m'
+safe_export COLOR_INFO $COLOR_PRI
+safe_export COLOR_WARN '\e[1;33m'
+safe_export COLOR_ALRT '\e[1;31m'
+safe_export COLOR_NC   '\e[0m'
 
-## Append argument to log
-debug_append_log() {
-    local arg
-    [ $# -le 1 ] && return 1;
-    arg="$1"; str_empty "$arg" && return 1 ; shift
+## Debug msg buffer operations:
+################################
 
-    case $arg in
-        -i|--info)
-            DEBUG_INFO_BASH_LOG+=("$@")
-        ;;
-        -w|--warn)
-            DEBUG_WARN_BASH_LOG+=("$@")
-        ;;
-        -e|--error)
-            DEBUG_ERROR_BASH_LOG+=("$@")
-        ;;
-        *)
-            echo "Warning ${arg} not a valid parameter!"
-            return 1
-        ;;
-    esac ; return 0
-}
+    ## 'debug_append_log' - Appends msg to specific severity log:
+    ## usage: debug_append_log -<severity> <message>
+    #############################################################
+    debug_append_log() {
+        [ $# -lt 1 ] && return 1; local arg
+        arg="$1"; str_empty "$arg" && return 1 ; shift
 
-## Append argument to log
-debug_append_err() {
-    local args="$*" ; str_empty "$args" && return 1
-    DEBUG_ERROR_BASH_LOG+=("$args")
-}
+        case $arg in
+            -i|--info)  $USE_BASH_DEBUG_LVL_INFO     &&  DEBUG_INF_BASH_LOG+=("$*");;
+            -w|--warn)  $USE_BASH_DEBUG_LVL_WARNINGS &&  DEBUG_WRN_BASH_LOG+=("$*");;
+            -e|--error) $USE_BASH_DEBUG_LVL_ERRORS   &&  DEBUG_ERR_BASH_LOG+=("$*");;
+            *) printf "Warning %s not a valid parameter!\n" "${arg}"; return 1;;
+        esac ; return 0
+    }
+    #############################################################
 
-## Append argument to log
-debug_append_warn() {
-local args="$*" ; str_empty "$args" && return 1
-    DEBUG_WARN_BASH_LOG+=("$args")
-}
+    ## Append arguments to info log:
+    debug_append_inf() {
+        $USE_BASH_DEBUG_LVL_INFO || return 0
+        str_empty "$*" && return 1
+        DEBUG_INF_BASH_LOG+=("$*")
+    }
 
-## Append arguments to log
-debug_append_info() {
-    local args="$*" ; str_empty "$args" && return 1
-    DEBUG_INFO_BASH_LOG+=("$args")
-}
+    ## Append argument to warnings log:
+    debug_append_wrn() {
+        $USE_BASH_DEBUG_LVL_WARNINGS || return 0;
+        str_empty "$*" && return 1
+        DEBUG_WRN_BASH_LOG+=("$*")
+    }
 
-#------
-#### 'bash_lint' - Notify of an error in the bash configuration:
-debug_notify_syntax_err() {
-    debug_append_err "$(printf "[${COLOR_ALRT}Warning${COLOR_NC}]: Bash config file %s has errors!" "$1")"
-}
+    ## Append argument to errors log:
+    debug_append_err() {
+        $USE_BASH_DEBUG_LVL_ERRORS || return 0
+        str_empty "$*" && return 1
+        DEBUG_ERR_BASH_LOG+=("$*")
+    }
 
-#------
-#### 'bash_lint' - Notify of an error while linking another bash configuration file:
-debug_notify_link_err() {
-    debug_append_err "$(printf "[${COLOR_ALRT}Error${COLOR_NC}]:   Bash config file %s was not linked!" "$1")"
-}
+    ## Clears all debugging logs:
+    reset_debug_logs() {
+        unset DEBUG_INF_BASH_LOG ; declare -ag DEBUG_INF_BASH_LOG
+        unset DEBUG_WRN_BASH_LOG ; declare -ag DEBUG_WRN_BASH_LOG
+        unset DEBUG_ERR_BASH_LOG ; declare -ag DEBUG_ERR_BASH_LOG
+    }
+################################
 
-#------
-#### 'bash_lint' - Notify of an error while linking another non-vital bash configuration file:
-debug_notify_link_warn() {
-    debug_append_warn "$(printf "[${COLOR_ALRT}Warning${COLOR_NC}]: Bash config file %s was not linked!" "$1")"
-}
+## Debug msg templates/shortcuts:
+#################################
 
-#------
-#### 'bash_lint' - Notify of some info that should be brought to attention:
-debug_notify_info() {
-    debug_append_info  "$(printf "[${COLOR_PRI}Notice${COLOR_NC}]:  %s " "$1")"
-}
+    ## Notify of some info that should be brought to attention:
+    debug_notify_info() {
+        debug_append_inf "$(printf "[${COLOR_PRI}Notice${COLOR_NC}]:  %s " "${1}")"
+    }
 
-#------
-#### 'bash_lint' - Notify of an change in the bash configuration:
-notify_reload() {
-    local args='' ; str_empty "$1" || local args="from file ${1}"
-    debug_append_info "$(printf "[${COLOR_PRI}Notice${COLOR_NC}]:  Reloaded bash configuration from %s." "$args")"
-}
+    ## Notify of some info that should be brought to attention:s
+    debug_notify_warn() {
+        debug_append_wrn "$(printf "[${COLOR_WARN}Warning${COLOR_NC}]: %s " "${1}")"
+    }
 
-#------
-#### 'bash_lint' - Clears all debugging logs:
-reset_debug_logs() {
-    unset DEBUG_ERROR_BASH_LOG ; declare -ag DEBUG_ERROR_BASH_LOG
-    unset DEBUG_WARN_BASH_LOG ; declare -ag DEBUG_WARN_BASH_LOG
-    unset DEBUG_INFO_BASH_LOG ; declare -ag DEBUG_INFO_BASH_LOG
-}
+    ## Notify of some info that should be brought to attention:
+    debug_notify_error() {
+        debug_append_err "$(printf "[${COLOR_ALRT}Error${COLOR_NC}]:   %s " "${1}")"
+    }
 
+    ## Specific Type Templates:
+        ## Notify of an change in the bash configuration:
+        notify_info_reload() {
+            local args=""; str_empty "$1" || args=" from file ${1}"
+            # debug_append_inf "$(printf "[${COLOR_PRI}Notice${COLOR_NC}]:  Reloaded bash configuration%s." "${args}")"
+            debug_notify_info "Reloaded bash configuration${args}."
+        }
+
+        ## Notify of an error while linking another non-vital bash configuration file:
+        debug_notify_link_wrn() {
+            debug_append_wrn "$(printf "[${COLOR_WARN}Warning${COLOR_NC}]: Bash config file %s was not linked!" "$*")"
+            # debug_notify_wrn "Bash config file ${*} was not linked!"
+        }
+
+        ## Notify of an error while linking another bash configuration file:
+        debug_notify_link_err() {
+            debug_append_err "$(printf "[${COLOR_ALRT}Error${COLOR_NC}]:   Bash config file %s was not linked!" "$*")"
+            # debug_notify_err "Bash config file ${*} was not linked!"
+        }
+
+        ## Notify of an error in the bash configuration:
+        debug_notify_syntax_err() {
+            debug_append_err "$(printf "[${COLOR_ALRT}Error${COLOR_NC}]:   Bash config file %s has errors!" "$*")"
+            # debug_notify_err "Bash config file ${*} has errors!"
+        }
+    ##
+#################################
 
 #########################
 ### BASH_DEBUG_TOOLS: #####################################################
@@ -141,7 +155,7 @@ reset_debug_logs() {
 bash_lint() {
     cmd_exists shellcheck || return 1
     if str_empty "$1" ; then local args='error' ; else local args="$1" ; fi
-    shellcheck -S "$args" ~/.bash{rc,_!(*history)} && return 0 || return 1
+    shellcheck -S "$1" ~/.bash{rc,_!(*history)} && return 0 || return 1
 }
 #<!--#########################################################
 
@@ -151,8 +165,8 @@ bash_lint() {
 #<!--################################################################
 bash_lint_full() {
     if str_empty "$1" ; then local args='warning' ; else local args="$1" ; fi
-    printf "Checking bash config files for issues up to severity \'%s\'...\n" "$args"
-    bash_lint "$args" && printf "\t<no issues found>"
+    printf "Checking bash config files for issues up to severity \'%s\'...\n" "$1"
+    bash_lint "$1" && printf "\t<no issues found>"
     printf "\n done.\n"
     return 0
 }
@@ -163,7 +177,8 @@ bash_lint_full() {
 #&emsp; **usage:** debug_bool_out <bash_cmd>
 #<!--#####################################
 debug_bool_out() {
-    local args=${*}
+    [ $# -lt 1 ] && return 1; local args=${*}
+
     if ( $args ) ; then
         printf "RETURNED=${COLOR_GREEN}%s${COLOR_NC}\n" "TRUE" ; return 0
     else
