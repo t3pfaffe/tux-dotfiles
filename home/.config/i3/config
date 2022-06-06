@@ -716,6 +716,8 @@ for_window [class="Plexamp"] move to workspace $wsM
 
 ## Specific applications:
     for_window [title="alsamixer"] floating enable border pixel 1
+    for_window [class="Volctl"] floating enable border pixel 1
+    for_window [class="Blueman-manager"] floating enable border pixel 1
     for_window [class="gnome-calculator"] floating enable border pixel 1
     for_window [class="spectacle"] floating enable border pixel 1
     for_window [class="Gnome-calculator"] floating enable border pixel 1
