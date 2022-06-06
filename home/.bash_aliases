@@ -181,7 +181,7 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
 ##########################################
     ## Default native pacman shortcuts:
     alias pacn='/usr/bin/sudo /usr/bin/pacman'
-    alias pacnup='pacman_update --noaur --noflat'
+    alias pacnup='pacman_update --no-aur --no-flat'
 
     ## Detect installed pacman wrappers/pkg managers:
     cmd_exists /usr/bin/paru && declare -g -r PKG_HAS_paru=true &> /dev/null
@@ -220,7 +220,7 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
             --no-aur)  do_noaur=true;  shift;;
             --no-flat) do_noflat=true; shift;;
             --no-tldr) do_notldr=true; shift;;
-            *-[!\ ]*) printf "Error: '%s' is not a valid parameter!\n" "${1}"; return 1;;
+            *-[!\ ]*|*--[!\ ]*) printf "Error: '%s' is not a valid parameter!\n" "${1}"; return 1;;
         esac; done; fi
 
         pac_cmd='sudo /usr/bin/pacman -Syu '
