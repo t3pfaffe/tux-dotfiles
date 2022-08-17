@@ -211,7 +211,7 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
     ## Comprehensive non-interactive system update shortcut:
     #######################################################
     pacman_update() {
-        local pacup_cmd pac_cmd; local do_noint=true; local do_quiet=false; local do_noaur=false; local do_noflat=false; local do_notldr=false
+        local pacup_cmd pac_cmd; local do_noint=true; local do_quiet=false; local do_noaur=false; local do_noflat=false; local do_notldr=false; do_keyring=false;
 
         if [ $# -ge 1 ]; then for i in "$@"; do case $i in
         	-h|--help) printf "Comprehensive Arch pkg update wrapper:\n\t-h|--help \n\t-i|--interactive \n\t-q|--quiet \n\t<>|--no-<aur,flat,tldr> \n"; return 0;;
@@ -223,10 +223,12 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
             *-[!\ ]*|*--[!\ ]*) printf "Error: '%s' is not a valid parameter!\n" "${1}"; return 1;;
         esac; done; fi
 
+		keyring_cmd='sudo /usr/bin/pacman --needed --noconfirm -S archlinux-keyring; ' # TODO: come up with proper keyring update prefix
         pac_cmd='sudo /usr/bin/pacman -Syu '
         $do_noaur || pac_cmd='pac -Syu --sudoloop --cleanafter --skipreview '
         $do_noint && pac_cmd+=' --noconfirm '
         $do_quiet && pac_cmd+=' 1>/dev/null '
+        $do_keyring && pac_cmd=keyring_cmd + pac_cmd
         pacup_cmd="${pac_cmd}; "
 
         ## Add cmd hooks to update non-pacman packages as well:

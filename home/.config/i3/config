@@ -567,7 +567,7 @@ set $refresh_i3status killall -SIGUSR1 i3status
 bar {
 	strip_workspace_numbers yes
 
-	font pango:NotoSansMono Nerd Font 8
+	font pango:DejaVuSansMono Nerd Font 9
 	colors {
 		background $backCl
 		statusline $txtLCl
@@ -716,6 +716,7 @@ for_window [class="Plexamp"] move to workspace $wsM
 
 ## Specific applications:
     for_window [title="alsamixer"] floating enable border pixel 1
+    for_window [title="Proton VPN"] floating enable
     for_window [class="Volctl"] floating enable border pixel 1
     for_window [class="Blueman-manager"] floating enable border pixel 1
     for_window [class="gnome-calculator"] floating enable border pixel 1

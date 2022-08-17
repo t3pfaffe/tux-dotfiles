@@ -374,3 +374,9 @@ $BASH_DO_SHOW_MOTD && motd_long
 # BEGIN_KITTY_SHELL_INTEGRATION
 if test -n "$KITTY_INSTALLATION_DIR" -a -e "$KITTY_INSTALLATION_DIR/shell-integration/bash/kitty.bash"; then source "$KITTY_INSTALLATION_DIR/shell-integration/bash/kitty.bash"; fi
 # END_KITTY_SHELL_INTEGRATION
+
+## Rust ENV Setup:
+cmd_exists /usr/bin/cargo && link_source "$HOME/.cargo/env" && export CARGO_HOME="$HOME/.cargo/"
+
+## Ruby ENV Setup:
+cmd_exists /usr/bin/gem && GEM_HOME="$(ruby -e 'puts Gem.user_dir')"; export GEM_HOME && export PATH="$PATH:$GEM_HOME/bin"
