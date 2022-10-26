@@ -36,6 +36,7 @@ window:
   # must be at least `2`, while using a value of `0` for columns and lines will
   # fall back to the window manager's recommended size.
   opacity: 0.7
+  decorations_theme_variant: dark
   dimensions:
     columns: 0
     lines: 0
@@ -98,7 +99,7 @@ window:
   #
   # Override the variant of the GTK theme. Commonly supported values are `dark`
   # and `light`. Set this to `None` to use the default theme variant.
-  gtk_theme_variant: dark
+#  gtk_theme_variant: dark
 
 #scrolling:
   # Maximum number of lines in the scrollback buffer.
@@ -200,10 +201,6 @@ colors:
       foreground: CellBackground
       background: CellForeground
 
-    bar:
-      background: '#c5c8c6'
-      foreground: '#1d1f21'
-
   # Line indicator
   #
   # Color used for the indicator displaying the position in history during
@@ -213,6 +210,16 @@ colors:
   line_indicator:
     foreground: None
     background: None
+
+  # Footer bar
+  #
+  # Color used for the footer bar on the bottom, used by search regex input,
+  # hyperlink URI preview, etc.
+  #
+  #footer_bar:
+  footer_bar:
+    background: '#c5c8c6'
+    foreground: '#1d1f21'
 
   # Selection colors
   #
