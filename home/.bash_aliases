@@ -228,7 +228,7 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
         $do_noaur || pac_cmd='pac -Syu --sudoloop --cleanafter --skipreview '
         $do_noint && pac_cmd+=' --noconfirm '
         $do_quiet && pac_cmd+=' 1>/dev/null '
-        $do_keyring && pac_cmd=keyring_cmd + pac_cmd
+        $do_keyring && keyring_cmd+=$pac_cmd && pac_cmd=$keyring_cmd
         pacup_cmd="${pac_cmd}; "
 
         ## Add cmd hooks to update non-pacman packages as well:
