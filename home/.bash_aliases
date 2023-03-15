@@ -211,7 +211,7 @@ SRC_BASH_ALIASES_SCRIPTS=~/.scripts/.bash_aliases_scripts
     ## Comprehensive non-interactive system update shortcut:
     #######################################################
     pacman_update() {
-        local pacup_cmd pac_cmd; local do_noint=true; local do_quiet=false; local do_noaur=false; local do_noflat=false; local do_notldr=false; do_keyring=false;
+        local pacup_cmd pac_cmd keyring_cmd; local do_noint=true; local do_quiet=false; local do_noaur=false; local do_noflat=false; local do_notldr=false; do_keyring=true;
 
         if [ $# -ge 1 ]; then for i in "$@"; do case $i in
         	-h|--help) printf "Comprehensive Arch pkg update wrapper:\n\t-h|--help \n\t-i|--interactive \n\t-q|--quiet \n\t<>|--no-<aur,flat,tldr> \n"; return 0;;

@@ -51,98 +51,99 @@ safe_export COLOR_ALRT '\e[1;31m'
 safe_export COLOR_NC   '\e[0m'
 
 ## Debug msg buffer operations:
-################################
+###############################
 
-    ## 'debug_append_log' - Appends msg to specific severity log:
-    ## usage: debug_append_log -<severity> <message>
-    #############################################################
-    debug_append_log() {
-        [ $# -lt 1 ] && return 1; local arg
-        arg="$1"; str_empty "$arg" && return 1 ; shift
+## 'debug_append_log' - Appends msg to specific severity log:
+## usage: debug_append_log -<severity> <message>
+#############################################################
+debug_append_log() {
+    [ $# -lt 1 ] && return 1; local arg
+    arg="$1"; str_empty "$arg" && return 1 ; shift
 
-        case $arg in
-            -i|--info)  $USE_BASH_DEBUG_LVL_INFO     &&  DEBUG_INF_BASH_LOG+=("$*");;
-            -w|--warn)  $USE_BASH_DEBUG_LVL_WARNINGS &&  DEBUG_WRN_BASH_LOG+=("$*");;
-            -e|--error) $USE_BASH_DEBUG_LVL_ERRORS   &&  DEBUG_ERR_BASH_LOG+=("$*");;
-            *) printf "Warning %s not a valid parameter!\n" "${arg}"; return 1;;
-        esac ; return 0
-    }
-    #############################################################
+    case $arg in
+        -i|--info)  $USE_BASH_DEBUG_LVL_INFO     &&  DEBUG_INF_BASH_LOG+=("$*");;
+        -w|--warn)  $USE_BASH_DEBUG_LVL_WARNINGS &&  DEBUG_WRN_BASH_LOG+=("$*");;
+        -e|--error) $USE_BASH_DEBUG_LVL_ERRORS   &&  DEBUG_ERR_BASH_LOG+=("$*");;
+        *) printf "Warning %s not a valid parameter!\n" "${arg}"; return 1;;
+    esac ; return 0
+}
+#############################################################
 
-    ## Append arguments to info log:
-    debug_append_inf() {
-        $USE_BASH_DEBUG_LVL_INFO || return 0
-        str_empty "$*" && return 1
-        DEBUG_INF_BASH_LOG+=("$*")
-    }
+## Append arguments to info log:
+debug_append_inf() {
+    $USE_BASH_DEBUG_LVL_INFO || return 0
+    str_empty "$*" && return 1
+    DEBUG_INF_BASH_LOG+=("$*")
+}
 
-    ## Append argument to warnings log:
-    debug_append_wrn() {
-        $USE_BASH_DEBUG_LVL_WARNINGS || return 0;
-        str_empty "$*" && return 1
-        DEBUG_WRN_BASH_LOG+=("$*")
-    }
+## Append argument to warnings log:
+debug_append_wrn() {
+    $USE_BASH_DEBUG_LVL_WARNINGS || return 0;
+    str_empty "$*" && return 1
+    DEBUG_WRN_BASH_LOG+=("$*")
+}
 
-    ## Append argument to errors log:
-    debug_append_err() {
-        $USE_BASH_DEBUG_LVL_ERRORS || return 0
-        str_empty "$*" && return 1
-        DEBUG_ERR_BASH_LOG+=("$*")
-    }
+## Append argument to errors log:
+debug_append_err() {
+    $USE_BASH_DEBUG_LVL_ERRORS || return 0
+    str_empty "$*" && return 1
+    DEBUG_ERR_BASH_LOG+=("$*")
+}
 
-    ## Clears all debugging logs:
-    reset_debug_logs() {
-        unset DEBUG_INF_BASH_LOG ; declare -ag DEBUG_INF_BASH_LOG
-        unset DEBUG_WRN_BASH_LOG ; declare -ag DEBUG_WRN_BASH_LOG
-        unset DEBUG_ERR_BASH_LOG ; declare -ag DEBUG_ERR_BASH_LOG
-    }
-################################
+## Clears all debugging logs:
+reset_debug_logs() {
+    unset DEBUG_INF_BASH_LOG ; declare -ag DEBUG_INF_BASH_LOG
+    unset DEBUG_WRN_BASH_LOG ; declare -ag DEBUG_WRN_BASH_LOG
+    unset DEBUG_ERR_BASH_LOG ; declare -ag DEBUG_ERR_BASH_LOG
+}
+###############################
 
 ## Debug msg templates/shortcuts:
 #################################
 
-    ## Notify of some info that should be brought to attention:
-    debug_notify_info() {
-        debug_append_inf "$(printf "[${COLOR_PRI}Notice${COLOR_NC}]:  %s " "${1}")"
+## Notify of some info that should be brought to attention:
+debug_notify_info() {
+    debug_append_inf "$(printf "[${COLOR_PRI}Notice${COLOR_NC}]:  %s " "${1}")"
+}
+
+## Notify of some info that should be brought to attention:s
+debug_notify_warn() {
+    debug_append_wrn "$(printf "[${COLOR_WARN}Warning${COLOR_NC}]: %s " "${1}")"
+}
+
+## Notify of some info that should be brought to attention:
+debug_notify_error() {
+    debug_append_err "$(printf "[${COLOR_ALRT}Error${COLOR_NC}]:   %s " "${1}")"
+}
+
+## Specific Type Templates:
+    ## Notify of an change in the bash configuration:
+    notify_info_reload() {
+        local args=""; str_empty "$1" || args=" from file ${1}"
+        # debug_append_inf "$(printf "[${COLOR_PRI}Notice${COLOR_NC}]:  Reloaded bash configuration%s." "${args}")"
+        debug_notify_info "Reloaded bash configuration${args}."
     }
 
-    ## Notify of some info that should be brought to attention:s
-    debug_notify_warn() {
-        debug_append_wrn "$(printf "[${COLOR_WARN}Warning${COLOR_NC}]: %s " "${1}")"
+    ## Notify of an error while linking another non-vital bash configuration file:
+    debug_notify_link_wrn() {
+        debug_append_wrn "$(printf "[${COLOR_WARN}Warning${COLOR_NC}]: Bash config file %s was not linked!" "$*")"
+        # debug_notify_wrn "Bash config file ${*} was not linked!"
     }
 
-    ## Notify of some info that should be brought to attention:
-    debug_notify_error() {
-        debug_append_err "$(printf "[${COLOR_ALRT}Error${COLOR_NC}]:   %s " "${1}")"
+    ## Notify of an error while linking another bash configuration file:
+    debug_notify_link_err() {
+        debug_append_err "$(printf "[${COLOR_ALRT}Error${COLOR_NC}]:   Bash config file %s was not linked!" "$*")"
+        # debug_notify_err "Bash config file ${*} was not linked!"
     }
 
-    ## Specific Type Templates:
-        ## Notify of an change in the bash configuration:
-        notify_info_reload() {
-            local args=""; str_empty "$1" || args=" from file ${1}"
-            # debug_append_inf "$(printf "[${COLOR_PRI}Notice${COLOR_NC}]:  Reloaded bash configuration%s." "${args}")"
-            debug_notify_info "Reloaded bash configuration${args}."
-        }
+    ## Notify of an error in the bash configuration:
+    debug_notify_syntax_err() {
+        debug_append_err "$(printf "[${COLOR_ALRT}Error${COLOR_NC}]:   Bash config file %s has errors!" "$*")"
+        # debug_notify_err "Bash config file ${*} has errors!"
+    }
+##
+################################
 
-        ## Notify of an error while linking another non-vital bash configuration file:
-        debug_notify_link_wrn() {
-            debug_append_wrn "$(printf "[${COLOR_WARN}Warning${COLOR_NC}]: Bash config file %s was not linked!" "$*")"
-            # debug_notify_wrn "Bash config file ${*} was not linked!"
-        }
-
-        ## Notify of an error while linking another bash configuration file:
-        debug_notify_link_err() {
-            debug_append_err "$(printf "[${COLOR_ALRT}Error${COLOR_NC}]:   Bash config file %s was not linked!" "$*")"
-            # debug_notify_err "Bash config file ${*} was not linked!"
-        }
-
-        ## Notify of an error in the bash configuration:
-        debug_notify_syntax_err() {
-            debug_append_err "$(printf "[${COLOR_ALRT}Error${COLOR_NC}]:   Bash config file %s has errors!" "$*")"
-            # debug_notify_err "Bash config file ${*} has errors!"
-        }
-    ##
-#################################
 
 #########################
 ### BASH_DEBUG_TOOLS: #####################################################
@@ -187,3 +188,6 @@ debug_bool_out() {
 	echo "Failed to run command!" ; return 1
 } ; alias debool="debug_bool_out"
 #<!--#####################################
+
+#
+## END_FILE

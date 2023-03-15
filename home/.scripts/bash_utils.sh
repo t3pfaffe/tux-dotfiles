@@ -166,8 +166,7 @@ get_confirm () {
 ## usage: esc_str <strings>
 #<!--##################################################
 esc_str () {
-  local arg="$*"
-  local escapedvar=""
+  local arg="$*"; local escapedvar=""
 
   if [[ "$2" == "--no-space" ]] ; then
     escapedvar=$(echo "${arg}" | sed -e 's/[^][ a-zA-Z0-9/.:?, ;(){}<>=*+-]/\\&/g' )
@@ -179,3 +178,16 @@ esc_str () {
 }
 #<!--[reference]( https://github.com/bitrise-io/steps-utils-bash-string-escaper/blob/master/bash_string_escape.sh )
 #<!--##################################################
+
+#------
+#### 'proc_running' - Runs supplied command if supplied process is not already running:
+#&emsp; **usage:** proc_running <process_name>
+#<!--#####################################
+proc_running() {
+    [ $# -lt 1 ] && return 1;
+    ps -ef | grep "${*}" | grep -v grep 1>/dev/null && return 0; return 1
+}
+#<!--#####################################
+
+#
+## END_FILE
