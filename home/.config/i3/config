@@ -49,8 +49,8 @@ set $dp2 eDP-1-1
 ## Startup Critical WM Daemons
 ###############################
 ## Compositor
-set $exec_picom picom -b --experimental-backend
-exec --no-startup-id picom --experimental-backends || notify-send -i "/home/$USER/.config/i3/i3logo.png" -a "i3wm" -t 10000 -u critical "The compositor picom has crashed!" &
+set $exec_picom picom -b
+exec --no-startup-id picom || notify-send -i "/home/$USER/.config/i3/i3logo.png" -a "i3wm" -t 10000 -u critical "The compositor picom has crashed!" &
 exec_always --no-startup-id pgrep -x picom || $( $notify_low 'Restarting compositor...' & $exec_picom || $notify_critical 'WARNING! The compositor picom crashed on start!' )
 
 ## Notification Daemon
@@ -603,7 +603,7 @@ bar {
 ###################
 
 ##Default gap values
-set $default_gaps_inner 8
+set $default_gaps_inner 6
 set $default_gaps_outer 0
 
 ## Smart borders (draw borders around container only if it is not the only container on this workspace)
