@@ -55,8 +55,8 @@ exec_always --no-startup-id pgrep -x picom || $( $notify_low 'Restarting composi
 
 ## Notification Daemon
 set $exec_dunst systemctl --user start --quiet dunst.service
-exec --no-startup-id $exec_dunst || $notify_critical 'WARNING! The notification-daemon dunst crashed on start!'
-exec_always --no-startup-id $(systemctl --user is-active --quiet dunst.service) || $( $notify_low 'Restarting notification-daemon...' & pkill dunst; $exec_dunst || $notify_critical 'WARNING! The notification-daemon dunst crashed on start!' )
+#exec --no-startup-id $exec_dunst || $notify_critical 'WARNING! The notification-daemon dunst crashed on start!'
+#exec_always --no-startup-id $(systemctl --user is-active --quiet dunst.service) || $( $notify_low 'Restarting notification-daemon...' & pkill dunst; $exec_dunst || $notify_critical 'WARNING! The notification-daemon dunst crashed on start!' )
 
 ## Screensaver/Lock
 set $exec_lock ~/.config/i3/scripts/sensible-xlock.sh
@@ -71,15 +71,15 @@ exec --no-startup-id volctl
 exec --no-startup-id blueman-applet
 
 ## Startup Non-Crit System Daemons:
-exec --no-startup-id aarchup -p /usr/share/aarchup/archlogo.png --loop-time 1440
+# exec --no-startup-id aarchup -p /usr/share/aarchup/archlogo.png --loop-time 1440
 # exec --no-startup-id arch-audit -uf "%n - %v" --color always ## TODO: add notif to this.
-exec --no-startup-id albert
+# exec --no-startup-id albert
 
 
 ## Startup User Applets
-exec --no-startup-id kdeconnect-indicator
-exec --no-startup-id nextcloud --background
-exec --no-startup-id albert
+#exec --no-startup-id kdeconnect-indicator
+#exec --no-startup-id nextcloud --background
+#exec --no-startup-id albert
 
 
 ####################
@@ -96,7 +96,7 @@ exec --no-startup-id albert
 bindsym $mod+Return exec alacritty
 bindsym $mod+Shift+Return exec io.elementary.terminal -n
 bindsym $mod+F2 exec firefox
-bindsym $mod+Shift+F2 exec brave
+bindsym $mod+Shift+F2 exec chromium
 bindsym $mod+F3 exec nemo
 bindsym $mod+P  exec spectacle
 bindsym $mod+Shift+End exec spotify
@@ -105,8 +105,8 @@ bindsym $mod+Shift+M exec protonmail-bridge --no-window & sleep 5s && exec evolu
 ## Menu Launchers (rofi)
 bindsym $mod+d exec --no-startup-id rofi -show drun
 bindsym $mod+Shift+d exec --no-startup-id rofi -show run
-bindsym $mod+s exec --no-startup-id albert show
-bindsym $mod+c exec --no-startup-id =
+#bindsym $mod+s exec --no-startup-id albert show
+#bindsym $mod+c exec --no-startup-id =
 
 # Category: Display
 ###################
@@ -132,9 +132,9 @@ bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ to
 bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
 
 ## Media Controls:
-bindsym Prior   exec "playerctl --player=spotify,%any previous"
-bindsym Next    exec "playerctl --player=spotify,%any next"
-bindsym End     exec "playerctl --player=spotify,%any play-pause"
+bindsym $mod+Home      exec "playerctl --player=spotify,%any previous"
+bindsym $mod+Insert    exec "playerctl --player=spotify,%any next"
+bindsym $mod+End       exec "playerctl --player=spotify,%any play-pause"
 bindsym XF86AudioPrev  exec "playerctl --player=spotify,%any previous"
 bindsym XF86AudioNext  exec "playerctl --player=spotify,%any next"
 bindsym XF86AudioPlay  exec "playerctl --player=spotify,%any play-pause"
@@ -504,7 +504,7 @@ bindsym $alt+$mod+n exec --no-startup-id i3-rename-workspace
 
 ##Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
-font pango:Noto Sans Display Medium, NotoSansDisplay Nerd Font Medium 10
+font pango:Noto Sans Display Medium, NotoSansDisplay Nerd Font Medium 8
 
 ##Title Format
 #for_window [class=".*"] title_format "%title"
@@ -567,7 +567,7 @@ set $refresh_i3status killall -SIGUSR1 i3status
 bar {
 	strip_workspace_numbers yes
 
-	font pango:DejaVuSansMono Nerd Font 9
+	font pango:NotoSansMono Nerd Font 6
 	colors {
 		background $backCl
 		statusline $txtLCl
@@ -716,9 +716,6 @@ for_window [class="Plexamp"] move to workspace $wsM
 
 ## Specific applications:
     for_window [title="alsamixer"] floating enable border pixel 1
-    for_window [title="Proton VPN"] floating enable
-    for_window [class="Volctl"] floating enable border pixel 1
-    for_window [class="Blueman-manager"] floating enable border pixel 1
     for_window [class="gnome-calculator"] floating enable border pixel 1
     for_window [class="spectacle"] floating enable border pixel 1
     for_window [class="Gnome-calculator"] floating enable border pixel 1
