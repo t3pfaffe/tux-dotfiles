@@ -1,6 +1,6 @@
-# <$APP_NAME> Config File:
-#   location: ~/.config/<$APP_NAME>/config.conf
-#   author: t3@pfaffe.me    🄯2020-01.05.2021
+# Alacritty Config File:
+#   location: ~/.config/alacritty/config.conf
+#   author: t3@pfaffe.me    🄯2020-2023
 #   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #   Configuration for Alacritty, the GPU enhanced terminal emulator:
 #    - [config-reference]( https://github.com/alacritty/alacritty#configuration )
@@ -36,7 +36,7 @@ window:
   # must be at least `2`, while using a value of `0` for columns and lines will
   # fall back to the window manager's recommended size.
   opacity: 0.7
-  decorations_theme_variant: dark
+  decorations_theme_variant: ark
   dimensions:
     columns: 0
     lines: 0
